@@ -1,0 +1,167 @@
+
+<form class="omk-uploader-form".>
+	<div class="omk-uploader-container">
+		<p>You browser doesn't have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+	</div>
+</form>
+			
+<!-- Load Queue widget CSS and jQuery -->
+<style type="text/css">@import url(<?php echo $this->js_url_path ?>/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css);</style>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+
+<!-- Third party script for BrowserPlus runtime (Google Gears included in Gears runtime now) -->
+<script type="text/javascript" src="http://bp.yahooapis.com/2.4.21/browserplus-min.js"></script>
+
+<!-- Load plupload and all it's runtimes and finally the jQuery queue widget -->
+<script type="text/javascript" src="<?php echo $this->js_url_path ?>/plupload/js/plupload.full.js"></script>
+<script type="text/javascript" src="<?php echo $this->js_url_path ?>/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js"></script>
+
+<script type="text/javascript">
+// Convert divs to queue widgets when the DOM is ready
+$(function() {
+	$(".omk-uploader-container").pluploadQueue({
+		// General settings
+		runtimes : 'gears,flash,silverlight,browserplus,html5',
+		url : '<?php echo $this->api_local_url ?>?action=upload',
+		max_file_size : '10mb',
+		chunk_size : '1mb',
+		unique_names : true,
+                multiple_queues : true,
+
+		// Resize images on clientside if we can
+//		resize : {width : 320, height : 240, quality : 90},
+
+		// Specify what files to browse for
+		filters : [
+//			{title : "Image files", extensions : "jpg,gif,png"},
+//			{title : "Zip files", extensions : "zip"}
+		],
+
+	        // PreInit events, bound before any internal events
+	        preinit : {
+	            Init: function(up, info) {
+	                console.log('[Init]', 'Info:', info, 'Features:', up.features);
+	            },
+	 
+	            UploadFile: function(up, file) {
+	                console.log('[UploadFile]', file);
+	 
+	                // You can override settings before the file is uploaded
+	                // up.settings.url = 'upload.php?id=' + file.id;
+	                // up.settings.multipart_params = {param1 : 'value1', param2 : 'value2'};
+	            }
+	        },
+	 
+	        // Post init events, bound after the internal events
+	        init : {
+	            Refresh: function(up) {
+	                // Called when upload shim is moved
+	                console.log('[Refresh]');
+	            },
+	 
+	            StateChanged: function(up) {
+	                // Called when the state of the queue is changed
+	                console.log('[StateChanged]', up.state == plupload.STARTED ? "STARTED" : "STOPPED");
+	            },
+	 
+	            QueueChanged: function(up) {
+	                // Called when the files in queue are changed by adding/removing files
+	                console.log('[QueueChanged]');
+	            },
+	 
+	            UploadProgress: function(up, file) {
+	                // Called while a file is being uploaded
+	                console.log('[UploadProgress]', 'File:', file, "Total:", up.total);
+	            },
+	 
+	            FilesAdded: function(up, files) {
+	                // Callced when files are added to queue
+	                console.log('[FilesAdded]');
+	 
+	                plupload.each(files, function(file) {
+	                    console.log('  File:', file);
+	                });
+	            },
+	 
+	            FilesRemoved: function(up, files) {
+	                // Called when files where removed from queue
+	                console.log('[FilesRemoved]');
+	 
+	                plupload.each(files, function(file) {
+	                    console.log('  File:', file);
+	                });
+	            },
+	 
+	            FileUploaded: function(up, file, info) {
+	                // Called when a file has finished uploading
+	                console.log('[FileUploaded] File:', file, "Info:", info);
+	            },
+	 
+	            ChunkUploaded: function(up, file, info) {
+	                // Called when a file chunk has finished uploading
+                        
+                        // TODO : this blocks multiple uploads and should log
+                        this.failure = function(up, message){
+                            alert(message);
+                            up.stop();
+                            file.status = plupload.FAILED;
+                            up.trigger('QueueChanged');    
+                            up.trigger('UploadProgress', file);
+                            up.start();                            
+                        }
+                        var error,response;
+                        try{
+                            response = $.parseJSON(info.response);
+                        }catch(exception){
+                            this.failure(up, "error : "+exception);
+                            return;
+                        }
+                        if ( "code" in response ){
+                            code = response.code;
+                            if( code > 0){
+                                // Error occured
+                                this.failure(up, "error code: "+code);
+                                return;
+                            }
+                            console.log('[ChunkUploaded] File:', file, "Info:", info);
+                        }else{
+                         // Things really went wrong   
+                         this.failure(up, "Something went wrong :"+info.response);
+
+                        }
+	            },
+	 
+	            Error: function(up, args) {
+	                // Called when a error has occured
+	                console.log('[error] ', args);
+	            }
+	        },
+		// Flash settings
+		flash_swf_url : '<?php echo $this->js_url_path ?>/plupload/js/plupload.flash.swf',
+
+		// Silverlight settings
+		silverlight_xap_url : '<?php echo $this->js_url_path ?>/plupload/js/plupload.silverlight.xap'
+	});
+
+	// Client side form validation
+	$('.omk-uploader-form').submit(function(e) {
+        var uploader = $('.omk-uploader-container').pluploadQueue();
+
+        // Files in queue upload them first
+        if (uploader.files.length > 0) {
+            // When all files are uploaded submit form
+            uploader.bind('StateChanged', function() {
+                if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
+                    $('.omk-uploader-form')[0].submit();
+                }
+            });
+            
+            uploader.start();
+        } else {
+            alert('You must queue at least one file.');
+        }
+
+        return false;
+    });
+});
+</script>
