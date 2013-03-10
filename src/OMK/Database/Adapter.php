@@ -9,6 +9,31 @@ DatabaseAdapter
     Config : 
      db credentials classiques (db,user,pwd,host)
 */
-class OMK_Database_Adapter extends OMK_Client_Friend {
+abstract class OMK_Database_Adapter extends OMK_Client_Friend {
+ 
+    function insert($options = null){
+        
+        throw new OMK_Exception("You must override this method.");
+        
+    }
     
+    function update($options = null ){
+        
+        throw new OMK_Exception("You must override this method.");
+        
+    }
+
+    
+    function select($options = null){
+        
+        throw new OMK_Exception("You must override this method.");
+        
+    }
+    
+    function delete($options = null){
+        
+        throw new OMK_Exception("You must override this method.");
+        
+    }
+           
 }

@@ -42,6 +42,7 @@ class OMK_Client{
     protected $fileAdapter;
     protected $loggerAdapter;
     protected $translationAdapter;
+    protected $queue;
     protected $uploadAdapterContainer = array();
     public $api_local_key;
     public $api_local_url;
@@ -62,7 +63,7 @@ class OMK_Client{
         } 
      
         if (array_key_exists("databaseAdapter", $options) && null != $options["databaseAdapter"]) {
-            $this->setDbAdapter( $options['databaseAdapter'] );
+            $this->setDatabaseAdapter( $options['databaseAdapter'] );
         } 
         
         if (array_key_exists("fileAdapter", $options) && null != $options["fileAdapter"]) {
@@ -125,7 +126,17 @@ class OMK_Client{
 
     }
     
-    public function setDbAdapter(OMK_Database_Adapter $adapter = null) {
+    public function getAuthentificationAdapter(){
+        
+        if( null == $this->authentificationAdapter){
+            throw new OMK_Exception("No authentification adapter defined.");
+        }
+        return $this->authentificationAdapter;
+        
+    }
+
+
+    public function setDatabaseAdapter(OMK_Database_Adapter $adapter = null) {
 
         $adapter->setClient($this);
         $this->databaseAdapter = $adapter;
@@ -133,6 +144,15 @@ class OMK_Client{
         
     }
     
+    public function getDatabaseAdapter(){
+        
+        if( null == $this->databaseAdapter){
+            throw new OMK_Exception("No database adapter defined.");
+        }
+        return $this->databaseAdapter;
+        
+    }
+
     public function setFileAdapter(OMK_File_Adapter $adapter = null) {
 
         $adapter->setClient($this);
@@ -141,6 +161,15 @@ class OMK_Client{
         
     }
     
+    public function getFileAdapter(){
+        
+        if( null == $this->fileAdapter){
+            throw new OMK_Exception("No file adapter defined.");
+        }
+        return $this->fileAdapter;
+        
+    }
+
     public function setUploadAdapter(OMK_Upload_Adapter $adapter = null) {
         $adapter->setClient($this);
         $name = $adapter->getName();
@@ -204,6 +233,13 @@ class OMK_Client{
         
     }
 
+    public function getQueue(){
+        if( null == $this->queue ){
+            $this->queue    = new OMK_Queue();
+            $this->queue->setClient( $this);
+        }
+        return $this->queue;
+    }
 
     public function call($options){
         
@@ -252,14 +288,14 @@ class OMK_Client{
 
         $request = new OMK_Client_Request($this);
         $request->run($options);
-        return $request->getResult();
+        return $request->getResult(true);
     }
     
     public function response($options = null) {
 
         $response = new OMK_Client_Response($this);
         $response->run($options);
-        return $response->getResult();
+        return $response->getResult(true);
         
     }
     

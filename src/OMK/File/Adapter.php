@@ -11,4 +11,38 @@ FileAdapter
 */
 class OMK_File_Adapter extends OMK_Client_Friend {
     
+    const ERR_STORAGE_AUTH = 110;
+    const ERR_STORAGE_CREATE = 111;
+    const ERR_STORAGE_MOVE = 112;
+    
+    /**
+     * 
+     * @param string $options.file_path
+     */
+    public function create( $options){
+        
+    }
+    
+    public function open( $options ){
+        
+    }
+    
+    public function read( $options ){
+        
+    }
+    
+    public function write( $options ){
+        
+    }
+    
+    public function seek( $options ){
+        
+    }
+    
+    public function size( $options ){
+        
+    }
+    
+    
+    
 }

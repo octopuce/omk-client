@@ -10,4 +10,10 @@ LoggerAdapter
  */
 class OMK_Logger_Adapter extends OMK_Client_Friend {
     
+    const DEBUG = "DEBUG";
+    const INFO = "INFO";
+    const WARN = "WARN";
+    public function log( $error_level, $error_message, array $data = null, $exception = null ){
+        
+    }
 }

@@ -13,6 +13,13 @@ UploadAdapter
  */
 class OMK_Upload_Adapter extends OMK_Client_Friend {
     
+    const ERR_OUTPUT_STREAM = 100;
+    const ERR_MOVE_UPLOADED = 101;
+    const ERR_INPUT_STREAM  = 102;
+    const ERR_CHUNK_PART    = 103;
+    const ERR_MISSING_FILE  = 104;
+    
+    
     public $tmp_path;
     public $name; // mandatory : sets a key name for this adapter
     function __construct($options = null) {

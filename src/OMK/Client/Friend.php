@@ -13,6 +13,9 @@ class OMK_Client_Friend {
         $this->client = $client;
     }
     
+    /**
+     * @return OMK_Client the friend Client 
+     */
     function getClient(){
         if( null == $this->client){
             throw new OMK_Exception("Missing client.",1);

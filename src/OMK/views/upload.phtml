@@ -7,7 +7,7 @@
 			
 <!-- Load Queue widget CSS and jQuery -->
 <style type="text/css">@import url(<?php echo $this->js_url_path ?>/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css);</style>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>
 
 <!-- Third party script for BrowserPlus runtime (Google Gears included in Gears runtime now) -->
 <script type="text/javascript" src="http://bp.yahooapis.com/2.4.21/browserplus-min.js"></script>
@@ -23,15 +23,16 @@ $(function() {
 		// General settings
 		runtimes : 'gears,flash,silverlight,browserplus,html5',
 		url : '<?php echo $this->api_local_url ?>?action=upload',
-		max_file_size : '10mb',
+		max_file_size : '1000mb',
 		chunk_size : '1mb',
-		unique_names : true,
+		unique_names : false,
                 multiple_queues : true,
 
 		// Resize images on clientside if we can
 //		resize : {width : 320, height : 240, quality : 90},
 
 		// Specify what files to browse for
+                // TODO : Read this from preferences ?
 		filters : [
 //			{title : "Image files", extensions : "jpg,gif,png"},
 //			{title : "Zip files", extensions : "zip"}
@@ -99,7 +100,7 @@ $(function() {
 	 
 	            ChunkUploaded: function(up, file, info) {
 	                // Called when a file chunk has finished uploading
-                        
+                        var code;
                         // TODO : this blocks multiple uploads and should log
                         this.failure = function(up, message){
                             alert(message);
@@ -118,7 +119,7 @@ $(function() {
                         }
                         if ( "code" in response ){
                             code = response.code;
-                            if( code > 0){
+                            if( code > 1){
                                 // Error occured
                                 this.failure(up, "error code: "+code);
                                 return;

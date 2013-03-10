@@ -36,7 +36,7 @@ $uploadAdapter = new OMK_Upload_Dummy(array("name"=>"dummy"));
 // instanciate a dummy logger adapter
 $loggerAdapter  = new OMK_Logger_Dummy();
 
-// dummy 
+// instanciate a dummy translation adapter
 $translationAdapter = new OMK_Translation_Dummy();
 
 // set up the client
