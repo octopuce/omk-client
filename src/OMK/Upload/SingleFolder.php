@@ -1,5 +1,7 @@
 <?php 
 class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
+    
+    var $label              = "singleFolder";
 
     function upload( $options ){
        
@@ -58,19 +60,19 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
 
         // Open temp file
         if (!$out = fopen("{$file_path}.part", "a")) {
-            return array("code" => OMK_Upload_Adapter::ERR_OUTPUT_STREAM, "message" => "Failed to open output stream.");
+            return array("code" => OMK_Upload_Adapter::ERR_OUTPUT_STREAM, "message" => _("Failed to open output stream."));
         }
 
         if (!empty($_FILES)) {
             if ($_FILES['file']['error'] || !is_uploaded_file($_FILES['file']['tmp_name'])) {
-             return array("code" => OMK_Upload_Adapter::ERR_MOVE_UPLOADED, "message" => "Failed to move uploaded file.");
+             return array("code" => OMK_Upload_Adapter::ERR_MOVE_UPLOADED, "message" => _("Failed to move uploaded file."));
             }
             // Read binary input stream and append it to temp file
             if (!$in = fopen($_FILES['file']['tmp_name'], "rb")) {
-                return array("code" => OMK_Upload_Adapter::ERR_INPUT_STREAM, "message" => "Failed to open input stream.");
+                return array("code" => OMK_Upload_Adapter::ERR_INPUT_STREAM, "message" => _("Failed to open input stream."));
             }
         } else {	
-            return array("code" => OMK_Upload_Adapter::ERR_MISSING_FILE, "message" => "Failed to open output stream.");
+            return array("code" => OMK_Upload_Adapter::ERR_MISSING_FILE, "message" => _("Failed to open output stream."));
         }
 
 //        if ($chunking) {
@@ -90,14 +92,15 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
             // TODO Check MIME of object
             rename("{$file_path}.part", $file_path);
             return array(
-                "code" => 0,
-                "message" => "File {$file_name} correctly uploaded",
-                "file_path" => $file_path,
-                "file_name" => $file_name
+                "code"              => 0,
+                "message"           => _("File {$file_name} correctly uploaded"),
+                "file_path"         => $file_path,
+                "file_name"         => $file_name,
+                "upload_adapter"    => $this->name
                 );
         }
 
-        return array("code" => 1, "message"=>"Chunking part received");
+        return array("code" => 1, "message"=>_("Chunking part received"));
         
     }
 } 

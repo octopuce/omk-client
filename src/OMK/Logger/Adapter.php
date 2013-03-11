@@ -10,10 +10,12 @@ LoggerAdapter
  */
 class OMK_Logger_Adapter extends OMK_Client_Friend {
     
+    // ERR CODE 75 - 99
+
     const DEBUG = "DEBUG";
     const INFO = "INFO";
     const WARN = "WARN";
-    public function log( $error_level, $error_message, array $data = null, $exception = null ){
-        
+    public function log( $options = null ){
+        // error_level, $error_message, array $data = null, $exception = null 
     }
 }

@@ -1,10 +1,7 @@
 <?php class OMK_Client_Response extends OMK_Client_Friend {
 
-     protected $result;
      public function __construct(OMK_Client $client) {
          $this->setClient($client);
-         $this->result["code"] = 0;
-         $this->result["class"] = __CLASS__;
      }
      public function run( $params ){
          $action = $params["action"];
@@ -12,21 +9,130 @@
      }
      
      
-     // undefined response for local test and availability checks
-     private function app_test($options = null){
+     // always true response for local test and availability checks
+     /**
+      * 
+      * @param type $options
+      * @return array
+      * 
+      * 
+app_test
+
+Who : [app,transcoder] -> App
+
+When : whenever
+
+What : App returns current timestamp
+
+Request Params : void
+
+onSuccess : void
+
+onError : void
+
+répond à une sorte de ping : pratique pour l'installation (fonctionne) ou pour que le serveur vérifie qu'elle elle est up
+      */
+     protected function app_test_response($options = null){
+         $this->result =  array(
+             "code" => 0,
+             "message" => _("Local instance is up.")
+         );
+     }
+     
+     /**
+      * 
+      * @param type $options
+      * transcoder_send_format
+
+Who : Transcoder -> App
+
+When : Transcoder finished transcoding a format
+
+What : App adds the media format to its download queue
+
+Request Params
+
+    id:int
+    preset:string
+    url:string or list of strings (for thumbs)
+
+onSuccess
+
+    App updates media_format status to TRANSCODED or INVALID
+    App updates media status to META_RECEIVED or META_INVALID
+
+onError : Transcode logs error
+
+      */
+     protected function transcoder_send_format($options = null){
+         
+     }
+     /**
+      * 
+      * @param type $options
+      * 
+transcoder_send_metadata
+
+Who : Transcoder -> App
+
+When : media meta decoded by transcoder
+
+What : App sets media metadata
+
+Request Params
+
+    id:int
+    meta:hashset{media_type:ENUM,media_meta:hashset{...}}
+
+onSuccess : App updates media status to META_RECEIVED or META_INVALID
+      */
+     protected function transcoder_send_metadata($options = null){
          
      }
      
-     private function app_subscribe($options = null){
+     /*
+      * transcoder_cron
+
+Who : Transcoder -> App
+
+When : Transcoder cron ticks
+
+What : App executes cron tasks
+
+Request Params : null
+
+onSuccess : null
+
+onError : Transcoder logs error
+      */
+     protected function transcoder_cron($options = null){
          
      }
-     private function transcoder_send_format($options = null){
+     /**
+      * 
+      * @param type $options
+      * transcoder_get_settings
+
+Pas d'authentification requise, méthode publique
+
+Who : Transcoder -> App
+
+When : whenever
+
+What : Transcoder returns available presets
+
+Request Params : void
+
+onSuccess : app records available formats to make a selection
+
+onError : void
+      */
+     protected function transcoder_get_settings($options =null){
          
      }
-     private function transcoder_cron($options = null){
-         
-     }
-     private function upload($request = null){
+
+     // Manages upload
+     protected function upload($request = null){
          
         $this->recordResult( 
             $this->getClient()->getUploadAdapter($request)->upload($request) 
@@ -34,18 +140,18 @@
         if( ! $this->successResult() ){
             return; // Failed to upload or upload in progress
         }
-        $file_path = $this->result["file_path"];
-        $file_name = $this->result["file_name"];
+        $file_path      = $this->result["file_path"];
+        $file_name      = $this->result["file_name"];
+        $upload_adapter = $this->result["upload_adapter"];
         $this->recordResult( 
-            $this->getClient()->getDatabaseAdapter()->insert(
-                array(
-                    "table" => "files",
-                    "data"  => array(
-                        "owner_id" => $this->getClient()->getAuthentificationAdapter()->getOwnerId(),
-                        "file_name" => $file_name
-                    )
+            $this->getClient()->getDatabaseAdapter()->insert(array(
+                "table" => "files",
+                "data"  => array(
+                    "owner_id"  => $this->getClient()->getAuthentificationAdapter()->getOwnerId(),
+                    "file_name" => $file_name,
+                    "status"    => OMK_Database_Adapter::STATUS_UPLOADED
                 )
-            ) 
+            )) 
         );
         if(! $this->successResult() ){
            return; // Failed to include file into db
@@ -53,12 +159,27 @@
         $file_id = $this->result["id"];
         $this->recordResult( 
             $this->getClient()->getFileAdapter()->create(
-                array(
-                    "file_id" => $file_id,
+                    array(
+                    "file_id"   => $file_id,
                     "file_name" => $file_name,
                     "file_path" => $file_path
                 )
             )
+        );
+        if(! $this->successResult() ){
+           return; // Failed to move file to final destination
+        }
+        // Update file record in db 
+        $this->recordResult( 
+            $this->getClient()->getDatabaseAdapter()->update(array(
+                "table" => "files",
+                "id"    => $file_id,
+                "data"  => array(
+                    "dt_updated"    => TRUE,
+                    "file_path"     => $this->result["file_path"],
+                    "status"        => OMK_Database_Adapter::STATUS_STORED
+                )
+            ))
         );
         if(! $this->successResult() ){
            return; // Failed to move file to final destination
@@ -74,49 +195,10 @@
                 )
             )
         );
-        
+        if(! $this->successResult() ){
+           return; // Failed to add item to queue
+        }
+
     }
-         
      
-     function successResult(){
-         if( $this->result["code"] == 0 ){
-             return TRUE;
-         }
-         return FALSE;
-     }
-     
-     function recordResult( array $result){
-         
-         // Saves previously recorded results
-         if( array_key_exists("_previousResults", $this->result) && count( $this->result["_previousResults"]) ){
-             $previousResults = $this->result["_previousResults"];
-             unset($this->result["_previousResults"]);
-         }else{
-             $previousResults = array();
-         }
-         
-         // Saves previous result data
-         if(array_key_exists("code", $this->result) && null != $this->result["code"]){
-             $previousResults[] = $this->result;
-         }
-  
-         $this->result = $result;
-         $this->result["_previousResults"] = $previousResults;
-         
-         $this->getClient()->getLoggerAdapter()->log( OMK_Logger_Adapter::INFO , $result["message"]);
-         
-     }
-     
-     
-
-
-     public function getResult($json = false){
-         if( ! $json ){
-             return $this->result;
-         }
-         if( null == $this->result || !count($this->result)){
-             throw new Exception("Invalid result.");
-         }
-        return json_encode($this->result);
-     }
 }

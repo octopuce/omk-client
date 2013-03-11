@@ -1,4 +1,5 @@
-     
+<?php
+/*
 Settings
     Description:
     Affiche les réglages offerts par les transcoders (presets et par paramètres) pour chaque type de media et enregistre les choix de l'utilisateur.
@@ -11,3 +12,8 @@ Settings
     delete
     Config : -
     Views: Vue d'affichage par liste et de modification
+*/
+class OMK_Settings extends OMK_Client_Friend{
+    
+    // ERR CODE 175-199
+}

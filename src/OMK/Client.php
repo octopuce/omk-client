@@ -117,6 +117,9 @@ class OMK_Client{
             $this->view_path = ".";
         }
     }
+    public function getAppUrl(){
+        return $this->api_local_url;
+    }
 
     public function setAuthentificationAdapter( OMK_Authentification_Adapter $adapter = null) {
         
@@ -129,7 +132,7 @@ class OMK_Client{
     public function getAuthentificationAdapter(){
         
         if( null == $this->authentificationAdapter){
-            throw new OMK_Exception("No authentification adapter defined.");
+            throw new OMK_Exception(_("No authentification adapter defined."));
         }
         return $this->authentificationAdapter;
         
@@ -147,7 +150,7 @@ class OMK_Client{
     public function getDatabaseAdapter(){
         
         if( null == $this->databaseAdapter){
-            throw new OMK_Exception("No database adapter defined.");
+            throw new OMK_Exception(_("No database adapter defined."));
         }
         return $this->databaseAdapter;
         
@@ -164,7 +167,7 @@ class OMK_Client{
     public function getFileAdapter(){
         
         if( null == $this->fileAdapter){
-            throw new OMK_Exception("No file adapter defined.");
+            throw new OMK_Exception(_("No file adapter defined."));
         }
         return $this->fileAdapter;
         
@@ -180,7 +183,7 @@ class OMK_Client{
     public function getUploadAdapter( $options = null ){
         
         if( !count($this->uploadAdapterContainer)){
-            throw new OMK_Exception("No uploader defined.");
+            throw new OMK_Exception(_("No uploader defined."));
         }
         // Attempts to load a specific adapter
         if(array_key_exists("upload_adapter", $options) && null != $options["upload_adapter"]){
@@ -189,7 +192,7 @@ class OMK_Client{
                 $uploadAdapter = $this->uploadAdapterContainer[$upload_adapter];
                 $uploadAdapter->upload( $options );
             } else {
-                throw new OMK_Exception("Invalid upload adapter requested",1);
+                throw new OMK_Exception(_("Invalid upload adapter requested"),1);
             }
         }
         // Returns the first defined adapter, making it de facto the default one 
@@ -209,7 +212,7 @@ class OMK_Client{
     public function getTranslationAdapter( $options = null ){
         
         if( null == $this->translationAdapter ){
-            throw new OMK_Exception("Missing translation object.");
+            throw new OMK_Exception(_("Missing translation object."));
         }
         return $this->translationAdapter;
         
@@ -227,7 +230,7 @@ class OMK_Client{
     public function getLoggerAdapter( $options = null ){
         
         if( null == $this->loggerAdapter ){
-            throw new OMK_Exception("Missing logger object.");
+            throw new OMK_Exception(_("Missing logger object."));
         }
         return $this->loggerAdapter;
         
@@ -244,17 +247,18 @@ class OMK_Client{
     public function call($options){
         
         switch($options["action"]){
+            case "app_test_request":
+            case "app_subscribe":
             case "tracker_autodiscovery":
             case "app_new_media":
             case "app_request_format":
                 return $this->request($options);
             break;
-            case "app_subscribe":
             case "transcoder_cron":
             case "transcoder_send_format":
             case "transcoder_send_metadata":
             case "transcoder_get_settings":
-            case "app_test":
+            case "app_test_response":
             case "upload":
                 return $this->response($options);
             break;
@@ -288,14 +292,14 @@ class OMK_Client{
 
         $request = new OMK_Client_Request($this);
         $request->run($options);
-        return $request->getResult(true);
+        return $request->getResult(array("format"=>"json"));
     }
     
     public function response($options = null) {
 
         $response = new OMK_Client_Response($this);
         $response->run($options);
-        return $response->getResult(true);
+        return $response->getResult(array("format"=>"json"));
         
     }
     

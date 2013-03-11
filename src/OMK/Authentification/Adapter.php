@@ -10,6 +10,8 @@ Authentification Adapter
 */
 class OMK_Authentification_Adapter extends OMK_Client_Friend{
     
+    // ERR CODE 0 - 24
+    
     function setCredentials(){
         
     }

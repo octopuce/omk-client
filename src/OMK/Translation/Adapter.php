@@ -11,4 +11,5 @@ TranslationAdapter
 */
 class OMK_Translation_Adapter extends OMK_Client_Friend {
     
+    // ERR CODE 100-124
 }

@@ -3,5 +3,9 @@
     function check(){
         return TRUE;
     }
+    
+    function getOwnerId() {
+        return 1;
+    }
 
 } 

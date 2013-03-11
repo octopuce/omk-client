@@ -11,9 +11,11 @@ FileAdapter
 */
 class OMK_File_Adapter extends OMK_Client_Friend {
     
-    const ERR_STORAGE_AUTH = 110;
-    const ERR_STORAGE_CREATE = 111;
-    const ERR_STORAGE_MOVE = 112;
+    // ERR CODE 50-74
+
+    const ERR_STORAGE_AUTH      = 50;
+    const ERR_STORAGE_CREATE    = 51;
+    const ERR_STORAGE_MOVE      = 52;
     
     /**
      * 

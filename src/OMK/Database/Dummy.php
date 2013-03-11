@@ -6,7 +6,7 @@
         return array(
             "id"        => time(),
             "code"      => 0,
-            "message"   => "Dummy DB insert response."
+            "message"   => _("Dummy DB insert response.")
         );
         
     }
@@ -15,7 +15,7 @@
         
         return array(
             "code"      => 0,
-            "message"   => "Dummy DB update response."
+            "message"   => _("Dummy DB update response.")
         );
         
     }
@@ -25,7 +25,7 @@
         
         return array(
             "code"      => 0,
-            "message"   => "Dummy DB select response."
+            "message"   => _("Dummy DB select response.")
         );
         
     }
@@ -34,7 +34,7 @@
         
         return array(
             "code"      => 0,
-            "message"   => "Dummy DB delete response."
+            "message"   => _("Dummy DB delete response.")
         );
         
     }
