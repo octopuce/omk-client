@@ -16,7 +16,7 @@ class OMK_Authentification_Adapter extends OMK_Client_Friend{
         
     }
     
-    function getOwnerId(){
+    function getUserId(){
         
     }
     

@@ -24,14 +24,14 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     public $tmp_path;
     public $name; // mandatory : sets a key name for this adapter
     function __construct($options = null) {
-        if( null == $options || !count($options)){
+        if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options"), 1);
         }
-        if(array_key_exists("tmp_path", $options) && null != $options["name"]){
+        if(array_key_exists("tmp_path", $options) && NULL != $options["name"]){
             $this->tmp_path = $options["tmp_path"];
         }
         
-        if(array_key_exists("name", $options) && null != $options["name"]){
+        if(array_key_exists("name", $options) && NULL != $options["name"]){
             $this->name = $options["name"];
         }
         else{

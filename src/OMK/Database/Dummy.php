@@ -11,7 +11,7 @@
         
     }
     
-    function update($options = null ){
+    function update($options = NULL ){
         
         return array(
             "code"      => 0,

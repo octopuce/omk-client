@@ -4,8 +4,10 @@
         return TRUE;
     }
     
-    function getOwnerId() {
+    function getUserId() {
         return 1;
+        // default
+        return 0;
     }
 
 } 

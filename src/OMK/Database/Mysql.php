@@ -3,27 +3,27 @@
     protected $dbConnection;
     public function __construct($options = null) {
         
-        if (array_key_exists("host", $options) && null != $options["host"]) {
+        if (array_key_exists("host", $options) && NULL != $options["host"]) {
             $host = $options["host"];
         }else{
             throw new OMK_Exception(_("Missing host."));
         } 
-        if (array_key_exists("database", $options) && null != $options["database"]) {
+        if (array_key_exists("database", $options) && NULL != $options["database"]) {
             $database = $options["database"];
         }else{
             throw new OMK_Exception(_("Missing host."));
         }
-        if (array_key_exists("user", $options) && null != $options["user"]) {
+        if (array_key_exists("user", $options) && NULL != $options["user"]) {
             $user = $options["user"];
         }else{
             throw new OMK_Exception(_("Missing user."));
         }
-        if (array_key_exists("password", $options) && null != $options["password"]) {
+        if (array_key_exists("password", $options) && NULL != $options["password"]) {
             $password = $options["password"];
         } else {
             throw new OMK_Exception(_("Missing password."));
         }
-        if (array_key_exists("prefix", $options) && null != $options["prefix"]) {
+        if (array_key_exists("prefix", $options) && NULL != $options["prefix"]) {
             $prefix = $options["prefix"];
         } else {
             $prefix = "";
@@ -92,12 +92,12 @@
 
     function insert($options = null) {
         
-        if (array_key_exists("table", $options) && null != $options["table"]) {
+        if (array_key_exists("table", $options) && NULL != $options["table"]) {
             $table = $options["table"];
         } else {
             throw new OMK_Exception(_("Missing table."));
         }
-        if (array_key_exists("data", $options) && null != $options["data"]) {
+        if (array_key_exists("data", $options) && NULL != $options["data"]) {
             $data = $options["data"];
         } else {
             throw new OMK_Exception(_("Missing data."));
@@ -145,17 +145,17 @@
     
     function update($options = null) {
         
-        if (array_key_exists("table", $options) && null != $options["table"]) {
+        if (array_key_exists("table", $options) && NULL != $options["table"]) {
             $table = $options["table"];
         } else {
             throw new OMK_Exception(_("Missing table."));
         }
-        if (array_key_exists("data", $options) && null != $options["data"]) {
+        if (array_key_exists("data", $options) && NULL != $options["data"]) {
             $data = $options["data"];
         } else {
             throw new OMK_Exception(_("Missing data."));
         }
-        if (array_key_exists("id", $options) && null != $options["id"]) {
+        if (array_key_exists("id", $options) && NULL != $options["id"]) {
             $id = $options["id"];
         } else {
             throw new OMK_Exception(_("Missing id."));

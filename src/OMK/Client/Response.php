@@ -147,7 +147,7 @@ onError : void
             $this->getClient()->getDatabaseAdapter()->insert(array(
                 "table" => "files",
                 "data"  => array(
-                    "owner_id"  => $this->getClient()->getAuthentificationAdapter()->getOwnerId(),
+                    "owner_id"  => $this->getClient()->getAuthentificationAdapter()->getUserId(),
                     "file_name" => $file_name,
                     "status"    => OMK_Database_Adapter::STATUS_UPLOADED
                 )

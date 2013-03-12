@@ -4,31 +4,31 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
     protected $storage_path;
 
     public function __construct($options) {
-        if(array_key_exists("storage_path", $options) && null != $options["storage_path"]){
+        if(array_key_exists("storage_path", $options) && NULL != $options["storage_path"]){
             $this->storage_path = $options["storage_path"];
         }else{
-            throw new OMK_Exception(_("Missing storage path."),1);
+            throw new OMK_Exception(_("Missing storage path."), self::ERR_STORAGE_PATH);
         }
     }
 
     public function create($options){
         
-        if (array_key_exists("file_path", $options) && null != $options["file_path"]) {
+        if (array_key_exists("file_path", $options) && NULL != $options["file_path"]) {
             $file_path = $options["file_path"];
         } else {
-            throw new OMK_Exception(_("Missing file path."));    
+            throw new OMK_Exception(_("Missing file path."), self::ERR_STORAGE_FILE_PATH);    
         }
 
-        if (array_key_exists("file_id", $options) && null != $options["file_id"]) {
+        if (array_key_exists("file_id", $options) && NULL != $options["file_id"]) {
             $file_id = $options["file_id"];
         } else{
-            throw new OMK_Exception(_("Missing file id."));    
+            throw new OMK_Exception(_("Missing file id."), self::ERR_STORAGE_FILE_ID);    
         }
 
-        if (array_key_exists("file_name", $options) && null != $options["file_name"]) {
+        if (array_key_exists("file_name", $options) && NULL != $options["file_name"]) {
             $file_name = $options["file_name"];
         } else{
-            throw new OMK_Exception(_("Missing file name."));    
+            throw new OMK_Exception(_("Missing file name."), self::ERR_STORAGE_FILE_NAME);    
         }
         // TODO: test MIME
         $new_path = "{$this->storage_path}/{$file_id}";

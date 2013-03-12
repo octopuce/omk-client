@@ -32,7 +32,7 @@ abstract class OMK_Database_Adapter extends OMK_Client_Friend {
         
     }
     
-    function update($options = null ){
+    function update($options = NULL ){
         
         throw new OMK_Exception(_("You must override this method."));
         

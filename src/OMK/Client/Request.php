@@ -8,9 +8,14 @@ class OMK_Client_Request extends OMK_Client_Friend{
     const ERR_HTTP = 200;
     
     protected $requestObject;
-    
+    protected $queryParams = array();
+
+
     public function __construct(OMK_Client &$client) {
         $this->client = $client;
+        $this->queryParams["version"] = $this->getClient()->getVersion();
+        $this->queryParams["application"] = $this->getClient()->getApplicationName();
+        $this->queryParams["key"] = $this->getClient()->getTranscoderKey();
     }
     
     public function run( $params ){
@@ -21,7 +26,7 @@ class OMK_Client_Request extends OMK_Client_Friend{
      
     protected function getRequestObject($options = null) {
         
-        if( null == $this->requestObject || count($options)){
+        if( NULL == $this->requestObject || count($options)){
             if( !is_array($options)){
                 $options = array();
             }
@@ -49,22 +54,23 @@ class OMK_Client_Request extends OMK_Client_Friend{
     public function send($options = null){
         
         $query          = array();
-        if( null == $options || !count($options)){
+        if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options"));
         }
-        if (array_key_exists("action", $options) && null != $options["action"]) {
-            $query["action"] = $options["action"];
+        if (array_key_exists("action", $options) && NULL != $options["action"]) {
+            $this->queryParams["action"] = $options["action"];
         } else {
             throw new OMK_Exception(_("Missing action."));
         }
-        if (array_key_exists("url", $options) && null != $options["url"]) {
+        if (array_key_exists("url", $options) && NULL != $options["url"]) {
             $url = $options["url"];
         } else {
             $url = $this->getRequestObject()->getUrl();
         }
         try{
             
-            $url        .= "?".http_build_query($query);
+            $url        .= "?".http_build_query($this->queryParams);
+            echo $url;
             $response   = $this->getRequestObject()
                     ->setUrl($url)
                     ->send();
@@ -96,7 +102,7 @@ class OMK_Client_Request extends OMK_Client_Friend{
 
         return array(
             "code"      => 0,
-            "message"   => _("Successfully sent request {$query["action"]}.")
+            "message"   => _("Successfully sent request {$this->queryParams["action"]}.")
         );
        
         

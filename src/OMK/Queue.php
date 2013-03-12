@@ -15,27 +15,27 @@ class OMK_Queue extends OMK_Client_Friend{
     // ERR CODE 150-174
     const ERR_PUSH  = 150;
     
-    public function push( $options = null ){
+    public function push( $options = NULL ){
         
-        if( null == $options || !count($options)){
+        if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options."));    
         }
-        if (array_key_exists("origin", $options) && null != $options["origin"]) {
+        if (array_key_exists("origin", $options) && NULL != $options["origin"]) {
             $origin = $options["origin"];
         }else{
             $origin = "app";
         }
-        if (array_key_exists("handler", $options) && null != $options["handler"]) {
+        if (array_key_exists("handler", $options) && NULL != $options["handler"]) {
             $handler = $options["handler"];
         }else{ 
             $handler = "transcoder";
         }
-        if (array_key_exists("action", $options) && null != $options["action"]) {
+        if (array_key_exists("action", $options) && NULL != $options["action"]) {
             $action = $options["action"];
         }else{
             throw new OMK_Exception(_("Missing action."));
         }
-        if (array_key_exists("object_id", $options) && null != $options["object_id"]) {
+        if (array_key_exists("object_id", $options) && NULL != $options["object_id"]) {
             $object_id = $options["object_id"];
         }else{ 
             throw new OMK_Exception(_("Missing object id."));

@@ -9,12 +9,12 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
         $chunks             = (int) $_POST["chunks"];
         $chunk              = (int) $_POST["chunk"];
         $file_name = (string) basename($_POST["name"]);
-        if (array_key_exists("offset", $_REQUEST) && null != $_REQUEST["offset"]) {
+        if (array_key_exists("offset", $_REQUEST) && NULL != $_REQUEST["offset"]) {
             $offset         = (int) $_REQUEST["offset"];
         } else { 
             $offset         = 0;
         }
-        if (array_key_exists("total", $_REQUEST) && null != $_REQUEST["total"]) {
+        if (array_key_exists("total", $_REQUEST) && NULL != $_REQUEST["total"]) {
             $total          = (int) $_REQUEST["total"];
         } else { 
             $total          = 0;

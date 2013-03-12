@@ -57,10 +57,10 @@ $client = new OMK_Client(array(
 ));
 
 
-$action = array_key_exists("action", $_REQUEST) ? $_REQUEST["action"] : null ;
+$action = array_key_exists("action", $_REQUEST) ? $_REQUEST["action"] : NULL ;
 
 // Render (html)
-if( ( null == $action )||( !in_array($action,array("app_test","upload") ) )){
+if( ( NULL == $action )||( !in_array($action,array("app_test","upload") ) )){
     echo $client->render("upload");
     die();
 }
