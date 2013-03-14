@@ -66,4 +66,16 @@ class OMK_Queue extends OMK_Client_Friend{
         );
     }
     
+    /**
+     * 
+     */
+    public function fetchCronTasks(){
+        $this->getClient()->getDatabaseAdapter()->select(array(
+            "table" => "queue",
+            "where" => array(
+                "failed_attempts < ?" => 10
+                ),
+            "order" => "handler DESC"
+        )) ;
+    }
 }

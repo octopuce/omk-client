@@ -33,7 +33,7 @@ class OMK_Client_Request extends OMK_Client_Friend{
             if(array_key_exists("url", $options)){
                 $url = $options["url"];
             }else{
-                $url = $this->client->getAppUrl();
+                $url = $this->getClient()->getTranscoderUrl();
             }
             if(array_key_exists("method", $options)){
                 $method = $options["method"];
@@ -167,6 +167,11 @@ onError : void
      */
      protected function tracker_autodiscovery($options = null){
          
+         // Sets query params
+         
+         // Attempts to retrieve trackers list
+         
+         
      }
      
      /*
@@ -191,6 +196,10 @@ onError : void
 
       */
      protected function app_discovery($options = null){
+
+         // builds query params
+         
+         // retrieves server response
          
      }
      
@@ -214,7 +223,16 @@ onError : App logs error
       */
      protected function app_new_media($options = null){
          
-        // Update file record in db 
+        // Builds query params
+        if (array_key_exists("file_id", $options) && NULL != $options["file_id"]) {
+            $this->queryParams["file_id"] = $options["file_id"];
+        } else {
+            throw new Exception(_("Missing file_id."));
+        }
+         
+         
+        // Sends request
+        // Updates file record in db 
         $this->recordResult( 
             $this->getClient()->getDatabaseAdapter()->update(array(
                 "dt_updated"    => TRUE,
@@ -251,6 +269,14 @@ onSuccess
 onError : App logs error
      */
     protected function app_request_format(){
+        
+        // Retrieves formats list
+        
+        // Builds query params
+
+        // Sends format to transcoder
+        
+        // Updates files status
         
     }
 }

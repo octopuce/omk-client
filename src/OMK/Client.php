@@ -38,7 +38,8 @@
 class OMK_Client{
     
     // ERR Codes 225-249
-    const ERR_EXCEPTION = 225;
+    const ERR_EXCEPTION         = 225;
+    const ERR_UNKNOWN_ACTION    = 226;
     
     protected $authentificationAdapter;
     protected $databaseAdapter;
@@ -126,11 +127,24 @@ class OMK_Client{
             $this->view_path = ".";
         }
     }
+    
     public function getAppUrl(){
         if( NULL == $this->api_local_url ){
             throw new OMK_Exception(_("Missing api local url."));
         }
         return $this->api_local_url;
+    }
+    
+    /**
+     * 
+     * @return string app key
+     * @throws OMK_Exception
+     */
+    public function getAppKey(){
+        if( NULL == $this->api_local_key ){
+            throw new OMK_Exception(_("Missing api local key."));
+        }
+        return $this->api_local_key;
     }
     
     public function getVersion(){
@@ -147,6 +161,14 @@ class OMK_Client{
             throw new OMK_Exception(_("Missing api transcoder key."));
         }
         return $this->api_transcoder_key;
+    }
+
+    public function getTranscoderUrl(){
+        
+        if ( NULL === $this->api_transcoder_url) {
+            throw new OMK_Exception(_("Missing api transcoder url."));
+        }
+        return $this->api_transcoder_url;
     }
 
     public function getApplicationName(){
@@ -262,6 +284,12 @@ class OMK_Client{
         
     }
     
+    /**
+     * 
+     * @param type $options
+     * @return OMK_Logger_Adapter
+     * @throws OMK_Exception
+     */
     public function getLoggerAdapter( $options = NULL ){
         
         if( NULL == $this->loggerAdapter ){
@@ -298,6 +326,9 @@ class OMK_Client{
                 case "upload":
                     return $this->response($options);
                 break;
+            default :
+                throw new OMK_Exception(sprintf(_("Unknown action requested: %s"),$options["action"]),self::ERR_UNKNOWN_ACTION);
+                break;
             }
         }catch( OMK_Exception $e ){
             $this->getLoggerAdapter()->log(array(
@@ -320,6 +351,7 @@ class OMK_Client{
         }
         
     }
+   
     /**
      * Wrapper for all json encode in the client
      * 
@@ -335,7 +367,6 @@ class OMK_Client{
         $object->result = $options;
         return json_encode($object);
     }
-
 
     protected function throwExceptions(){
         // TODO : decide how to parameter that
@@ -364,6 +395,12 @@ class OMK_Client{
         return $filecontent;
     }
 
+    /**
+     * Calls instance that requests servers, stores the results and converts them to json
+     * 
+     * @param type $options
+     * @return string json
+     */
     public function request($options = null) {
 
         $request = new OMK_Client_Request($this);
@@ -371,6 +408,12 @@ class OMK_Client{
         return $request->getResult(array("format"=>"json"));
     }
     
+    /**
+     * Calls instance that responds to requests, stores the results and converts them to json
+     * 
+     * @param type $options
+     * @return string json
+     */
     public function response($options = null) {
 
         $response = new OMK_Client_Response($this);

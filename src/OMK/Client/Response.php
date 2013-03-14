@@ -3,9 +3,39 @@
      public function __construct(OMK_Client $client) {
          $this->setClient($client);
      }
-     public function run( $params ){
-         $action = $params["action"];
-         $this->$action($params);
+     
+     /**
+      * Calls a method, stores internally the results to be displayed by the client
+      * 
+      * @param type $options
+      * @return void 
+      * @throws OMK_Exception
+      */
+     public function run( $options = NULL ){
+         if (NULL == $options) {
+             throw new OMK_Exception(_("Missing options."));
+         }
+         // Checks action
+         if (array_key_exists("action", $options) && NULL != $options["action"]) {
+             $action = $options["action"];
+         } else {
+             throw new OMK_Exception(_("Missing action."));
+         }
+         if( !method_exists($this, $action)){
+             throw new OMK_Exception(_("Invalid action requested."));
+         }
+         
+         // Secures the calls
+         if (array_key_exists("api_app_key", $options) && NULL != $options["api_app_key"]) {
+             $api_app_key   = $options["api_app_key"];
+         } else {
+             throw new OMK_Exception(_("Missing api app key."));
+         }
+         if( $this->getClient()->getAppKey() != $api_app_key ){
+             throw new OMK_Exception(_("Invalid app key."));
+         }
+         // Call the method
+         $this->$action($options);
      }
      
      
@@ -66,6 +96,14 @@ onError : Transcode logs error
       */
      protected function transcoder_send_format($options = null){
          
+         // Retrieves file id - format - url - (option) uploadAdapter
+         
+         // Retrieves file through upload Adapter
+         
+         // Moves file through file Adapter
+         
+         
+         
      }
      /**
       * 
@@ -92,20 +130,21 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
      
      /*
       * transcoder_cron
-
-Who : Transcoder -> App
-
-When : Transcoder cron ticks
-
-What : App executes cron tasks
-
-Request Params : null
-
-onSuccess : null
-
-onError : Transcoder logs error
+        Who : Transcoder -> App
+        When : Transcoder cron ticks
+        What : App executes cron tasks
+        Request Params : null
+        onSuccess : null
+        onError : Transcoder logs error
       */
      protected function transcoder_cron($options = null){
+
+        // Runs the cron action
+        $cron = new OMK_Client_Cron( $options );
+        $cron->setClient($this);
+        $this->recordResult(
+             $cron->run()
+        );
          
      }
      /**

@@ -2,12 +2,15 @@
 
 /** Implements a simple response upload server for the omk client
   * To test this example, you must have a valid upload and final location setup
- * 
- * 
+  * 
+  * 
   */ 
 
+
+
 // set up include path and autoload
-set_include_path(__DIR__."/../src".PATH_SEPARATOR.get_include_path());
+$old_include_path = get_include_path(); 
+set_include_path(dirname(__FILE__)."/../src".PATH_SEPARATOR.$old_include_path);
 function __autoload($className) {
     
     $ds = DIRECTORY_SEPARATOR;
@@ -22,6 +25,12 @@ function __autoload($className) {
     }
     throw new Exception("Sorry, {$className} is nowhere to be found in ".get_include_path());
 };
+
+// Set up some fake session identifying us an admin
+if( ! session_start() ){
+   die("Oops, couldn't start a session, fix this fist."); 
+}
+$_SESSION["is_admin"] = TRUE;
 
 // instanciate a dummy authentification adapter
 $authentificationAdapter = new OMK_Authentification_Session(array(
@@ -47,7 +56,7 @@ $loggerAdapter  = new OMK_Logger_File(array(
    "level"          => OMK_Logger_Adapter::DEBUG, 
    "log_file_path"  => "/tmp/omk.log" 
 ));
-$translationAdapter = new OMK_Translation_Gettext(array(
+$translationAdapter = new OMK_Translation_Dummy(array(
     
 ));
 
@@ -58,9 +67,10 @@ $client = new OMK_Client(array(
     "api_local_url"             => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}{$_SERVER["SCRIPT_NAME"]}",
     "api_transcoder_key"        => "1234567890abcdef",
     "api_transcoder_url"        => "http://test.openmediakit.fr/",
+    "config_file"               => __FILE__,
     "css_url_path"              => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}".dirname($_SERVER["SCRIPT_NAME"])."/../src/OMK/views/css",
     "js_url_path"               => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}".dirname($_SERVER["SCRIPT_NAME"])."/../src/OMK/views/js",
-    "view_path"                 => __DIR__."/../src/OMK/views",
+    "view_path"                 => dirname(__FILE__)."/../src/OMK/views",
     "authentificationAdapter"   => $authentificationAdapter,
     "databaseAdapter"           => $databaseAdapter,
     "fileAdapter"               => $fileAdapter,
@@ -69,18 +79,23 @@ $client = new OMK_Client(array(
     "uploadAdapter"             => $uploadAdapter
 ));
 
+// Cron jobs will skip this, not apache. A better solution is to set a separate config file
+if( "cli" != PHP_SAPI) {
+    
+    $action = array_key_exists("action", $_REQUEST) ? $_REQUEST["action"] : NULL ;
 
-$action = array_key_exists("action", $_REQUEST) ? $_REQUEST["action"] : NULL ;
+    // Render (html)
+    if( NULL == $action ){
+        die($client->render("upload"));
+    }
 
-// Render (html)
-if( NULL == $action ){
-    die($client->render("upload"));
+    // Respond (json)
+    $response = $client->call(array(
+        "action" => $action
+        )
+    );
+    // TODO : FORCE REFRESH HEADER ?
+    echo $response;
+
+    
 }
-
-// Respond (json)
-$response = $client->call(array(
-    "action" => $action
-    )
-);
-// TODO : FORCE REFRESH HEADER ?
-echo $response;
