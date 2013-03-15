@@ -211,8 +211,13 @@
         parent::delete($options);
     }
     
+    /**
+     * @param type $identifier
+     * @return type 
+     */
     function quoteIdentifier( $identifier ){
-        $identifier = (string) $identifier;
-        return "`". addslashes($identifier)."`";
+        $identifier = (string) str_replace("`", "", $identifier);
+        return "`".$identifier."`";
     }
+    
 } 

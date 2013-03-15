@@ -195,7 +195,7 @@ onError : void
     Le serveur répond avec un code d'erreur + Key
 
       */
-     protected function app_discovery($options = null){
+     protected function app_subscribe($options = null){
 
          // builds query params
          

@@ -22,7 +22,7 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     
     
     public $tmp_path;
-    public $name; // mandatory : sets a key name for this adapter
+    public $label; // mandatory : sets a key name for this adapter
     function __construct($options = null) {
         if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options"), 1);
@@ -39,8 +39,8 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
         }
     }
 
-    function getName(){
-        return $this->name;
+    function getLabel(){
+        return $this->label;
     }
     
     function upload( $options = null){

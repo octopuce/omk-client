@@ -60,7 +60,10 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
 
         // Open temp file
         if (!$out = fopen("{$file_path}.part", "a")) {
-            return array("code" => OMK_Upload_Adapter::ERR_OUTPUT_STREAM, "message" => _("Failed to open output stream."));
+            return array(
+                "code" => OMK_Upload_Adapter::ERR_OUTPUT_STREAM, 
+                "message" => _("Failed to open output stream.")
+            );
         }
 
         if (!empty($_FILES)) {
@@ -97,7 +100,7 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
                 "file_path"         => $file_path,
                 "file_name"         => $file_name,
                 "upload_adapter"    => $this->name
-                );
+            );
         }
 
         return array("code" => 1, "message"=>_("Chunking part received"));

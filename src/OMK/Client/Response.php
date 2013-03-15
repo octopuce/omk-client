@@ -140,7 +140,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
      protected function transcoder_cron($options = null){
 
         // Runs the cron action
-        $cron = new OMK_Client_Cron( $options );
+        $cron = new OMK_Cron( $options );
         $cron->setClient($this);
         $this->recordResult(
              $cron->run()

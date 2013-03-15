@@ -93,7 +93,7 @@ class OMK_Cron extends OMK_Client_Friend{
         
         if( !isset(self::$curl_available)){
             self::$curl_available = TRUE;
-            if(!extension_loaded("curl")){
+            if(!function_exists("curl_init")){
                 self::$curl_available = FALSE;
             }
         }
