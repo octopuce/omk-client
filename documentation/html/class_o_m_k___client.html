@@ -38,6 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -92,100 +93,329 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa7f5a18682ecb8e0dc450e26cebfaa37"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7f5a18682ecb8e0dc450e26cebfaa37"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__construct</b> ($options=array())</td></tr>
-<tr class="memitem:a00a75761a8790403ec39d56e44763ed5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00a75761a8790403ec39d56e44763ed5"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>configure</b> ($options=array())</td></tr>
-<tr class="memitem:aec474172017ccece67a1c46e1a5a3460"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec474172017ccece67a1c46e1a5a3460"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getAppUrl</b> ()</td></tr>
-<tr class="memitem:afa8e7a3a646144eab50188b7a805a389"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa8e7a3a646144eab50188b7a805a389"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getVersion</b> ()</td></tr>
-<tr class="memitem:a0c7d74c6e0a053ba0683983f9d6d701c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c7d74c6e0a053ba0683983f9d6d701c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getTranscoderKey</b> ()</td></tr>
-<tr class="memitem:a478e17b7c3b3c160672f4f996cc52a0c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a478e17b7c3b3c160672f4f996cc52a0c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getApplicationName</b> ()</td></tr>
-<tr class="memitem:a8852cae717f25a278c4ee1c39164bbce"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8852cae717f25a278c4ee1c39164bbce"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setAuthentificationAdapter</b> (<a class="el" href="class_o_m_k___authentification___adapter.html">OMK_Authentification_Adapter</a> $adapter=null)</td></tr>
-<tr class="memitem:a217da1343dc4865c8390cfc616a84f20"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a217da1343dc4865c8390cfc616a84f20"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getAuthentificationAdapter</b> ()</td></tr>
-<tr class="memitem:ad1ba5b9ea2663537b8cd9ee2dc293e8a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1ba5b9ea2663537b8cd9ee2dc293e8a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setDatabaseAdapter</b> (<a class="el" href="class_o_m_k___database___adapter.html">OMK_Database_Adapter</a> $adapter=null)</td></tr>
-<tr class="memitem:af175d6647c187a6276d870ff983b4760"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af175d6647c187a6276d870ff983b4760"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getDatabaseAdapter</b> ()</td></tr>
-<tr class="memitem:ac63c54d133ebfcd35143fdf3b18b0645"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac63c54d133ebfcd35143fdf3b18b0645"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setFileAdapter</b> (<a class="el" href="class_o_m_k___file___adapter.html">OMK_File_Adapter</a> $adapter=null)</td></tr>
-<tr class="memitem:af43d807e541cb2d8000b5d2573373bf7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af43d807e541cb2d8000b5d2573373bf7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getFileAdapter</b> ()</td></tr>
-<tr class="memitem:a0736a0f7b36d5a0fd7b0eafe1092ef98"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0736a0f7b36d5a0fd7b0eafe1092ef98"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setUploadAdapter</b> (<a class="el" href="class_o_m_k___upload___adapter.html">OMK_Upload_Adapter</a> $adapter=null)</td></tr>
-<tr class="memitem:aac4e37313bb5476cbfae17219727325c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aac4e37313bb5476cbfae17219727325c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getUploadAdapter</b> ($options=NULL)</td></tr>
-<tr class="memitem:adc2d5503f5927d5feb0c79690551dae4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc2d5503f5927d5feb0c79690551dae4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setTranslationAdapter</b> (<a class="el" href="class_o_m_k___translation___adapter.html">OMK_Translation_Adapter</a> $adapter=null)</td></tr>
-<tr class="memitem:ad0a9848bcc748095c38c780c72145c8c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad0a9848bcc748095c38c780c72145c8c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getTranslationAdapter</b> ($options=NULL)</td></tr>
-<tr class="memitem:aee0df017a81fb1af57c0d8a2ac04bdd2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aee0df017a81fb1af57c0d8a2ac04bdd2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setLoggerAdapter</b> (<a class="el" href="class_o_m_k___logger___adapter.html">OMK_Logger_Adapter</a> $adapter=null)</td></tr>
-<tr class="memitem:adcdf63f84e007966f34148114adafabc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adcdf63f84e007966f34148114adafabc"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getLoggerAdapter</b> ($options=NULL)</td></tr>
-<tr class="memitem:aa7a8055e5ee1eb792f29443ddb79c4d3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7a8055e5ee1eb792f29443ddb79c4d3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getQueue</b> ()</td></tr>
-<tr class="memitem:aa5c38564a9bf4d0cf184b6a820b09448"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5c38564a9bf4d0cf184b6a820b09448"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>call</b> ($options)</td></tr>
+<tr class="memitem:aa7f5a18682ecb8e0dc450e26cebfaa37"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#aa7f5a18682ecb8e0dc450e26cebfaa37">__construct</a> ($options=array())</td></tr>
+<tr class="memitem:a00a75761a8790403ec39d56e44763ed5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a00a75761a8790403ec39d56e44763ed5">configure</a> ($options=array())</td></tr>
+<tr class="memitem:aec474172017ccece67a1c46e1a5a3460"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#aec474172017ccece67a1c46e1a5a3460">getAppUrl</a> ()</td></tr>
+<tr class="memitem:a727ea02db975278fdd8bf3ea242e1875"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a727ea02db975278fdd8bf3ea242e1875">getAppKey</a> ()</td></tr>
+<tr class="memitem:afa8e7a3a646144eab50188b7a805a389"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#afa8e7a3a646144eab50188b7a805a389">getVersion</a> ()</td></tr>
+<tr class="memitem:a0c7d74c6e0a053ba0683983f9d6d701c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a0c7d74c6e0a053ba0683983f9d6d701c">getTranscoderKey</a> ()</td></tr>
+<tr class="memitem:a69e7f25f6de1db6335a4700e036e0976"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a69e7f25f6de1db6335a4700e036e0976">getTranscoderUrl</a> ()</td></tr>
+<tr class="memitem:a478e17b7c3b3c160672f4f996cc52a0c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a478e17b7c3b3c160672f4f996cc52a0c">getApplicationName</a> ()</td></tr>
+<tr class="memitem:a8852cae717f25a278c4ee1c39164bbce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a8852cae717f25a278c4ee1c39164bbce">setAuthentificationAdapter</a> (<a class="el" href="class_o_m_k___authentification___adapter.html">OMK_Authentification_Adapter</a> $adapter=null)</td></tr>
+<tr class="memitem:a217da1343dc4865c8390cfc616a84f20"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a217da1343dc4865c8390cfc616a84f20">getAuthentificationAdapter</a> ()</td></tr>
+<tr class="memitem:ad1ba5b9ea2663537b8cd9ee2dc293e8a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#ad1ba5b9ea2663537b8cd9ee2dc293e8a">setDatabaseAdapter</a> (<a class="el" href="class_o_m_k___database___adapter.html">OMK_Database_Adapter</a> $adapter=null)</td></tr>
+<tr class="memitem:af175d6647c187a6276d870ff983b4760"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#af175d6647c187a6276d870ff983b4760">getDatabaseAdapter</a> ()</td></tr>
+<tr class="memitem:ac63c54d133ebfcd35143fdf3b18b0645"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#ac63c54d133ebfcd35143fdf3b18b0645">setFileAdapter</a> (<a class="el" href="class_o_m_k___file___adapter.html">OMK_File_Adapter</a> $adapter=null)</td></tr>
+<tr class="memitem:af43d807e541cb2d8000b5d2573373bf7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#af43d807e541cb2d8000b5d2573373bf7">getFileAdapter</a> ()</td></tr>
+<tr class="memitem:a0736a0f7b36d5a0fd7b0eafe1092ef98"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a0736a0f7b36d5a0fd7b0eafe1092ef98">setUploadAdapter</a> (<a class="el" href="class_o_m_k___upload___adapter.html">OMK_Upload_Adapter</a> $adapter=null)</td></tr>
+<tr class="memitem:aac4e37313bb5476cbfae17219727325c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#aac4e37313bb5476cbfae17219727325c">getUploadAdapter</a> ($options=NULL)</td></tr>
+<tr class="memitem:adc2d5503f5927d5feb0c79690551dae4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#adc2d5503f5927d5feb0c79690551dae4">setTranslationAdapter</a> (<a class="el" href="class_o_m_k___translation___adapter.html">OMK_Translation_Adapter</a> $adapter=null)</td></tr>
+<tr class="memitem:ad0a9848bcc748095c38c780c72145c8c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#ad0a9848bcc748095c38c780c72145c8c">getTranslationAdapter</a> ($options=NULL)</td></tr>
+<tr class="memitem:aee0df017a81fb1af57c0d8a2ac04bdd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#aee0df017a81fb1af57c0d8a2ac04bdd2">setLoggerAdapter</a> (<a class="el" href="class_o_m_k___logger___adapter.html">OMK_Logger_Adapter</a> $adapter=null)</td></tr>
+<tr class="memitem:adcdf63f84e007966f34148114adafabc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#adcdf63f84e007966f34148114adafabc">getLoggerAdapter</a> ($options=NULL)</td></tr>
+<tr class="memitem:aa7a8055e5ee1eb792f29443ddb79c4d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#aa7a8055e5ee1eb792f29443ddb79c4d3">getQueue</a> ()</td></tr>
+<tr class="memitem:aa5c38564a9bf4d0cf184b6a820b09448"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#aa5c38564a9bf4d0cf184b6a820b09448">call</a> ($options)</td></tr>
 <tr class="memitem:a31ecc5538bae69717ab5ed157e6acdd0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a31ecc5538bae69717ab5ed157e6acdd0">jsonEncode</a> (array $options)</td></tr>
-<tr class="memitem:a402c6c924d6f21d17da89bc29e65956d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a402c6c924d6f21d17da89bc29e65956d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>render</b> ($view)</td></tr>
-<tr class="memitem:a8b3a1e9c0765f4fc4935a6c53cff1b4b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b3a1e9c0765f4fc4935a6c53cff1b4b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>request</b> ($options=null)</td></tr>
-<tr class="memitem:abf2f6bec194191f9bfa001c74eec45d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abf2f6bec194191f9bfa001c74eec45d0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>response</b> ($options=null)</td></tr>
+<tr class="memitem:a402c6c924d6f21d17da89bc29e65956d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a402c6c924d6f21d17da89bc29e65956d">render</a> ($view)</td></tr>
+<tr class="memitem:a8b3a1e9c0765f4fc4935a6c53cff1b4b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a8b3a1e9c0765f4fc4935a6c53cff1b4b">request</a> ($options=null)</td></tr>
+<tr class="memitem:abf2f6bec194191f9bfa001c74eec45d0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#abf2f6bec194191f9bfa001c74eec45d0">response</a> ($options=null)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a724fe1ec2f408c365ea826f1e0dd4d50"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a724fe1ec2f408c365ea826f1e0dd4d50"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>ERR_EXCEPTION</b> = 225</td></tr>
-<tr class="memitem:a9ba6e8a771967a6098ad3743b1becc05"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9ba6e8a771967a6098ad3743b1becc05"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$application_name</b></td></tr>
-<tr class="memitem:a56028457d23147b33d9c47cf08f12691"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56028457d23147b33d9c47cf08f12691"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$api_local_key</b></td></tr>
-<tr class="memitem:a2c6208cf4f072fd14a26cf52b2ca588e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2c6208cf4f072fd14a26cf52b2ca588e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$api_local_url</b></td></tr>
-<tr class="memitem:a7ab2e9f539f83e3082881f28939b9125"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7ab2e9f539f83e3082881f28939b9125"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$api_transcoder_key</b></td></tr>
-<tr class="memitem:a41a27a2469a14401dc9b69437a5a47c3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41a27a2469a14401dc9b69437a5a47c3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$api_transcoder_url</b></td></tr>
-<tr class="memitem:ab80fcfa43d435ad62c2f4a0a280a5e0a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab80fcfa43d435ad62c2f4a0a280a5e0a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$css_url_path</b></td></tr>
-<tr class="memitem:a904593f4618b842a95850da69214124a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a904593f4618b842a95850da69214124a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$js_url_path</b></td></tr>
-<tr class="memitem:afa5b615d9b470ac93e0e087be4589792"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa5b615d9b470ac93e0e087be4589792"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$view_path</b></td></tr>
-<tr class="memitem:a17c8948c68aa44fa9961ae169b6a8961"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a17c8948c68aa44fa9961ae169b6a8961"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$version</b> = &quot;0.1&quot;</td></tr>
+<tr class="memitem:a724fe1ec2f408c365ea826f1e0dd4d50"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a724fe1ec2f408c365ea826f1e0dd4d50">ERR_EXCEPTION</a> = 225</td></tr>
+<tr class="memitem:a0ea403513bcd6c596e7e29a9c4666638"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a0ea403513bcd6c596e7e29a9c4666638">ERR_UNKNOWN_ACTION</a> = 226</td></tr>
+<tr class="memitem:a9ba6e8a771967a6098ad3743b1becc05"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a9ba6e8a771967a6098ad3743b1becc05">$application_name</a></td></tr>
+<tr class="memitem:a56028457d23147b33d9c47cf08f12691"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a56028457d23147b33d9c47cf08f12691">$api_local_key</a></td></tr>
+<tr class="memitem:a2c6208cf4f072fd14a26cf52b2ca588e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a2c6208cf4f072fd14a26cf52b2ca588e">$api_local_url</a></td></tr>
+<tr class="memitem:a7ab2e9f539f83e3082881f28939b9125"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a7ab2e9f539f83e3082881f28939b9125">$api_transcoder_key</a></td></tr>
+<tr class="memitem:a41a27a2469a14401dc9b69437a5a47c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a41a27a2469a14401dc9b69437a5a47c3">$api_transcoder_url</a></td></tr>
+<tr class="memitem:ab80fcfa43d435ad62c2f4a0a280a5e0a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#ab80fcfa43d435ad62c2f4a0a280a5e0a">$css_url_path</a></td></tr>
+<tr class="memitem:a904593f4618b842a95850da69214124a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a904593f4618b842a95850da69214124a">$js_url_path</a></td></tr>
+<tr class="memitem:afa5b615d9b470ac93e0e087be4589792"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#afa5b615d9b470ac93e0e087be4589792">$view_path</a></td></tr>
+<tr class="memitem:a17c8948c68aa44fa9961ae169b6a8961"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a17c8948c68aa44fa9961ae169b6a8961">$version</a> = &quot;0.1&quot;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a453ee2fa649cd8a02dd2e26366f4de9a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a453ee2fa649cd8a02dd2e26366f4de9a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>throwExceptions</b> ()</td></tr>
+<tr class="memitem:a453ee2fa649cd8a02dd2e26366f4de9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a453ee2fa649cd8a02dd2e26366f4de9a">throwExceptions</a> ()</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a888f59a8255373ddc089a727a4c6a5d8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a888f59a8255373ddc089a727a4c6a5d8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$authentificationAdapter</b></td></tr>
-<tr class="memitem:ac909891126a1a62f06d089bd98298614"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac909891126a1a62f06d089bd98298614"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$databaseAdapter</b></td></tr>
-<tr class="memitem:ada70dffa7aecb083d57ac463ed0a6cdd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada70dffa7aecb083d57ac463ed0a6cdd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$fileAdapter</b></td></tr>
-<tr class="memitem:a3ed1a70e3e37ba6838d2f807227d5430"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ed1a70e3e37ba6838d2f807227d5430"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$loggerAdapter</b></td></tr>
-<tr class="memitem:a6026e505a0322a8871a372bea84c2cd4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6026e505a0322a8871a372bea84c2cd4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$translationAdapter</b></td></tr>
-<tr class="memitem:a4a0b48f6ae2fcb248a4f0288c7c344a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4a0b48f6ae2fcb248a4f0288c7c344a6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$queue</b></td></tr>
-<tr class="memitem:ab0cbcebb1ffd12c047835fc3baa886a3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0cbcebb1ffd12c047835fc3baa886a3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$uploadAdapterContainer</b> = array()</td></tr>
+<tr class="memitem:a888f59a8255373ddc089a727a4c6a5d8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a888f59a8255373ddc089a727a4c6a5d8">$authentificationAdapter</a></td></tr>
+<tr class="memitem:ac909891126a1a62f06d089bd98298614"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#ac909891126a1a62f06d089bd98298614">$databaseAdapter</a></td></tr>
+<tr class="memitem:ada70dffa7aecb083d57ac463ed0a6cdd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#ada70dffa7aecb083d57ac463ed0a6cdd">$fileAdapter</a></td></tr>
+<tr class="memitem:a3ed1a70e3e37ba6838d2f807227d5430"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a3ed1a70e3e37ba6838d2f807227d5430">$loggerAdapter</a></td></tr>
+<tr class="memitem:a6026e505a0322a8871a372bea84c2cd4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a6026e505a0322a8871a372bea84c2cd4">$translationAdapter</a></td></tr>
+<tr class="memitem:a4a0b48f6ae2fcb248a4f0288c7c344a6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#a4a0b48f6ae2fcb248a4f0288c7c344a6">$queue</a></td></tr>
+<tr class="memitem:ab0cbcebb1ffd12c047835fc3baa886a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client.html#ab0cbcebb1ffd12c047835fc3baa886a3">$uploadAdapterContainer</a> = array()</td></tr>
 </table>
+<h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="aa7f5a18682ecb8e0dc450e26cebfaa37"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__construct </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>array()</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2>Member Function Documentation</h2>
+<a class="anchor" id="aa5c38564a9bf4d0cf184b6a820b09448"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">call </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a00a75761a8790403ec39d56e44763ed5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">configure </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>array()</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a727ea02db975278fdd8bf3ea242e1875"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getAppKey </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>string app key </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_o_m_k___exception.html">OMK_Exception</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a478e17b7c3b3c160672f4f996cc52a0c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getApplicationName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aec474172017ccece67a1c46e1a5a3460"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getAppUrl </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a217da1343dc4865c8390cfc616a84f20"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getAuthentificationAdapter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af175d6647c187a6276d870ff983b4760"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getDatabaseAdapter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="af43d807e541cb2d8000b5d2573373bf7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getFileAdapter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adcdf63f84e007966f34148114adafabc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getLoggerAdapter </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">type</td><td class="paramname">$options</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_o_m_k___logger___adapter.html">OMK_Logger_Adapter</a> </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_o_m_k___exception.html">OMK_Exception</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa7a8055e5ee1eb792f29443ddb79c4d3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getQueue </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0c7d74c6e0a053ba0683983f9d6d701c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getTranscoderKey </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a69e7f25f6de1db6335a4700e036e0976"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getTranscoderUrl </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad0a9848bcc748095c38c780c72145c8c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getTranslationAdapter </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aac4e37313bb5476cbfae17219727325c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getUploadAdapter </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afa8e7a3a646144eab50188b7a805a389"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getVersion </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a31ecc5538bae69717ab5ed157e6acdd0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -210,13 +440,469 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a402c6c924d6f21d17da89bc29e65956d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">render </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$view</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a8b3a1e9c0765f4fc4935a6c53cff1b4b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">request </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Calls instance that requests servers, stores the results and converts them to json</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">type</td><td class="paramname">$options</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>string json </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="abf2f6bec194191f9bfa001c74eec45d0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">response </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Calls instance that responds to requests, stores the results and converts them to json</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">type</td><td class="paramname">$options</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>string json </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a8852cae717f25a278c4ee1c39164bbce"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setAuthentificationAdapter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___authentification___adapter.html">OMK_Authentification_Adapter</a>&#160;</td>
+          <td class="paramname"><em>$adapter</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad1ba5b9ea2663537b8cd9ee2dc293e8a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setDatabaseAdapter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___database___adapter.html">OMK_Database_Adapter</a>&#160;</td>
+          <td class="paramname"><em>$adapter</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac63c54d133ebfcd35143fdf3b18b0645"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setFileAdapter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___file___adapter.html">OMK_File_Adapter</a>&#160;</td>
+          <td class="paramname"><em>$adapter</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aee0df017a81fb1af57c0d8a2ac04bdd2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setLoggerAdapter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___logger___adapter.html">OMK_Logger_Adapter</a>&#160;</td>
+          <td class="paramname"><em>$adapter</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adc2d5503f5927d5feb0c79690551dae4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setTranslationAdapter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___translation___adapter.html">OMK_Translation_Adapter</a>&#160;</td>
+          <td class="paramname"><em>$adapter</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0736a0f7b36d5a0fd7b0eafe1092ef98"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setUploadAdapter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___upload___adapter.html">OMK_Upload_Adapter</a>&#160;</td>
+          <td class="paramname"><em>$adapter</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a453ee2fa649cd8a02dd2e26366f4de9a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">throwExceptions </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2>Field Documentation</h2>
+<a class="anchor" id="a56028457d23147b33d9c47cf08f12691"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$api_local_key</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a2c6208cf4f072fd14a26cf52b2ca588e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$api_local_url</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7ab2e9f539f83e3082881f28939b9125"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$api_transcoder_key</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a41a27a2469a14401dc9b69437a5a47c3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$api_transcoder_url</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a9ba6e8a771967a6098ad3743b1becc05"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$application_name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a888f59a8255373ddc089a727a4c6a5d8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$authentificationAdapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab80fcfa43d435ad62c2f4a0a280a5e0a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$css_url_path</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac909891126a1a62f06d089bd98298614"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$databaseAdapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ada70dffa7aecb083d57ac463ed0a6cdd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$fileAdapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a904593f4618b842a95850da69214124a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$js_url_path</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3ed1a70e3e37ba6838d2f807227d5430"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$loggerAdapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4a0b48f6ae2fcb248a4f0288c7c344a6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$queue</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6026e505a0322a8871a372bea84c2cd4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$translationAdapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab0cbcebb1ffd12c047835fc3baa886a3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$uploadAdapterContainer = array()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a17c8948c68aa44fa9961ae169b6a8961"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$version = &quot;0.1&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afa5b615d9b470ac93e0e087be4589792"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$view_path</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a724fe1ec2f408c365ea826f1e0dd4d50"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const ERR_EXCEPTION = 225</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0ea403513bcd6c596e7e29a9c4666638"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const ERR_UNKNOWN_ACTION = 226</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/alban/code/omk/src/OMK/Client.php</li>
+<li>/home/alban/code/omk/src/OMK/<a class="el" href="_client_8php.html">Client.php</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 12 2013 08:44:39 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Mar 14 2013 22:46:11 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

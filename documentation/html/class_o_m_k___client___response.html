@@ -38,6 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -99,40 +100,48 @@ Inheritance diagram for OMK_Client_Response:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a060a68c704add7fa7d986d913d545bc4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a060a68c704add7fa7d986d913d545bc4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__construct</b> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
-<tr class="memitem:a56313b9daeafd4a397e150a8973d83cb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56313b9daeafd4a397e150a8973d83cb"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>run</b> ($params)</td></tr>
+<tr class="memitem:a060a68c704add7fa7d986d913d545bc4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#a060a68c704add7fa7d986d913d545bc4">__construct</a> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
+<tr class="memitem:af442352fdb082e4a84cd39fabd152cf1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#af442352fdb082e4a84cd39fabd152cf1">run</a> ($options=NULL)</td></tr>
 <tr class="inherit_header pub_methods_class_o_m_k___client___friend"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_o_m_k___client___friend')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_o_m_k___client___friend.html">OMK_Client_Friend</a></td></tr>
-<tr class="memitem:a7e6d8afc9e6e014ed9b72f5ff9c0944b inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e6d8afc9e6e014ed9b72f5ff9c0944b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setClient</b> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
+<tr class="memitem:a7e6d8afc9e6e014ed9b72f5ff9c0944b inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a7e6d8afc9e6e014ed9b72f5ff9c0944b">setClient</a> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
 <tr class="memitem:a2f5f44fdf5404c87cc3a7b5719d85306 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a2f5f44fdf5404c87cc3a7b5719d85306">getClient</a> ()</td></tr>
-<tr class="memitem:ac6883785b1756cc3ab2c2bcaff0a689a inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac6883785b1756cc3ab2c2bcaff0a689a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>successResult</b> ()</td></tr>
-<tr class="memitem:a68bfc39e2c193be4bcb59897a10be4c2 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68bfc39e2c193be4bcb59897a10be4c2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>recordResult</b> (array $result)</td></tr>
-<tr class="memitem:ae9217677bebf879e339fa48420d9b866 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9217677bebf879e339fa48420d9b866"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getResult</b> ($options=null)</td></tr>
+<tr class="memitem:ac6883785b1756cc3ab2c2bcaff0a689a inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ac6883785b1756cc3ab2c2bcaff0a689a">successResult</a> ()</td></tr>
+<tr class="memitem:a68bfc39e2c193be4bcb59897a10be4c2 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a68bfc39e2c193be4bcb59897a10be4c2">recordResult</a> (array $result)</td></tr>
+<tr class="memitem:ae9217677bebf879e339fa48420d9b866 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ae9217677bebf879e339fa48420d9b866">getResult</a> ($options=null)</td></tr>
+<tr class="memitem:a9a3750ff11115b4b55f4732586b90b2e inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a9a3750ff11115b4b55f4732586b90b2e">_</a> ($string)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:ad3ed7808c3f1238c7f41c8e691185753"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#ad3ed7808c3f1238c7f41c8e691185753">app_test_response</a> ($options=null)</td></tr>
 <tr class="memitem:a59eb4b82c83df97d28793b8e9c42256f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#a59eb4b82c83df97d28793b8e9c42256f">transcoder_send_format</a> ($options=null)</td></tr>
 <tr class="memitem:a7c573c5117631e7f7665ad35e184c5d8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#a7c573c5117631e7f7665ad35e184c5d8">transcoder_send_metadata</a> ($options=null)</td></tr>
-<tr class="memitem:ae3b30911a04c40dc4302b6e86b44fcda"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae3b30911a04c40dc4302b6e86b44fcda"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>transcoder_cron</b> ($options=null)</td></tr>
+<tr class="memitem:ae3b30911a04c40dc4302b6e86b44fcda"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#ae3b30911a04c40dc4302b6e86b44fcda">transcoder_cron</a> ($options=null)</td></tr>
 <tr class="memitem:a6640414c6d24e9b1528bd294b0a548e4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#a6640414c6d24e9b1528bd294b0a548e4">transcoder_get_settings</a> ($options=null)</td></tr>
-<tr class="memitem:a99db5b965015de4a4d4822b175ad1522"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a99db5b965015de4a4d4822b175ad1522"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>upload</b> ($request=null)</td></tr>
+<tr class="memitem:a99db5b965015de4a4d4822b175ad1522"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___response.html#a99db5b965015de4a4d4822b175ad1522">upload</a> ($request=null)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_attribs_class_o_m_k___client___friend"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_o_m_k___client___friend')"><img src="closed.png" alt="-"/>&nbsp;Protected Attributes inherited from <a class="el" href="class_o_m_k___client___friend.html">OMK_Client_Friend</a></td></tr>
-<tr class="memitem:ad1405dc1ba2e288764378e79bff7a87d inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1405dc1ba2e288764378e79bff7a87d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$client</b></td></tr>
-<tr class="memitem:a112ef069ddc0454086e3d1e6d8d55d07 inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a112ef069ddc0454086e3d1e6d8d55d07"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$result</b> = array()</td></tr>
+<tr class="memitem:ad1405dc1ba2e288764378e79bff7a87d inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ad1405dc1ba2e288764378e79bff7a87d">$client</a></td></tr>
+<tr class="memitem:a112ef069ddc0454086e3d1e6d8d55d07 inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a112ef069ddc0454086e3d1e6d8d55d07">$result</a> = array()</td></tr>
 </table>
+<h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a060a68c704add7fa7d986d913d545bc4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__construct </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___client.html">OMK_Client</a>&#160;</td>
+          <td class="paramname"><em>$client</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2>Member Function Documentation</h2>
 <a class="anchor" id="ad3ed7808c3f1238c7f41c8e691185753"></a>
 <div class="memitem">
@@ -165,6 +174,60 @@ Additional Inherited Members</h2></td></tr>
 <p>onSuccess : void</p>
 <p>onError : void</p>
 <p>répond à une sorte de ping : pratique pour l'installation (fonctionne) ou pour que le serveur vérifie qu'elle elle est up </p>
+
+</div>
+</div>
+<a class="anchor" id="af442352fdb082e4a84cd39fabd152cf1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">run </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Calls a method, stores internally the results to be displayed by the client</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">type</td><td class="paramname">$options</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_o_m_k___exception.html">OMK_Exception</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ae3b30911a04c40dc4302b6e86b44fcda"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">transcoder_cron </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -271,13 +334,37 @@ meta:hashset{media_type:ENUM,media_meta:hashset{...}}
 
 </div>
 </div>
+<a class="anchor" id="a99db5b965015de4a4d4822b175ad1522"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">upload </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$request</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/alban/code/omk/src/OMK/Client/Response.php</li>
+<li>/home/alban/code/omk/src/OMK/Client/<a class="el" href="_response_8php.html">Response.php</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 12 2013 08:44:39 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Mar 14 2013 22:46:11 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

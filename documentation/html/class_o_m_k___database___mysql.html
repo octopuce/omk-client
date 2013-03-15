@@ -38,6 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -100,22 +101,14 @@ Inheritance diagram for OMK_Database_Mysql:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae8cda3b1eced24bb5ffaab1fcb107cf7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8cda3b1eced24bb5ffaab1fcb107cf7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__construct</b> ($options=null)</td></tr>
-<tr class="memitem:a06c44c57089a129f4a10108b78e56c75"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06c44c57089a129f4a10108b78e56c75"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>query</b> ($statement)</td></tr>
-<tr class="memitem:a6a41e6a65e8280f9cd85eca9b1d0a198"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a41e6a65e8280f9cd85eca9b1d0a198"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>exec</b> ($query, $bind)</td></tr>
-<tr class="memitem:a7c492c567c8c62161a9ccfcee104a18b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7c492c567c8c62161a9ccfcee104a18b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> ($options=null)</td></tr>
-<tr class="memitem:ade77df5df311025ce15e902c1eacad4c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ade77df5df311025ce15e902c1eacad4c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>select</b> ($options=null)</td></tr>
-<tr class="memitem:a62572d240f3e517a83c14dfa25fa9331"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a62572d240f3e517a83c14dfa25fa9331"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> ($options=null)</td></tr>
-<tr class="memitem:a7e7449bc12d9cdbffc2266dae3da4d94"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e7449bc12d9cdbffc2266dae3da4d94"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>delete</b> ($options=null)</td></tr>
-<tr class="memitem:abe707d8966fc66436884e8f88e96cc7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abe707d8966fc66436884e8f88e96cc7c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>quoteIdentifier</b> ($identifier)</td></tr>
+<tr class="memitem:ae8cda3b1eced24bb5ffaab1fcb107cf7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#ae8cda3b1eced24bb5ffaab1fcb107cf7">__construct</a> ($options=null)</td></tr>
+<tr class="memitem:a06c44c57089a129f4a10108b78e56c75"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#a06c44c57089a129f4a10108b78e56c75">query</a> ($statement)</td></tr>
+<tr class="memitem:a6a41e6a65e8280f9cd85eca9b1d0a198"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#a6a41e6a65e8280f9cd85eca9b1d0a198">exec</a> ($<a class="el" href="class_o_m_k___database___mysql.html#a06c44c57089a129f4a10108b78e56c75">query</a>, $bind)</td></tr>
+<tr class="memitem:a7c492c567c8c62161a9ccfcee104a18b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#a7c492c567c8c62161a9ccfcee104a18b">insert</a> ($options=null)</td></tr>
+<tr class="memitem:ade77df5df311025ce15e902c1eacad4c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#ade77df5df311025ce15e902c1eacad4c">select</a> ($options=null)</td></tr>
+<tr class="memitem:a62572d240f3e517a83c14dfa25fa9331"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#a62572d240f3e517a83c14dfa25fa9331">update</a> ($options=null)</td></tr>
+<tr class="memitem:a7e7449bc12d9cdbffc2266dae3da4d94"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#a7e7449bc12d9cdbffc2266dae3da4d94">delete</a> ($options=null)</td></tr>
+<tr class="memitem:abe707d8966fc66436884e8f88e96cc7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___mysql.html#abe707d8966fc66436884e8f88e96cc7c">quoteIdentifier</a> ($identifier)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -124,29 +117,166 @@ Protected Attributes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_class_o_m_k___database___adapter"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_class_o_m_k___database___adapter')"><img src="closed.png" alt="-"/>&nbsp;Data Fields inherited from <a class="el" href="class_o_m_k___database___adapter.html">OMK_Database_Adapter</a></td></tr>
-<tr class="memitem:a03d3ae3ac000d347bb57f80677c8776a inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03d3ae3ac000d347bb57f80677c8776a"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>ERR_INSERT</b> = 25</td></tr>
-<tr class="memitem:a65cbef5b322e5444eeaa66b2181c9d27 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a65cbef5b322e5444eeaa66b2181c9d27"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>ERR_DELETE</b> = 26</td></tr>
-<tr class="memitem:a26b667a694b81d1cfbc90ee3756c81b3 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26b667a694b81d1cfbc90ee3756c81b3"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>ERR_SELECT</b> = 27</td></tr>
-<tr class="memitem:a7a21c4167871dff38568ee33bf529682 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a21c4167871dff38568ee33bf529682"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>ERR_UPDATE</b> = 28</td></tr>
-<tr class="memitem:a4ca100aad118df466e80bb33e7c9fb3a inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ca100aad118df466e80bb33e7c9fb3a"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_UPLOADED</b> = 1</td></tr>
-<tr class="memitem:a1edb53df6109340c4f7cd2e586a80eaf inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1edb53df6109340c4f7cd2e586a80eaf"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_STORED</b> = 2</td></tr>
-<tr class="memitem:afb5de004c3f35414946ddad30acbe1f3 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afb5de004c3f35414946ddad30acbe1f3"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_METADATA_REQUESTED</b> = 3</td></tr>
-<tr class="memitem:ada15335e333713dca0c6118877162e70 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada15335e333713dca0c6118877162e70"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_METADATA_RECEIVED</b> = 4</td></tr>
-<tr class="memitem:ac8242c11b30b7157c9da4cc171ba304c inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac8242c11b30b7157c9da4cc171ba304c"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_TRANSCODE_REQUESTED</b> = 5</td></tr>
-<tr class="memitem:a6c1a6a2a8ef9644b4fc23ac079deab19 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6c1a6a2a8ef9644b4fc23ac079deab19"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_TRANSCODE_PARTIALLY</b> = 6</td></tr>
-<tr class="memitem:aec8281dd7cddc2074f1e3167c4dca79b inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec8281dd7cddc2074f1e3167c4dca79b"></a>
-const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_TRANSCODE_COMPLETE</b> = 7</td></tr>
+<tr class="memitem:a03d3ae3ac000d347bb57f80677c8776a inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#a03d3ae3ac000d347bb57f80677c8776a">ERR_INSERT</a> = 25</td></tr>
+<tr class="memitem:a65cbef5b322e5444eeaa66b2181c9d27 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#a65cbef5b322e5444eeaa66b2181c9d27">ERR_DELETE</a> = 26</td></tr>
+<tr class="memitem:a26b667a694b81d1cfbc90ee3756c81b3 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#a26b667a694b81d1cfbc90ee3756c81b3">ERR_SELECT</a> = 27</td></tr>
+<tr class="memitem:a7a21c4167871dff38568ee33bf529682 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#a7a21c4167871dff38568ee33bf529682">ERR_UPDATE</a> = 28</td></tr>
+<tr class="memitem:a4ca100aad118df466e80bb33e7c9fb3a inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#a4ca100aad118df466e80bb33e7c9fb3a">STATUS_UPLOADED</a> = 1</td></tr>
+<tr class="memitem:a1edb53df6109340c4f7cd2e586a80eaf inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#a1edb53df6109340c4f7cd2e586a80eaf">STATUS_STORED</a> = 2</td></tr>
+<tr class="memitem:afb5de004c3f35414946ddad30acbe1f3 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#afb5de004c3f35414946ddad30acbe1f3">STATUS_METADATA_REQUESTED</a> = 3</td></tr>
+<tr class="memitem:ada15335e333713dca0c6118877162e70 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#ada15335e333713dca0c6118877162e70">STATUS_METADATA_RECEIVED</a> = 4</td></tr>
+<tr class="memitem:ac8242c11b30b7157c9da4cc171ba304c inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#ac8242c11b30b7157c9da4cc171ba304c">STATUS_TRANSCODE_REQUESTED</a> = 5</td></tr>
+<tr class="memitem:a6c1a6a2a8ef9644b4fc23ac079deab19 inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#a6c1a6a2a8ef9644b4fc23ac079deab19">STATUS_TRANSCODE_PARTIALLY</a> = 6</td></tr>
+<tr class="memitem:aec8281dd7cddc2074f1e3167c4dca79b inherit pub_attribs_class_o_m_k___database___adapter"><td class="memItemLeft" align="right" valign="top">const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___database___adapter.html#aec8281dd7cddc2074f1e3167c4dca79b">STATUS_TRANSCODE_COMPLETE</a> = 7</td></tr>
 </table>
+<h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="ae8cda3b1eced24bb5ffaab1fcb107cf7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__construct </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2>Member Function Documentation</h2>
+<a class="anchor" id="a7e7449bc12d9cdbffc2266dae3da4d94"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">delete </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="class_o_m_k___database___adapter.html#a7e7449bc12d9cdbffc2266dae3da4d94">OMK_Database_Adapter</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6a41e6a65e8280f9cd85eca9b1d0a198"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">exec </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$query</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$bind</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a7c492c567c8c62161a9ccfcee104a18b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">insert </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="class_o_m_k___database___adapter.html#a7c492c567c8c62161a9ccfcee104a18b">OMK_Database_Adapter</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a06c44c57089a129f4a10108b78e56c75"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">query </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$statement</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abe707d8966fc66436884e8f88e96cc7c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">quoteIdentifier </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$identifier</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ade77df5df311025ce15e902c1eacad4c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">select </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="class_o_m_k___database___adapter.html#ade77df5df311025ce15e902c1eacad4c">OMK_Database_Adapter</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a62572d240f3e517a83c14dfa25fa9331"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">update </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="class_o_m_k___database___adapter.html#ae4d63aec113c12ad1cbfc6f9ee8404e5">OMK_Database_Adapter</a>.</p>
+
+</div>
+</div>
 <h2>Field Documentation</h2>
 <a class="anchor" id="ab3b88bc769ddacb73defbd5ce7ae7859"></a>
 <div class="memitem">
@@ -170,12 +300,12 @@ const&#160;</td><td class="memItemRight" valign="bottom"><b>STATUS_TRANSCODE_COM
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/alban/code/omk/src/OMK/Database/Mysql.php</li>
+<li>/home/alban/code/omk/src/OMK/Database/<a class="el" href="_mysql_8php.html">Mysql.php</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 12 2013 08:44:39 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Mar 14 2013 22:46:11 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

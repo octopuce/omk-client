@@ -38,6 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -96,39 +97,54 @@ Inheritance diagram for OMK_Client_Friend:</div>
 <area href="class_o_m_k___authentification___adapter.html" alt="OMK_Authentification_Adapter" shape="rect" coords="197,56,384,80"/>
 <area href="class_o_m_k___client___request.html" alt="OMK_Client_Request" shape="rect" coords="197,112,384,136"/>
 <area href="class_o_m_k___client___response.html" alt="OMK_Client_Response" shape="rect" coords="197,168,384,192"/>
-<area href="class_o_m_k___database___adapter.html" alt="OMK_Database_Adapter" shape="rect" coords="197,224,384,248"/>
-<area href="class_o_m_k___file___adapter.html" alt="OMK_File_Adapter" shape="rect" coords="197,280,384,304"/>
-<area href="class_o_m_k___logger___adapter.html" alt="OMK_Logger_Adapter" shape="rect" coords="197,336,384,360"/>
-<area href="class_o_m_k___queue.html" alt="OMK_Queue" shape="rect" coords="197,392,384,416"/>
-<area href="class_o_m_k___settings.html" alt="OMK_Settings" shape="rect" coords="197,448,384,472"/>
-<area href="class_o_m_k___translation___adapter.html" alt="OMK_Translation_Adapter" shape="rect" coords="197,504,384,528"/>
-<area href="class_o_m_k___upload___adapter.html" alt="OMK_Upload_Adapter" shape="rect" coords="197,560,384,584"/>
+<area href="class_o_m_k___cron.html" alt="OMK_Cron" shape="rect" coords="197,224,384,248"/>
+<area href="class_o_m_k___cron___abstract.html" alt="OMK_Cron_Abstract" shape="rect" coords="197,280,384,304"/>
+<area href="class_o_m_k___database___adapter.html" alt="OMK_Database_Adapter" shape="rect" coords="197,336,384,360"/>
+<area href="class_o_m_k___file___adapter.html" alt="OMK_File_Adapter" shape="rect" coords="197,392,384,416"/>
+<area href="class_o_m_k___logger___adapter.html" alt="OMK_Logger_Adapter" shape="rect" coords="197,448,384,472"/>
+<area href="class_o_m_k___queue.html" alt="OMK_Queue" shape="rect" coords="197,504,384,528"/>
+<area href="class_o_m_k___settings.html" alt="OMK_Settings" shape="rect" coords="197,560,384,584"/>
+<area href="class_o_m_k___translation___adapter.html" alt="OMK_Translation_Adapter" shape="rect" coords="197,616,384,640"/>
+<area href="class_o_m_k___upload___adapter.html" alt="OMK_Upload_Adapter" shape="rect" coords="197,672,384,696"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7e6d8afc9e6e014ed9b72f5ff9c0944b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e6d8afc9e6e014ed9b72f5ff9c0944b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setClient</b> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
+<tr class="memitem:a7e6d8afc9e6e014ed9b72f5ff9c0944b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a7e6d8afc9e6e014ed9b72f5ff9c0944b">setClient</a> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
 <tr class="memitem:a2f5f44fdf5404c87cc3a7b5719d85306"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a2f5f44fdf5404c87cc3a7b5719d85306">getClient</a> ()</td></tr>
-<tr class="memitem:ac6883785b1756cc3ab2c2bcaff0a689a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac6883785b1756cc3ab2c2bcaff0a689a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>successResult</b> ()</td></tr>
-<tr class="memitem:a68bfc39e2c193be4bcb59897a10be4c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68bfc39e2c193be4bcb59897a10be4c2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>recordResult</b> (array $result)</td></tr>
-<tr class="memitem:ae9217677bebf879e339fa48420d9b866"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9217677bebf879e339fa48420d9b866"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getResult</b> ($options=null)</td></tr>
+<tr class="memitem:ac6883785b1756cc3ab2c2bcaff0a689a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ac6883785b1756cc3ab2c2bcaff0a689a">successResult</a> ()</td></tr>
+<tr class="memitem:a68bfc39e2c193be4bcb59897a10be4c2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a68bfc39e2c193be4bcb59897a10be4c2">recordResult</a> (array $result)</td></tr>
+<tr class="memitem:ae9217677bebf879e339fa48420d9b866"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ae9217677bebf879e339fa48420d9b866">getResult</a> ($options=null)</td></tr>
+<tr class="memitem:a9a3750ff11115b4b55f4732586b90b2e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a9a3750ff11115b4b55f4732586b90b2e">_</a> ($string)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:ad1405dc1ba2e288764378e79bff7a87d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1405dc1ba2e288764378e79bff7a87d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$client</b></td></tr>
-<tr class="memitem:a112ef069ddc0454086e3d1e6d8d55d07"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a112ef069ddc0454086e3d1e6d8d55d07"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$result</b> = array()</td></tr>
+<tr class="memitem:ad1405dc1ba2e288764378e79bff7a87d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ad1405dc1ba2e288764378e79bff7a87d">$client</a></td></tr>
+<tr class="memitem:a112ef069ddc0454086e3d1e6d8d55d07"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a112ef069ddc0454086e3d1e6d8d55d07">$result</a> = array()</td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Description of Friend</p>
 <dl class="section author"><dt>Author</dt><dd>alban </dd></dl>
 </div><h2>Member Function Documentation</h2>
+<a class="anchor" id="a9a3750ff11115b4b55f4732586b90b2e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">_ </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$string</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reimplemented in <a class="el" href="class_o_m_k___translation___adapter.html#a9a3750ff11115b4b55f4732586b90b2e">OMK_Translation_Adapter</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a2f5f44fdf5404c87cc3a7b5719d85306"></a>
 <div class="memitem">
 <div class="memproto">
@@ -145,13 +161,162 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ae9217677bebf879e339fa48420d9b866"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getResult </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gateway for returning operations result</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array</td><td class="paramname">$options</td><td>An associative array containing:<ul>
+<li>format: (optional) if json, returns a json string. </li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_o_m_k___client___friend.html#a68bfc39e2c193be4bcb59897a10be4c2">recordResult()</a> used to set the result internally </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>array|string, depending on format requested </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Exception</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a68bfc39e2c193be4bcb59897a10be4c2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">recordResult </td>
+          <td>(</td>
+          <td class="paramtype">array&#160;</td>
+          <td class="paramname"><em>$result</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gateway for recording to self the results of friend classes operations</p>
+<p>Use example : $this-&gt;recordResult( $this-&gt;<a class="el" href="class_o_m_k___client___friend.html#a2f5f44fdf5404c87cc3a7b5719d85306">getClient()</a>-&gt;getQueue()-&gt;fetchAll() );</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array</td><td class="paramname">$options</td><td>the result of the method called An associative array containing:<ul>
+<li>code: error code (0 for success, &gt;0 for failure).</li>
+<li>message: message associated to result.</li>
+<li>[more] : results variables depending on context.</li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_o_m_k___client___friend.html#ae9217677bebf879e339fa48420d9b866">getResult()</a> the method used to get the resulting object </dd>
+<dd>
+<a class="el" href="class_o_m_k___client___friend.html#ac6883785b1756cc3ab2c2bcaff0a689a">successResult()</a> the method used to get the resulting object </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a7e6d8afc9e6e014ed9b72f5ff9c0944b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setClient </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_m_k___client.html">OMK_Client</a>&#160;</td>
+          <td class="paramname"><em>$client</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ac6883785b1756cc3ab2c2bcaff0a689a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">successResult </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads the code error</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">void</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true|false </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="class_o_m_k___client___friend.html#ae9217677bebf879e339fa48420d9b866">getResult()</a> the method used to get the resulting object </dd>
+<dd>
+<a class="el" href="class_o_m_k___client___friend.html#a68bfc39e2c193be4bcb59897a10be4c2">recordResult()</a> used to set the result internally </dd></dl>
+
+</div>
+</div>
+<h2>Field Documentation</h2>
+<a class="anchor" id="ad1405dc1ba2e288764378e79bff7a87d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$client</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a112ef069ddc0454086e3d1e6d8d55d07"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">$result = array()</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/alban/code/omk/src/OMK/Client/Friend.php</li>
+<li>/home/alban/code/omk/src/OMK/Client/<a class="el" href="_friend_8php.html">Friend.php</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 12 2013 08:44:39 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Mar 14 2013 22:46:11 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

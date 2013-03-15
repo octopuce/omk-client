@@ -38,6 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -80,6 +81,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">OMK_Translation_Gettext Class Reference</div>  </div>
 </div><!--header-->
@@ -95,31 +98,98 @@ Inheritance diagram for OMK_Translation_Gettext:</div>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a1ee4426bcc083fe0eea167a587ecb86c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___translation___gettext.html#a1ee4426bcc083fe0eea167a587ecb86c">__construct</a> ($options=NULL)</td></tr>
+<tr class="memitem:a5cd9ea4ba4484788a3a3768224de271d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___translation___gettext.html#a5cd9ea4ba4484788a3a3768224de271d">translate</a> ($string)</td></tr>
+<tr class="inherit_header pub_methods_class_o_m_k___translation___adapter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_o_m_k___translation___adapter')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_o_m_k___translation___adapter.html">OMK_Translation_Adapter</a></td></tr>
+<tr class="memitem:a9a3750ff11115b4b55f4732586b90b2e inherit pub_methods_class_o_m_k___translation___adapter"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___translation___adapter.html#a9a3750ff11115b4b55f4732586b90b2e">_</a> ($string)</td></tr>
+<tr class="inherit_header pub_methods_class_o_m_k___client___friend"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_o_m_k___client___friend')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_o_m_k___client___friend.html">OMK_Client_Friend</a></td></tr>
+<tr class="memitem:a7e6d8afc9e6e014ed9b72f5ff9c0944b inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a7e6d8afc9e6e014ed9b72f5ff9c0944b">setClient</a> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
+<tr class="memitem:a2f5f44fdf5404c87cc3a7b5719d85306 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a2f5f44fdf5404c87cc3a7b5719d85306">getClient</a> ()</td></tr>
+<tr class="memitem:ac6883785b1756cc3ab2c2bcaff0a689a inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ac6883785b1756cc3ab2c2bcaff0a689a">successResult</a> ()</td></tr>
+<tr class="memitem:a68bfc39e2c193be4bcb59897a10be4c2 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a68bfc39e2c193be4bcb59897a10be4c2">recordResult</a> (array $result)</td></tr>
+<tr class="memitem:ae9217677bebf879e339fa48420d9b866 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ae9217677bebf879e339fa48420d9b866">getResult</a> ($options=null)</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_methods_class_o_m_k___client___friend"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_o_m_k___client___friend')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_o_m_k___client___friend.html">OMK_Client_Friend</a></td></tr>
-<tr class="memitem:a7e6d8afc9e6e014ed9b72f5ff9c0944b inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e6d8afc9e6e014ed9b72f5ff9c0944b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>setClient</b> (<a class="el" href="class_o_m_k___client.html">OMK_Client</a> $client)</td></tr>
-<tr class="memitem:a2f5f44fdf5404c87cc3a7b5719d85306 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a2f5f44fdf5404c87cc3a7b5719d85306">getClient</a> ()</td></tr>
-<tr class="memitem:ac6883785b1756cc3ab2c2bcaff0a689a inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac6883785b1756cc3ab2c2bcaff0a689a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>successResult</b> ()</td></tr>
-<tr class="memitem:a68bfc39e2c193be4bcb59897a10be4c2 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68bfc39e2c193be4bcb59897a10be4c2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>recordResult</b> (array $result)</td></tr>
-<tr class="memitem:ae9217677bebf879e339fa48420d9b866 inherit pub_methods_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9217677bebf879e339fa48420d9b866"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>getResult</b> ($options=null)</td></tr>
 <tr class="inherit_header pro_attribs_class_o_m_k___client___friend"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_o_m_k___client___friend')"><img src="closed.png" alt="-"/>&nbsp;Protected Attributes inherited from <a class="el" href="class_o_m_k___client___friend.html">OMK_Client_Friend</a></td></tr>
-<tr class="memitem:ad1405dc1ba2e288764378e79bff7a87d inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1405dc1ba2e288764378e79bff7a87d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$client</b></td></tr>
-<tr class="memitem:a112ef069ddc0454086e3d1e6d8d55d07 inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a112ef069ddc0454086e3d1e6d8d55d07"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>$result</b> = array()</td></tr>
+<tr class="memitem:ad1405dc1ba2e288764378e79bff7a87d inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#ad1405dc1ba2e288764378e79bff7a87d">$client</a></td></tr>
+<tr class="memitem:a112ef069ddc0454086e3d1e6d8d55d07 inherit pro_attribs_class_o_m_k___client___friend"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_m_k___client___friend.html#a112ef069ddc0454086e3d1e6d8d55d07">$result</a> = array()</td></tr>
 </table>
+<h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a1ee4426bcc083fe0eea167a587ecb86c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__construct </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$options</em> = <code>NULL</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array</td><td class="paramname">$options</td><td>An associative array containing:<ul>
+<li>translation_path: The location of where location files are.</li>
+<li>locale: The locale to use for translation.</li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">Exception</td><td></td></tr>
+    <tr><td class="paramname"><a class="el" href="class_o_m_k___exception.html">OMK_Exception</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2>Member Function Documentation</h2>
+<a class="anchor" id="a5cd9ea4ba4484788a3a3768224de271d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">translate </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$string</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Placeholder interface for documentation only</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string</td><td class="paramname">$string</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_o_m_k___exception.html">OMK_Exception</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="class_o_m_k___translation___adapter.html#a5cd9ea4ba4484788a3a3768224de271d">OMK_Translation_Adapter</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/alban/code/omk/src/OMK/Translation/Gettext.php</li>
+<li>/home/alban/code/omk/src/OMK/Translation/<a class="el" href="_gettext_8php.html">Gettext.php</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 12 2013 08:44:39 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Mar 14 2013 22:46:11 for OpenMediaKit Client by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['decode_5ferror',['DECODE_ERROR',['../class_h_t_t_p___request2___exception.html#a6411e27baa30168b02436b969c094a00',1,'HTTP_Request2_Exception']]]
+  ['debug',['DEBUG',['../class_o_m_k___logger___adapter.html#a758c150b67e476ecf77478f16b387c61',1,'OMK_Logger_Adapter']]]
 ];
