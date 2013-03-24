@@ -5,7 +5,9 @@ require_once 'HTTP/Request2.php';
 class OMK_Client_Request extends OMK_Client_Friend{
 
     // ERR 200->225
-    const ERR_HTTP = 200;
+    const ERR_HTTP              = 200;
+    const ERR_MISSING_FILE_INFO = 201;
+    const ERR_MISSING_FILE_ID   = 202;
     
     protected $requestObject;
     protected $queryParams = array();
@@ -20,16 +22,17 @@ class OMK_Client_Request extends OMK_Client_Friend{
     
     public function run( $params ){
         $action = $params["action"];
-        $this->$action($params);
+        return $this->$action($params);
     }
 
-     
-    protected function getRequestObject($options = null) {
+     /**
+      * 
+      * @param array $options
+      * @return Http_Request2
+      */
+    protected function getRequestObject($options = array()) {
         
-        if( NULL == $this->requestObject || count($options)){
-            if( !is_array($options)){
-                $options = array();
-            }
+        if( NULL == $this->requestObject || count($options) ){
             if(array_key_exists("url", $options)){
                 $url = $options["url"];
             }else{
@@ -51,15 +54,12 @@ class OMK_Client_Request extends OMK_Client_Friend{
         
     }
     
-    public function send($options = null){
+    public function send($options = array()){
         
         $query          = array();
-        if( NULL == $options || !count($options)){
-            throw new OMK_Exception(_("Missing options"));
-        }
         if (array_key_exists("action", $options) && NULL != $options["action"]) {
             $this->queryParams["action"] = $options["action"];
-        } else {
+        } else if( !array_key_exists("action", $this->queryParams)) {
             throw new OMK_Exception(_("Missing action."));
         }
         if (array_key_exists("url", $options) && NULL != $options["url"]) {
@@ -67,10 +67,12 @@ class OMK_Client_Request extends OMK_Client_Friend{
         } else {
             $url = $this->getRequestObject()->getUrl();
         }
+        if (array_key_exists("params", $options) && NULL != $options["params"]) {
+            $this->queryParams = array_merge( $options["params"], $this->queryParams );
+        }
         try{
             
             $url        .= "?".http_build_query($this->queryParams);
-            echo $url;
             $response   = $this->getRequestObject()
                     ->setUrl($url)
                     ->send();
@@ -102,10 +104,9 @@ class OMK_Client_Request extends OMK_Client_Friend{
 
         return array(
             "code"      => 0,
-            "message"   => _("Successfully sent request {$this->queryParams["action"]}.")
+            "message"   => sprintf(_("Successfully sent request %s."),$this->queryParams["action"]),
+            "response"  => $response
         );
-       
-        
     }
 
 
@@ -140,23 +141,17 @@ répond à une sorte de ping : pratique pour l'installation (fonctionne) ou pour
                 "action" => "app_test_response"
             ))
         );
-
+        return $this->getResult();
      }
      
  
     /*
      * 
-
 Who : App -> tracker
-
 Who : Transcoder -> App
-
 When : whenever
-
 What : Transcoder returns available presets
-
 Request Params : void
-
 onSuccess : app records available formats to make a selection
 onError : void
 
@@ -167,10 +162,38 @@ onError : void
      */
      protected function tracker_autodiscovery($options = null){
          
-         // Sets query params
+        // Sets query params
+        $this->getRequestObject(array("url" => "http://discovery.open-mediakit.org"));
+
+        // Attempts to retrieve trackers list
+        $this->recordResult($this->send(array("action"=>"autodiscovery")));
+        if( !$this->successResult()){
+            return $this->getResult();
+        }
          
-         // Attempts to retrieve trackers list
+
+        
+        // Attempts to convert response
+        $this->recordResult($this->decodeResponse($response));
+
+        // Exits if failed
+        if( ! $this->successResult()){return $this->getResult();}
+
+        $list = $this->result["result"];
+        // Inserts / Updates data
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
+                 "table"    => "variables",
+                 "data"     => array(
+                     "id"  => "transcoder_discovery",
+                     "val"  => $body
+                 ),
+                 "where"    => array(
+                     "id = ?" => "transcoder_discovery"
+                 )
+             )
+        ));
          
+        return $this->getResult();
          
      }
      
@@ -197,52 +220,206 @@ onError : void
       */
      protected function app_subscribe($options = null){
 
-         // builds query params
+        if (array_key_exists("email", $_REQUEST) && NULL != $_REQUEST["email"]) {
+            $email = $_REQUEST["email"];
+        } else {
+            throw new Exception(_("Missing email."));
+        }
+
+        if (array_key_exists("api_transcoder_url", $_REQUEST) && NULL != $_REQUEST["api_transcoder_url"]) {
+            $api_transcoder_url = $_REQUEST["api_transcoder_url"];
+        } else {
+            throw new Exception(_("Missing api_transcoder_url."));
+        }
+        
+        $this->getRequestObject(array(
+            "url"  => $api_transcoder_url
+        ));
+
          
-         // retrieves server response
+        // Gets response
+        $this->recordResult($this->send(array(
+            "action"=>"app_subscribe",
+            "params"    => array(
+                "url"       => $this->getClient()->getAppUrl(),
+                "email"     => $email
+                )
+            )));
+        if( !$this->successResult()){
+            return $this->getResult();
+        }
+                // Attempts to convert response
+        $this->recordResult($this->decodeResponse($response));
+        
+        // Exits if failed
+        if( ! $this->successResult()){return $this->getResult();}
+        
+        // Reads subscription result
+        $jsonArray      = $this->result["result"];
+        if (array_key_exists("apikey", $jsonArray) && NULL != $jsonArray["apikey"]) {
+            $api_transcoder_key = $jsonArray["apikey"];
+        } else {
+            throw new Exception(_("Missing api key."));
+        }
+        // Records new transcoder
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
+                 "table"    => "variables",
+                 "data"     => array(
+                     "id"  => "transcoder_data",
+                     "val"  => $body
+                 ),
+                 "where"    => array(
+                     "id = ?" => "transcoder_data"
+                 )
+             )            
+        ));
+        if( ! $this->successResult()){
+            return $this->getResult();
+        }
+
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
+                 "table"    => "variables",
+                 "data"     => array(
+                     "id"  => "api_transcoder_key",
+                     "val"  => $api_transcoder_key
+                 ),
+                 "where"    => array(
+                     "id = ?" => "api_transcoder_key"
+                 )
+             )            
+        ));        
+        if( ! $this->successResult()){
+            return $this->getResult();
+        }
+        
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
+                 "table"    => "variables",
+                 "data"     => array(
+                     "id"  => "api_transcoder_url",
+                     "val"  => $api_transcoder_url
+                 ),
+                 "where"    => array(
+                     "id = ?" => "api_transcoder_url"
+                 )
+             )            
+        ));        
+        if( ! $this->successResult()){
+            return $this->getResult();
+        }
+
+        if (array_key_exists("settings", $jsonArray) && NULL != $jsonArray["settings"]) {
+            $settings = $jsonArray["settings"];
+        } else {
+            throw new Exception(_("Missing settings."));
+        }
+
+        $settingsInstance   = new OMK_Settings();
+        $settingsInstance->setClient($this->getClient());
+        $this->recordResult($settingsInstance->receive(array(
+            "settings"          => $settings,
+            "name"              => $api_transcoder_url
+            )));        
+        if( ! $this->successResult()){
+            return $this->getResult();
+        }
+        
+        
+        return $this->getResult();
          
      }
      
+     protected function decodeResponse( ){
+         
+        $response       = $this->result["response"];
+        $body           = $response->getBody();
+        return $this->getClient()->jsonDecode($body);
+     }
+
+
      /*
       * 
 app_new_media
-
 Who : App -> Transcoder
-
 When : media completely uploaded by user
-
 What : transcoder media adds to download and metadata queue
-
 Request Params
-
     set[media_id:int, media_url:string]
-
 onSuccess : App updates media status to META_REQUESTED
-
 onError : App logs error
       */
      protected function app_new_media($options = null){
          
         // Builds query params
-        if (array_key_exists("file_id", $options) && NULL != $options["file_id"]) {
-            $this->queryParams["file_id"] = $options["file_id"];
+        if (array_key_exists("object_id", $options) && NULL != $options["object_id"]) {
+            $object_id = $options["object_id"];
         } else {
-            throw new Exception(_("Missing file_id."));
+            throw new Exception(_("Missing object id."));
         }
-         
-         
-        // Sends request
+        
+        // Retrieves file information
+        $this->recordResult(
+            $this->getClient()->getDatabaseAdapter()->select(array(
+                "table" => "files",
+                "where" => array(
+                    "id = ?" => $object_id
+                )
+            ))
+        );
+        
+        // Exits if failed
+        if( ! $this->successResult()){
+            return $this->getResult();
+        }
+        if( ! array_key_exists( "rows", $this->result) || !count($this->result["rows"])){
+            throw new OMK_Exception(_("Missing file info."), self::ERR_MISSING_FILE_INFO);
+        }
+        $fileData = current($this->result["rows"]);
+        if ( ! array_key_exists("id", $fileData) && NULL != $fileData["id"]) {
+            throw new OMK_Exception(_("Missing id."), self::ERR_MISSING_FILE_ID);
+        }
+        
+        // Retrieves the download url
+        $download_url =  $this->getClient()->getFileAdapter()->getDownloadUrl($fileData);
+   
+        // Builds query. Sends request
+        $this->queryParams["action"]    = "app_new_media";
+        $this->queryParams["url"]       = $download_url;
+        $this->recordResult($this->send(array()));
+        
+        // Exits if failed
+        if( ! $this->successResult()){
+            return $this->getResult();
+        }
+        
+        // Attempts to convert response
+        $this->recordResult($this->decodeResponse());
+        
+        // Exits if failed
+        if( ! $this->successResult()){return $this->getResult();}
+
+        // Gets server response as array
+        $response = $this->result["result"];
+        
+        // Checks transcoder response
+        $this->recordResult($response);
+        
+        // Exits if failed
+        if( ! $this->successResult()){return $this->getResult();}
+        
         // Updates file record in db 
         $this->recordResult( 
             $this->getClient()->getDatabaseAdapter()->update(array(
-                "dt_updated"    => TRUE,
+                "dt_updated"    => "NOW",
                 "table"         => "files",
-                "id"            => $file_id,
+                "id"            => $options["id"],
                 "data"  => array(
                     "status"    => OMK_Database_Adapter::STATUS_METADATA_REQUESTED
                 )
             ))
         );
+        
+        $this->result["status"] = OMK_Queue::STATUS_SUCCESS;
+        return $this->getResult();
     }
    
     /*
@@ -259,6 +436,7 @@ Request Params
 
     id:int
     preset:format
+    range
 
 onSuccess
 

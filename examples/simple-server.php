@@ -46,10 +46,11 @@ $databaseAdapter = new OMK_Database_Mysql(array(
 ));
 
 $fileAdapter = new OMK_File_SingleFolder(array(
-    "storage_path"  => "/tmp/singleFolder"
+    "storage_path"  => "/home/alban/code/omkstorage",
+    "http_path"     => "http://omkstorage.local"
 ));
 $uploadAdapter = new OMK_Upload_SingleFolder(array(
-    "tmp_path"      => "/tmp",
+    "tmp_path"      => "/home/alban/code/omkstorage",
     "name"          => "singleFolder"
 ));
 $loggerAdapter  = new OMK_Logger_File(array(
@@ -66,7 +67,7 @@ $client = new OMK_Client(array(
     "api_local_key"             => "1234567890abcdef",
     "api_local_url"             => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}{$_SERVER["SCRIPT_NAME"]}",
     "api_transcoder_key"        => "1234567890abcdef",
-    "api_transcoder_url"        => "http://test.openmediakit.fr/",
+    "api_transcoder_url"        => "http://test.openmediakit.fr/api",
     "config_file"               => __FILE__,
     "css_url_path"              => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}".dirname($_SERVER["SCRIPT_NAME"])."/../src/OMK/views/css",
     "js_url_path"               => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}".dirname($_SERVER["SCRIPT_NAME"])."/../src/OMK/views/js",
@@ -91,7 +92,8 @@ if( "cli" != PHP_SAPI) {
 
     // Respond (json)
     $response = $client->call(array(
-        "action" => $action
+        "action"    => $action,
+        "format"    => "json"
         )
     );
     // TODO : FORCE REFRESH HEADER ?

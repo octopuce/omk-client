@@ -49,7 +49,7 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
         if (array_key_exists("message", $options) && NULL != $options["message"]) {
             $message = (string)$options["message"];
         } else {
-            throw new Exception(_("Missing message."));
+            $message = _("Default error message");
         }
         if (array_key_exists("exception", $options) && NULL != $options["exception"]) {
             $exception = $options["exception"];
@@ -76,22 +76,18 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
             foreach ($exception->getTrace() as $k => $stack) {
                 $args = array();
                 foreach( $stack["args"] as $arg_key => $arg_arr ){
-                    $arg_tmp = array();
-                    foreach ($arg_arr as $key => $val) {
-                        $arg_tmp[]= "{$key}:{$val}";
-                    }
-                    $args[] = implode(",", $arg_tmp);
+                    $args = $this->exploreException( $arg_arr, $args);
                 }
                 $exception_str  .= "\n    $k. {$stack["file"]}+{$stack["line"]} {$stack["class"]}::{$stack["function"]} [".implode("],[", $args)."]";
             }
-            $exception_str  .= "\n}";
+            $exception_str  .= "\n}\n";
         }
         if( isset($data) ){
             $data_str       = "\nData: [";
             foreach($data as $k => $v){
                 $data_str   .= "\n  {$k}: $v";
             }
-            $data_str       .= "\n]";
+            $data_str       .= "\n]\n";
         }
         
         $log_str            .= date("Y-m-d H:i:s ");
@@ -102,5 +98,25 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
         $log_str            .= $exception_str.$data_str;
         fwrite($file_handle, $log_str);
         fclose($file_handle);
+    }
+    
+    
+    private function exploreException($part, $return){
+        $arg_tmp = array();
+        if(is_array($part)){
+            foreach ($part as $key => $val) {
+                if(is_array($val)){
+                    $arg_tmp[]= "{$key}:[".  str_replace("\n"," ",print_r($val,1))."]";
+                }else{
+                    $arg_tmp[]= "{$key} => {$val}";
+                }
+            }
+            $return[] = implode(",", $arg_tmp);
+        }elseif(is_string ($part)){
+            $return[] = $part;
+        }elseif( is_a($part, "Exception")){
+            $return[] = $this->exploreException($part);
+        }
+        return $return;
     }
 } 

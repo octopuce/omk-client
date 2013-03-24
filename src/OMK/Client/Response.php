@@ -25,19 +25,9 @@
              throw new OMK_Exception(_("Invalid action requested."));
          }
          
-         // Secures the calls
-         if (array_key_exists("api_app_key", $options) && NULL != $options["api_app_key"]) {
-             $api_app_key   = $options["api_app_key"];
-         } else {
-             throw new OMK_Exception(_("Missing api app key."));
-         }
-         if( $this->getClient()->getAppKey() != $api_app_key ){
-             throw new OMK_Exception(_("Invalid app key."));
-         }
          // Call the method
          $this->$action($options);
      }
-     
      
      // always true response for local test and availability checks
      /**
@@ -141,7 +131,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
 
         // Runs the cron action
         $cron = new OMK_Cron( $options );
-        $cron->setClient($this);
+        $cron->setClient($this->getClient());
         $this->recordResult(
              $cron->run()
         );
@@ -214,7 +204,7 @@ onError : void
                 "table" => "files",
                 "id"    => $file_id,
                 "data"  => array(
-                    "dt_updated"    => TRUE,
+                    "dt_updated"    => "NOW",
                     "file_path"     => $this->result["file_path"],
                     "status"        => OMK_Database_Adapter::STATUS_STORED
                 )
@@ -227,8 +217,7 @@ onError : void
         $this->recordResult( 
             $this->getClient()->getQueue()->push(
                 array(
-                    "origin"        => "app",
-                    "handler"       => "transcoder",
+                    "priority"      => OMK_Queue::PRIORITY_HIGH,
                     "action"        => "app_new_media",
                     "object_id"     => $file_id,
                 )

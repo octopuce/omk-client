@@ -38,9 +38,14 @@
 class OMK_Client{
     
     // ERR Codes 225-249
-    const ERR_EXCEPTION         = 225;
-    const ERR_UNKNOWN_ACTION    = 226;
-    
+    const ERR_EXCEPTION             = 225;
+    const ERR_UNKNOWN_ACTION        = 226;
+    const ERR_JSON_NONE             = 230; // original JSON_ERROR_NONE = 0
+    const ERR_JSON_DEPTH            = 231; // original JSON_ERROR_DEPTH = 1
+    const ERR_JSON_STATE_MISMATCH   = 232; // original JSON_ERROR_STATE_MISMATCH = 2
+    const ERR_JSON_CTRL_CHAR        = 233; // original JSON_ERROR_CTRL_CHAR = 3
+    const ERR_JSON_SYNTAX           = 234; // original JSON_ERROR_SYNTAX = 4
+    const ERR_JSON_UTF8             = 235; // original JSON_ERROR_UTF8 = 5
     protected $authentificationAdapter;
     protected $databaseAdapter;
     protected $fileAdapter;
@@ -232,7 +237,7 @@ class OMK_Client{
 
     public function setUploadAdapter(OMK_Upload_Adapter $adapter = null) {
         $adapter->setClient($this);
-        $name = $adapter->getName();
+        $name = $adapter->getLabel();
         $this->uploadAdapterContainer[$name] = $adapter;
         return $this;
     }
@@ -309,6 +314,12 @@ class OMK_Client{
 
     public function call($options){
         
+        if (array_key_exists("format", $options) && NULL != $options["format"]) {
+            $format = $options["format"];
+        } else {
+            $format = FALSE;
+        }
+        
         try{
             switch($options["action"]){
                 case "app_test_request":
@@ -316,7 +327,7 @@ class OMK_Client{
                 case "tracker_autodiscovery":
                 case "app_new_media":
                 case "app_request_format":
-                    return $this->request($options);
+                    $response = $this->request($options);
                 break;
                 case "transcoder_cron":
                 case "transcoder_send_format":
@@ -324,12 +335,17 @@ class OMK_Client{
                 case "transcoder_get_settings":
                 case "app_test_response":
                 case "upload":
-                    return $this->response($options);
+                    $response =$this->response($options);
                 break;
             default :
                 throw new OMK_Exception(sprintf(_("Unknown action requested: %s"),$options["action"]),self::ERR_UNKNOWN_ACTION);
                 break;
             }
+            if( "json" == $format){
+                return $this->jsonEncode($response);
+            }
+            return $response;
+            
         }catch( OMK_Exception $e ){
             $this->getLoggerAdapter()->log(array(
                 "level"     => OMK_Logger_Adapter::WARN,
@@ -351,7 +367,6 @@ class OMK_Client{
         }
         
     }
-   
     /**
      * Wrapper for all json encode in the client
      * 
@@ -368,6 +383,37 @@ class OMK_Client{
         return json_encode($object);
     }
 
+    /**
+     * Gateway for all json decode
+     * 
+     * @param string $string
+     * @return array
+     */
+    public function jsonDecode(  $string ){
+        
+        // Attempts to convert to JSON
+         $decodedArray          = json_decode($string, TRUE);
+         
+         // Exits if failed
+         if( $json_last_error = json_last_error()){
+             $msg               = _("JSON conversion failed.");
+             $this->getLoggerAdapter()->log(array(
+                 "level"        => OMK_Logger_Adapter::WARN,
+                 "message"      => $msg,
+                 "data"         => $string
+             ));
+             return array(
+                 "code"         => self::ERR_JSON_NONE + $json_last_error, 
+                 "message"      => $msg
+             );
+         }
+         return array(
+             "code"         => 0,
+             "message"      => _("Successfully decoded json string."),
+             "result"       => $decodedArray
+         );
+    }
+    
     protected function throwExceptions(){
         // TODO : decide how to parameter that
         return FALSE;
@@ -405,7 +451,7 @@ class OMK_Client{
 
         $request = new OMK_Client_Request($this);
         $request->run($options);
-        return $request->getResult(array("format"=>"json"));
+        return $request->getResult();
     }
     
     /**
@@ -418,7 +464,7 @@ class OMK_Client{
 
         $response = new OMK_Client_Response($this);
         $response->run($options);
-        return $response->getResult(array("format"=>"json"));
+        return $response->getResult();
         
     }
     

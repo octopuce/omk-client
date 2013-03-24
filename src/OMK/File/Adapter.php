@@ -27,28 +27,44 @@ class OMK_File_Adapter extends OMK_Client_Friend {
      */
     public function create( $options){
         
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
+        
     }
     
     public function open( $options ){
+        
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
         
     }
     
     public function read( $options ){
         
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
+        
     }
     
     public function write( $options ){
+        
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
         
     }
     
     public function seek( $options ){
         
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
+        
     }
     
     public function size( $options ){
         
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
+        
     }
     
-    
+    public function getDownloadUrl( $options = NULL ){
+        
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
+
+    }
     
 }

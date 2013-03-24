@@ -13,22 +13,30 @@ Queue
 class OMK_Queue extends OMK_Client_Friend{
   
     // ERR CODE 150-174
-    const ERR_PUSH  = 150;
+    const ERR_PUSH              = 150;
+    
+    const LOCK_LOCKED           = 1;
+    const LOCK_UNLOCKED         = 0;
+    
+    const STATUS_NULL           = 0;
+    const STATUS_IN_PROGRESS    = 1;
+    const STATUS_FAILURE        = 2;
+    const STATUS_SUCCESS        = 3;
+    
+    const PRIORITY_HIGH         = 5;
+    const PRIORITY_MEDIUM       = 10;
+    const PRIORITY_LOW          = 15;
+    
     
     public function push( $options = NULL ){
         
         if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options."));    
         }
-        if (array_key_exists("origin", $options) && NULL != $options["origin"]) {
-            $origin = $options["origin"];
-        }else{
-            $origin = "app";
-        }
-        if (array_key_exists("handler", $options) && NULL != $options["handler"]) {
-            $handler = $options["handler"];
-        }else{ 
-            $handler = "transcoder";
+        if (array_key_exists("priority", $options) && NULL != $options["priority"]) {
+            $priority = $options["priority"];
+        } else {
+            $priority = self::PRIORITY_HIGH;
         }
         if (array_key_exists("action", $options) && NULL != $options["action"]) {
             $action = $options["action"];
@@ -40,16 +48,21 @@ class OMK_Queue extends OMK_Client_Friend{
         }else{ 
             throw new OMK_Exception(_("Missing object id."));
         }
+        if (array_key_exists("params", $options) && NULL != $options["params"]) {
+            $params = $options["params"];
+        } else {
+            $params = "";
+        }
         $databaseAdapter = $this->getClient()->getDatabaseAdapter();
         $this->recordResult(  
             $databaseAdapter->insert(
                 array(
                     "table" => "queue",
                     "data"  => array(
-                        "origin"    => $origin,
-                        "handler"   => $handler,
+                        "priority"  => $priority,
                         "action"    => $action,
-                        "object_id" => $object_id
+                        "object_id" => $object_id,
+                        "params"    => $params
                     )
                 )
             )
@@ -66,16 +79,5 @@ class OMK_Queue extends OMK_Client_Friend{
         );
     }
     
-    /**
-     * 
-     */
-    public function fetchCronTasks(){
-        $this->getClient()->getDatabaseAdapter()->select(array(
-            "table" => "queue",
-            "where" => array(
-                "failed_attempts < ?" => 10
-                ),
-            "order" => "handler DESC"
-        )) ;
-    }
+
 }

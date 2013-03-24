@@ -7,6 +7,9 @@
  */
 class OMK_Client_Friend {
     
+    // ERR CODE 250 - 274
+    const ERR_METHOD_OVERRIDE_REQUIRED      = 250;
+    
     protected $client;
     protected $result = array();
 
@@ -82,7 +85,6 @@ class OMK_Client_Friend {
             "level"    => OMK_Logger_Adapter::DEBUG , 
             "message"  => $result["message"]
         ));
-         
      }
 
      /**
@@ -95,9 +97,12 @@ class OMK_Client_Friend {
       * @return array|string, depending on format requested
       * @throws Exception
       */
-     public function getResult($options = null){
+     public function getResult($options = array() ){
+         
          if (array_key_exists("format", $options) && NULL != $options["format"]) {
              $format = $options["format"];
+         }else{
+             $format = FALSE;
          }
          if( ! $format){
              return $this->result;
@@ -123,4 +128,21 @@ class OMK_Client_Friend {
      public function _($string){
          return $this->getClient()->getTranslationAdapter()->translate($string);
      }
+     
+     
+     private function checkApiAppKey(){
+         
+         // Secures the calls
+         if (array_key_exists("api_app_key", $_REQUEST) && NULL != $_REQUEST["api_app_key"]) {
+             $api_app_key = $_REQUEST["api_app_key"];
+         } else {
+             throw new Exception(_("Missing api app key."));
+         }
+         if( $this->getClient()->getAppKey() != $api_app_key ){
+             throw new OMK_Exception(_("Invalid app key."));
+         }
+         
+     }
+     
+
 }

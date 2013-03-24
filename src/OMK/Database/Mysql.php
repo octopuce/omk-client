@@ -47,9 +47,11 @@
         }
     }
     
-    function query( $statement ){
+    function query( $statement, $data ){
         try { 
-            $results = $this->dbConnection->query($statement);
+            $sth = $this->dbConnection->prepare($statement);
+            $sth->execute($data);
+            $results = $sth->fetchAll();
             if( false !== $results){
                 return $results;
             }
@@ -58,7 +60,7 @@
             throw new OMK_Exception(sprintf(_("An error occured with mysql exec.\n Code: %s\n Info: %s"),  $error_code, $error_info));
        }  
         catch(PDOException $e) {  
-            $msg    = sprintf(_("Mysql query failed: %s.",$e->getMessage()));
+            $msg    = _("Mysql query failed.");
             $this->getClient()->getLoggerAdapter()->log(array(
                 "level"     => OMK_Logger_Adapter::WARN,
                 "message"   => $msg,
@@ -68,7 +70,7 @@
         }  
     }
     
-    function exec( $query, $bind ){
+    function exec( $query, $bind = array() ){
         try { 
             $statement      = $this->dbConnection->prepare($query);
             $affected_rows  = $statement->execute($bind);
@@ -105,13 +107,17 @@
         $cols = array();
         $vals = array();
         $i = 0;
-        foreach ($data as $col => $val) {
-            $cols[] = $this->quoteIdentifier($col);
-            unset($data[$col]);
-            $data[':col'.$i] = $val;
-            $vals[] = ':col'.$i;
-            $i++;
-        }
+        
+//       foreach ($data as $col => $val) {
+//            $cols[] = $this->quoteIdentifier($col);
+//            unset($data[$col]);
+//            $data[':col'.$i] = $val;
+//            $vals[] = ':col'.$i;
+//            $i++;
+//        }
+//        
+        // Builds values to insert
+        $this->buildData($data, $vals, $i, $cols);
 
         // build the statement
         $sql = "INSERT INTO "
@@ -140,7 +146,75 @@
     }
     
     function select($options = null) {
-        parent::select($options);
+     
+        if (array_key_exists("table", $options) && NULL != $options["table"]) {
+            $table = $options["table"];
+        } else {
+            throw new OMK_Exception(_("Missing table."));
+        }
+        if (array_key_exists("where", $options) && NULL != $options["where"]) {
+            $where = $options["where"];
+            if( !is_array($where)){
+                throw new OMK_Exception(_("Where clause must be an array."), self::ERR_CLAUSE_WHERE_ARRAY);
+            }
+        } else {
+            $where = array();
+        }
+        if (array_key_exists("limit", $options) && NULL != $options["limit"]) {
+            $limit = $options["limit"];
+        }else{
+            $limit = "";
+        }
+        if (array_key_exists("order", $options) && NULL != $options["order"]) {
+            $order = $options["order"];
+        } else {
+            $order = array();
+        }
+        $i = 0;
+        $data = array();
+        
+        $sql = "SELECT * FROM " . $this->quoteIdentifier($table);
+        
+        if (count($where)) {
+            $this->buildWhere($where, $data, $i);
+            $sql .= " WHERE ". implode(" AND ", $where);
+        }
+        if( $order ){
+            if( !is_array($order)){
+                $order = array($order);
+            }
+            $sql .= " ORDER BY ".implode(",",$order);
+        }
+        if( $limit ){
+            $sql .= " LIMIT {$limit} ";
+        }
+        
+        // Runs query
+        try{
+            
+            $rows = $this->query($sql, $data);
+            
+        } catch (OMK_Exception $e){
+            $msg          = sprintf(_("Failed to select row in %s : query %s, data %s"), $table, $sql, str_replace("\n", " ", print_r($data,1)));
+            $this->getClient()->getLoggerAdapter()->log(array(
+               "level"      => OMK_Logger_Adapter::WARN,
+                "message"   => $msg,
+                "exception" => $e
+            ));
+            return array(
+                "code"      => self::ERR_SELECT,
+                "message"   => $msg
+            );
+        }
+        // Success
+        return array(
+            "code"          => 0,
+            "message"       => sprintf(_("Successfully selected rows in %s"),$table),
+            "rows"          => $rows
+        );
+        
+            
+        
     }
     
     function update($options = null) {
@@ -155,39 +229,37 @@
         } else {
             throw new OMK_Exception(_("Missing data."));
         }
-        if (array_key_exists("id", $options) && NULL != $options["id"]) {
-            $id = $options["id"];
+        if (array_key_exists("where", $options) && NULL != $options["where"]) {
+            $where = $options["where"];
         } else {
-            throw new OMK_Exception(_("Missing id."));
+            $where = array();
         }
+        if (array_key_exists("id", $options) && NULL != $options["id"]) {
+            $where["id = ?"]    = $options["id"];
+        } 
         $cols = array();
         $vals = array();
         $i = 0;
-        foreach ($data as $col => $val) {
-            unset($data[$col]);
-            $quoted_col     = $this->quoteIdentifier($col);
-            if( $col == "dt_updated"){
-                $vals[] = $quoted_col.' = NOW()';
-            }else{
-                $data[':col'.$i] = $val;
-                $vals[] = $quoted_col.' = :col'.$i;
-            }
-            $i++;
-        }
-        $data[":id"] = $id;
-
+        $this->buildData( $data, $vals, $i);
+  
         // build the statement
         $sql = "UPDATE "
              . $this->quoteIdentifier($table)
              . ' SET '
-             . implode(",", $vals)
-             . ' WHERE `id` = :id';
+             . implode(",", $vals);
+
+        if( count($where) ){
+            $this->buildWhere($where, $data, $i);
+            $sql .= " WHERE ". implode(" AND ", $where);
+        }
+        
+        // Runs query
         try{
             
             $affected_rows = $this->exec($sql, $data);
             
         } catch (OMK_Exception $e){
-            $msg          = sprintf(_("Failed to update row id %s in %s"), $id, $table);
+            $msg          = sprintf(_("Failed to update in %s"), $table);
             $this->getClient()->getLoggerAdapter()->log(array(
                "level"      => OMK_Logger_Adapter::WARN,
                 "message"   => $msg,
@@ -211,6 +283,142 @@
         parent::delete($options);
     }
     
+    private function buildData( &$data, &$vals, &$i, &$cols = array()){
+        $srcData = $data;
+        foreach ($srcData as $col => $val) {
+            unset($data[$col]);
+            $quoted_col     = $this->quoteIdentifier($col);
+            $cols[]         = $quoted_col;
+            switch( (string) $val ){
+                case OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP:
+                    $vals[] = $quoted_col.' = NOW()';
+                break;
+                case OMK_Database_Adapter::REQ_INCREMENT:
+                    $vals[] = "{$quoted_col} = {$quoted_col} + 1";
+                break;
+                default:
+                    $data[':col'.$i] = $val;
+                    $vals[] = $quoted_col.' = :col'.$i;
+                    break;
+            }
+            $i++;
+        }
+    }
+
+    protected function buildWhere( &$where, &$data, &$i){
+        $srcWhere = $where;
+        foreach ($srcWhere as $clause => $val) {
+            unset($where[$clause]);
+            switch((string) $val){
+                case OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP:
+                    $where[] = str_replace("?", "NOW()", $clause);
+                    break;
+                case OMK_Database_Adapter::REQ_NO_BINDING:
+                    $where[] = $clause;
+                    break;
+                default:
+                    $data[':col'.$i] = $val;
+                    $where[] = str_replace("?", ":col{$i}", $clause);
+                    break;
+            }
+            $i++;            
+        }
+
+    }
+    function lock($options = NULL) {
+        
+        // Checks sanity
+        if (array_key_exists("table", $options) && NULL != $options["table"]) {
+            $table = $options["table"];
+        } else {
+            throw new Exception(_("Missing table."));
+        }
+        if (array_key_exists("lock_type", $options) && NULL != $options["lock_type"]) {
+            $lock_type = $options["lock_type"];
+        } else {
+            $lock_type = "WRITE";
+        }
+        if (array_key_exists("lock", $options)) {
+            $lock = $options["lock"];
+            if($lock){
+                $lock = "LOCK";
+            }else{
+                $lock = "UNLOCK";
+            }
+        } else {
+            $lock = "LOCK";
+        }
+        // Builds query
+        switch ($lock){
+            case "LOCK":
+                $sql = "LOCK TABLE ".$this->quoteIdentifier($table)." {$lock_type}";
+                break;
+            case "UNLOCK":
+                $sql = "UNLOCK TABLES";
+                break;
+            default:
+                throw new OMK_Exception(_("Invalid lock method: LOCK or UNLOCK expected"),self::ERR_INVALID_LOCK);
+                break;
+        }
+        // Runs query
+        try{
+            $affected_rows = $this->exec($sql);
+        } catch (OMK_Exception $e){
+            $msg          = sprintf(_("Failed to (lock|unlock): %s table %s"), $lock, $table);
+            $this->getClient()->getLoggerAdapter()->log(array(
+               "level"      => OMK_Logger_Adapter::WARN,
+                "message"   => $msg,
+                "exception" => $e
+            ));
+            return array(
+                "code"      => self::ERR_UPDATE,
+                "message"   => $msg
+            );
+        }
+        return array(
+            "code"          => 0,
+            "message"       => sprintf(_("Successfull (lock|unlock): %s on table %s"), $lock, $table)
+        );
+
+    }
+    
+    function unlock( $options = NULL ){
+        $options["lock"] = FALSE;
+        return $this->lock($options);
+    }
+
+    function save($options = NULL) {
+        
+        if (NULL == $options || !count($options)) {
+            throw new OMK_Exception(_("Missing options."));
+        }
+        if ( ! array_key_exists("table", $options) || NULL == $options["table"]) {
+            throw new OMK_Exception(_("Missing table."));
+        }
+        if ( ! array_key_exists("where", $options) || NULL == $options["where"]) {
+            throw new OMK_Exception(_("Missing where."));
+        }
+        if ( ! array_key_exists("data", $options) || NULL == $options["data"]) {
+            throw new OMK_Exception(_("Missing data."));
+        }
+        if ( ! array_key_exists("limit", $options) || NULL == $options["limit"]) {
+            $options["limit"] = 1;
+        }
+        
+        $this->recordResult($this->select($options));
+        if( !$this->successResult()){
+            return $this->getResult();
+        }
+        $rows = $this->result["rows"];
+        if( count($rows)){
+            $this->recordResult($this->update($options));
+        }else{
+            $this->recordResult($this->insert($options));
+        }
+        return $this->getResult();
+    }
+
+
     /**
      * @param type $identifier
      * @return type 
