@@ -1,0 +1,63 @@
+<?php
+// Proxifies the translation adapter 
+$t = $this->getTranslationAdapter();
+// Fetch settings from DB
+$result = $this->getDatabaseAdapter()->select(array(
+   "table"  => "settings",
+    "where" => array(),
+    "order" => array("type ASC","recommend DESC","id ASC")
+));
+$settings = $result['rows'];
+
+?>
+<?php // Builds html table with update controls ?>
+<form action="<?= $this->getAppUrl() ?>" method="POST">
+    <input type="hidden" name="view" value="settings.update">
+    <input type="hidden" name="csrf" value="<?= $this->getAuthentificationAdapter()->getToken() ?>">
+    <table class="omk omk-settings omk-table">
+        <caption> <?= $t->_("This is a list of transcodable settings. Select the formats you want to receive from transcoders."); ?> </caption>    
+        <thead>
+            <tr>
+                <th>
+                    <?= $t->_("Selected"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Media type"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Name"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Description"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Extension"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Recommanded"); ?> 
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php $num = 0; ?>
+    <?php foreach($settings as $theSetting): ?>
+         <?php $recommanded_style = ($theSetting["recommend"] == 1 ? "omk-settings-recommanded":"") ?>
+         <tr class="omk-row<?= $num++%2?> <?= $recommanded_style ?> omk-settings-media-<?= $theSetting["type"] ?>">
+             <td><input type="checkbox" <?php echo ($theSetting["checked"] ? "checked=checked":"");?> name="settings[<?= $theSetting["id"]?>]"></td> 
+             <td><?= $theSetting["type"] ?></td> 
+             <td><?= $t->_($theSetting["name"] )?></td> 
+             <td><?= $t->_($theSetting["technical"]) ?></td> 
+             <td><?= $theSetting["extension"] ?></td> 
+             <td><?= $theSetting["recommend"] ? $t->_("X"):" " ?></td> 
+         </tr>
+    <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="6" class="omk-submit">
+                    <input type="submit" value="<?= $t->_("Validate")?>">
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</form>
