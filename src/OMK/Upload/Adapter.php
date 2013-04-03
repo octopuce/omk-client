@@ -21,8 +21,10 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     const ERR_MISSING_FILE  = 129;
     
     
-    public $tmp_path;
-    public $label; // mandatory : sets a key name for this adapter
+    protected $tmp_path;
+    protected $transport_name   = "http"; 
+    protected $name   = "default"; // mandatory : sets a key name for this adapter
+    
     function __construct($options = null) {
         if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options"), 1);
@@ -39,8 +41,19 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
         }
     }
 
-    function getLabel(){
-        return $this->label;
+    function getName(){
+        if (NULL == $this->name ) {
+            throw new OMK_Exception(_("Missing adapter name."));
+        } 
+        return $this->name;
+    }
+    
+
+    function getTransportName(){
+        if (NULL == $this->transport_name ) {
+            throw new OMK_Exception(_("Missing transport adapter name."));
+        } 
+        return $this->transport_name;
     }
     
     function upload( $options = null){
@@ -48,5 +61,19 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
         throw new OMK_Exception(_("Cannot use default upload method, you must override it."), 1);
         
     }
+    
+    /**
+     * Determines which file range has to be downloaded. Can skip in case like NAS storage 
+     * 
+     * @param type $options
+     * @throws OMK_Exception
+     * @return array[code,message,skip,(option)range)
+     */
+    public function getFileContentRange( $options = NULL ){
+        
+        throw new OMK_Exception(_("Cannot use default upload method, you must override it."), 1);
+
+    }
+    
     
 }

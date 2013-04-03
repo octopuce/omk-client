@@ -15,7 +15,7 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
         if (array_key_exists("log_file_path", $options) && NULL != $options["log_file_path"]) {
             $this->log_file_path = $options["log_file_path"];
         } else {
-            throw new Exception(_("Missing log file path."));
+            throw new OMK_Exception(_("Missing log file path."));
         }
         if (array_key_exists("level", $options) && NULL != $options["level"]) {
             $this->level = $options["level"];

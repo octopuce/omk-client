@@ -1,8 +1,16 @@
 <?php 
 class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
     
-    var $label              = "singleFolder";
+    protected $transport_name   = "http"; 
+    protected $name   = "singleFolder"; // mandatory : sets a key name for this adapter
+    protected $chunk_size       = 8192;
 
+    public function __construct($options = null) {
+        parent::__construct($options);
+        if( array_key_exists("chunk_size",$options) && NULL != $options["chunk_size"]){
+            $this->chunk_size = $options["chunk_size"];
+        } 
+    }
     function upload( $options ){
        
         $file               = current($_FILES);
@@ -33,30 +41,6 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
 
         $file_path          = $targetDir . DIRECTORY_SEPARATOR . $file_name;
         $chunking           = $chunks > 0;
-
-
-        // Remove old temp files	
-//        if ($cleanupTargetDir) {
-//                if (!is_dir($targetDir) || !$dir = opendir($targetDir)) {
-//                        die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
-//                }
-//
-//                while (($file = readdir($dir)) !== false) {
-//                        $tmpfile_path = $targetDir . DIRECTORY_SEPARATOR . $file;
-//
-//                        // If temp file is current file proceed to the next
-//                        if ($tmpfile_path == "{$file_path}.part") {
-//                                continue;
-//                        }
-//
-//                        // Remove temp file if it is older than the max age and is not the current file
-//                        if (preg_match('/\.part$/', $file) && (filemtime($tmpfile_path) < time() - $maxFileAge)) {
-//                                @unlink($tmpfile_path);
-//                        }
-//                }
-//                closedir($dir);
-//        }	
-
 
         // Open temp file
         if (!$out = fopen("{$file_path}.part", "a")) {
@@ -104,6 +88,51 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
         }
 
         return array("code" => 1, "message"=>_("Chunking part received"));
+        
+    }
+
+        
+    public function getFileContentRange($options = NULL) {
+        
+        if( array_key_exists("file_path",$options) && NULL != $options["file_path"]){
+            $file_path = $options["file_path"];
+        } else {
+            throw new OMK_Exception(_("Missing file_path."), self::ERR_MISSING_PARAMETER);
+        }
+        
+        if( array_key_exists("size",$options) && NULL != $options["size"]){
+            $size = $options["size"];
+        } else {
+             $size = filesize($file_path);
+             if( ! $size){
+                throw new OMK_Exception(_("Missing size."), self::ERR_MISSING_PARAMETER);
+             }
+        }
+        
+        if( array_key_exists("full_size",$options) && NULL != $options["full_size"]){
+            $full_size = $options["full_size"];
+        } else {
+            throw new OMK_Exception(_("Missing full_size."), self::ERR_MISSING_PARAMETER);
+        }
+        
+        $parts = array();
+        $parts[1] = $size;
+        
+        $diff = $full_size - $size;
+        if( $diff > $this->chunk_size){
+            $parts[2] = "";
+            $finished = TRUE;
+        }else{
+            $parts[2] = $this->chunk_size;
+            $finished = NULL;
+        }
+        
+        return array(
+            "code"          => 0,
+            "message"       => sprintf(_("Content range calculated.")),
+            "content_range" => implode("-", $parts),
+            "finished"      => $finished
+        );
         
     }
 } 

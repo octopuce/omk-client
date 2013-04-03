@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['auth_5fbasic',['AUTH_BASIC',['../class_h_t_t_p___request2.html#ac625942c71073be179e40294f307c731',1,'HTTP_Request2']]]
+  ['available_5ffalse',['AVAILABLE_FALSE',['../class_o_m_k___settings.html#a45b3a96a9dae182f1480c41686adf5aa',1,'OMK_Settings']]],
+  ['available_5ftrue',['AVAILABLE_TRUE',['../class_o_m_k___settings.html#ac0657e96b3c9305653a205a1d852973d',1,'OMK_Settings']]]
 ];

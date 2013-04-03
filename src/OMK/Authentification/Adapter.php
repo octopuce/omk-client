@@ -10,7 +10,14 @@ Authentification Adapter
 */
 class OMK_Authentification_Adapter extends OMK_Client_Friend{
     
+    const GROUP_ADMIN = 1;
+    const GROUP_USER = 2;
+    
     // ERR CODE 0 - 24
+    const ERR_INVALID_USER = 24;
+    
+    public function __construct( $options = NULL ) {
+    }
     
     function setCredentials(){
         
@@ -22,5 +29,12 @@ class OMK_Authentification_Adapter extends OMK_Client_Friend{
     
     function check(){
         return FALSE;
+    }
+    
+    function getToken(){
+        
+    }
+    function checkToken( $options = NULL ){
+       
     }
 }

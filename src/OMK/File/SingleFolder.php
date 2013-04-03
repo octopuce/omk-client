@@ -3,6 +3,7 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
     
     protected $storage_path;
     protected $http_path;
+    protected $chunk_size = 8192;
 
     public function __construct($options) {
         if(array_key_exists("storage_path", $options) && NULL != $options["storage_path"]){
@@ -13,8 +14,34 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
         if (array_key_exists("http_path", $options) && NULL != $options["http_path"]) {
             $this->http_path = $options["http_path"];
         } else {
-            throw new Exception(_("Missing http path."));
+            throw new OMK_Exception(_("Missing http path."));
         }
+    }
+    
+    public function append($options = NULL) {
+        
+        if( array_key_exists("file_path",$options) && NULL != $options["file_path"]){
+            $file_path = $options["file_path"];
+        } else {
+            throw new omk_(_("Missing file_path."), self::ERR_MISSING_PARAMETER);
+        }
+        if (array_key_exists("data", $options) && NULL != $options["data"]) {
+            $data = $options["data"];
+        } else {
+            throw new OMK_Exception(_("Missing data."), self::ERR_MISSING_PARAMETER);
+        }
+        
+        if( ! file_put_contents($file_path, $data, FILE_APPEND)){
+            return array(
+                "code" => self::ERR_STORAGE_APPEND,
+                "message" => sprintf(_("Failed to append %s  octets appended to file %s "), strlen($data),$file_path)
+            );
+        }
+        
+        return array(
+            "code"      => 0,
+            "message" => sprintf(_("Successfully appended %s octets to file %s "), strlen($data),$file_path)
+        );
     }
 
     public function create($options){
@@ -71,13 +98,15 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
     public function getDownloadUrl( $options = NULL ){
         
         if (array_key_exists("id", $options) && NULL != $options["id"]) {
-            $this->id = $options["id"];
+            $id = $options["id"];
         } else {
-            throw new Exception(_("Missing id."));
+            throw new OMK_Exception(_("Missing id."));
         }
+        
+        $final_path = $this->http_path."/".$id;
 
         if (array_key_exists("file_path", $options) && NULL != $options["file_path"]) {
-            $path = str_replace($this->storage_path, $this->http_path, $options["file_path"]);
+            $path = str_replace($this->storage_path, $final_path, $options["file_path"]);
         } else {
             throw new OMK_Exception(_("Missing file_path."), self::ERR_STORAGE_FILE_PATH);
         }
@@ -85,4 +114,6 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
         return $path;
         
     }
+    
+
 } 

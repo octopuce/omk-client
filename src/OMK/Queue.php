@@ -20,7 +20,7 @@ class OMK_Queue extends OMK_Client_Friend{
     
     const STATUS_NULL           = 0;
     const STATUS_IN_PROGRESS    = 1;
-    const STATUS_FAILURE        = 2;
+    const STATUS_ERROR        = 2;
     const STATUS_SUCCESS        = 3;
     
     const PRIORITY_HIGH         = 5;
@@ -59,10 +59,13 @@ class OMK_Queue extends OMK_Client_Friend{
                 array(
                     "table" => "queue",
                     "data"  => array(
-                        "priority"  => $priority,
-                        "action"    => $action,
-                        "object_id" => $object_id,
-                        "params"    => $params
+                        "priority"          => $priority,
+                        "action"            => $action,
+                        "object_id"         => $object_id,
+                        "params"            => $params,
+                        "dt_created"        => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP,
+                        "dt_last_request"   => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
+                        
                     )
                 )
             )

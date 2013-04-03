@@ -17,20 +17,27 @@ class OMK_Settings extends OMK_Client_Friend{
     
     // ERR CODE 175-199
     
+    const UNCHECKED                 = 0;
+    const CHECKED                   = 1;
+    const AVAILABLE_TRUE            = 1;
+    const AVAILABLE_FALSE           = 2;
+    
+    const SETTINGS_TYPE_ORIGINAL    = 0;
+    
     public function receive( $options = NULL ){
         
         if (NULL == $options || !count($options)) {
-            throw new Exception(_("Missing options."));
+            throw new OMK_Exception(_("Missing options."));
         }
         if (array_key_exists("name", $options) && NULL != $options["name"]) {
             $name = $options["name"];
         } else {
-            throw new Exception(_("Missing name."));
+            throw new OMK_Exception(_("Missing name."));
         }
         if (array_key_exists("settings", $options) && NULL != $options["settings"]) {
             $settings = $options["settings"];
         } else {
-            throw new Exception(_("Missing settings."));
+            throw new OMK_Exception(_("Missing settings."));
         }
         
         foreach ($settings as $theSetting) {
@@ -38,7 +45,7 @@ class OMK_Settings extends OMK_Client_Friend{
             if (array_key_exists("id", $theSetting) && NULL != $theSetting["id"]) {
                 $id = $theSetting["id"];
             } else {
-                throw new Exception(_("Missing id."));
+                throw new OMK_Exception(_("Missing id."));
             }
             $theSetting["transcoder_name"] = $name;
             
@@ -59,4 +66,38 @@ class OMK_Settings extends OMK_Client_Friend{
         return $this->getResult();
     }
     
+    public function update( $options = NULL ){
+        
+        if (array_key_exists("settings", $_REQUEST) && NULL != $_REQUEST["settings"]) {
+            $settingsValues = array_keys( $_REQUEST["settings"] );
+        } else {
+            throw new OMK_Exception(_("Missing settings."));
+        }
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
+            "table" => "settings",
+            "data"  => array(
+                "checked" => self::UNCHECKED
+                ),
+            "where" => array()
+        )));
+        if( !$this->successResult()){
+            return $this->getResult();
+        }
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
+            "table" => "settings",
+            "data"  => array(
+                "checked" => self::CHECKED
+                ),
+            "where" => array(
+                "id IN ?" => $settingsValues
+            )
+        )));
+        if( !$this->successResult()){
+            return $this->getResult();
+        }
+        return array(
+            "code"      => 0,
+            "message"   => _("Settings updated") 
+        );
+    }
 }

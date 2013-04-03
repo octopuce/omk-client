@@ -9,11 +9,15 @@ class OMK_Client_Friend {
     
     // ERR CODE 250 - 274
     const ERR_METHOD_OVERRIDE_REQUIRED      = 250;
+    const ERR_ADAPTER_MISCONFIGURATION      = 251;
+    const ERR_MISSING_PARAMETER             = 252;
+    const ERR_INVALID_KEY                   = 253;
+    const ERR_INVALID_PARAMETER             = 254;
     
     protected $client;
     protected $result = array();
 
-    function setClient( OMK_Client $client){
+    function setClient( OMK_Client &$client){
         $this->client = $client;
     }
     
@@ -109,7 +113,7 @@ class OMK_Client_Friend {
          }
          // Rejects empty results beyond this point
          if( NULL == $this->result || !count($this->result)){
-             throw new Exception("Invalid result.");
+             throw new OMK_Exception("Invalid result.");
          }
          // Json output requested
          if( "json" == $format){
@@ -119,7 +123,7 @@ class OMK_Client_Friend {
          }
          // If JSON failed, throws exception
          if( NULL == $return || "null" == $return){
-             throw new Exception(_("Null result returned"));
+             throw new OMK_Exception(_("Null result returned"));
          }
          // returns string
          return $return;
@@ -136,7 +140,7 @@ class OMK_Client_Friend {
          if (array_key_exists("api_app_key", $_REQUEST) && NULL != $_REQUEST["api_app_key"]) {
              $api_app_key = $_REQUEST["api_app_key"];
          } else {
-             throw new Exception(_("Missing api app key."));
+             throw new OMK_Exception(_("Missing api app key."));
          }
          if( $this->getClient()->getAppKey() != $api_app_key ){
              throw new OMK_Exception(_("Invalid app key."));

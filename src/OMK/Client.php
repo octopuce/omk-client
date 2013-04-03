@@ -46,6 +46,8 @@ class OMK_Client{
     const ERR_JSON_CTRL_CHAR        = 233; // original JSON_ERROR_CTRL_CHAR = 3
     const ERR_JSON_SYNTAX           = 234; // original JSON_ERROR_SYNTAX = 4
     const ERR_JSON_UTF8             = 235; // original JSON_ERROR_UTF8 = 5
+    const ERR_JSON_INVALID          = 236; 
+    const ERR_INVALID_FORMAT        = 237; 
     protected $authentificationAdapter;
     protected $databaseAdapter;
     protected $fileAdapter;
@@ -54,10 +56,10 @@ class OMK_Client{
     protected $queue;
     protected $uploadAdapterContainer = array();
     public $application_name;
-    public $api_local_key;
-    public $api_local_url;
-    public $api_transcoder_key;
-    public $api_transcoder_url;
+    public $client_key;
+    public $client_url;
+    public $transcoder_key;
+    public $transcoder_url;
     public $css_url_path;
     public $js_url_path;
     public $view_path;
@@ -98,24 +100,24 @@ class OMK_Client{
             $this->setTranslationAdapter( $options['translationAdapter'] );
         }
         
-        if (array_key_exists("api_local_key", $options) && NULL != $options["api_local_key"]) {
-            $this->api_local_key = $options['api_local_key'];
+        if (array_key_exists("client_key", $options) && NULL != $options["client_key"]) {
+            $this->client_key = $options['client_key'];
         } 
         
-        if (array_key_exists("api_local_url", $options) && NULL != $options["api_local_url"]) {
-            $this->api_local_url = $options['api_local_url'];
+        if (array_key_exists("client_url", $options) && NULL != $options["client_url"]) {
+            $this->client_url = $options['client_url'];
         } 
         
-        if (array_key_exists("api_transcoder_key", $options) && NULL != $options["api_transcoder_key"]) {
-            $this->api_transcoder_key = $options['api_transcoder_key'];
+        if (array_key_exists("transcoder_key", $options) && NULL != $options["transcoder_key"]) {
+            $this->transcoder_key = $options['transcoder_key'];
         } 
         
         if (array_key_exists("application_name", $options) && NULL != $options["application_name"]) {
             $this->application_name = $options["application_name"];
         } 
         
-        if (array_key_exists("api_transcoder_url", $options) && NULL != $options["api_transcoder_url"]) {
-            $this->api_transcoder_url = $options['api_transcoder_url'];
+        if (array_key_exists("transcoder_url", $options) && NULL != $options["transcoder_url"]) {
+            $this->transcoder_url = $options['transcoder_url'];
         } 
         
         if (array_key_exists("css_url_path", $options) && NULL != $options["css_url_path"]) {
@@ -131,13 +133,35 @@ class OMK_Client{
         }else{
             $this->view_path = ".";
         }
+        
+        if (array_key_exists("mime_type_whitelist", $options) && NULL != $options["mime_type_whitelist"]) {
+            $this->mime_type_whitelist = $options["mime_type_whitelist"];
+        } 
+    }
+    
+    function getMimeTypeWhitelist(){
+
+        if( NULL == $this->mime_type_whitelist ){
+            throw new OMK_Exception(_("Missing mime type whitelist."));
+        }
+        return $this->mime_type_whitelist;
+        
+    }
+    
+    function setMimeTypeWhitelist( $mime_type_whitelist ){
+
+        if( !is_array( $mime_type_whitelist ) ){
+            throw new OMK_Exception(_("Missing mime type whitelist."));
+        }
+        $this->mime_type_whitelist= $mime_type_whitelist;
+        
     }
     
     public function getAppUrl(){
-        if( NULL == $this->api_local_url ){
+        if( NULL == $this->client_url ){
             throw new OMK_Exception(_("Missing api local url."));
         }
-        return $this->api_local_url;
+        return $this->client_url;
     }
     
     /**
@@ -146,10 +170,10 @@ class OMK_Client{
      * @throws OMK_Exception
      */
     public function getAppKey(){
-        if( NULL == $this->api_local_key ){
+        if( NULL == $this->client_key ){
             throw new OMK_Exception(_("Missing api local key."));
         }
-        return $this->api_local_key;
+        return $this->client_key;
     }
     
     public function getVersion(){
@@ -162,18 +186,18 @@ class OMK_Client{
     
     public function getTranscoderKey(){
         
-        if ( NULL === $this->api_transcoder_key) {
+        if ( NULL === $this->transcoder_key) {
             throw new OMK_Exception(_("Missing api transcoder key."));
         }
-        return $this->api_transcoder_key;
+        return $this->transcoder_key;
     }
 
     public function getTranscoderUrl(){
         
-        if ( NULL === $this->api_transcoder_url) {
+        if ( NULL === $this->transcoder_url) {
             throw new OMK_Exception(_("Missing api transcoder url."));
         }
-        return $this->api_transcoder_url;
+        return $this->transcoder_url;
     }
 
     public function getApplicationName(){
@@ -190,7 +214,11 @@ class OMK_Client{
         return $this;
 
     }
-    
+    /**
+     * 
+     * @return OMK_Authentification_Adapter
+     * @throws OMK_Exception
+     */
     public function getAuthentificationAdapter(){
         
         if( NULL == $this->authentificationAdapter){
@@ -237,12 +265,18 @@ class OMK_Client{
 
     public function setUploadAdapter(OMK_Upload_Adapter $adapter = null) {
         $adapter->setClient($this);
-        $name = $adapter->getLabel();
+        $name = $adapter->getName();
         $this->uploadAdapterContainer[$name] = $adapter;
         return $this;
     }
     
-    public function getUploadAdapter( $options = NULL ){
+    /**
+     * 
+     * @param type $options
+     * @return OMK_Upload_Adapter
+     * @throws OMK_Exception
+     */
+    public function getUploadAdapter( $options = array() ){
         
         if( !count($this->uploadAdapterContainer)){
             throw new OMK_Exception(_("No uploader defined."));
@@ -421,12 +455,38 @@ class OMK_Client{
 
     public function render( $view ){
         
-        if( ! $this->authentificationAdapter->check()){
+        // Defines actions requiring admin rights
+        $adminViews = array(
+            "settings.index",
+            "settings.update"
+        );
+        
+        if( in_array($view,$adminViews)){
+            $group = OMK_Authentification_Adapter::GROUP_ADMIN;
+        }else{
+            $group = OMK_Authentification_Adapter::GROUP_USER;
+        }
+        
+        if( ! $this->getAuthentificationAdapter()->check($group)){
             $view = "error";
         }
         switch ($view) {
             case "upload":
                 $view = "upload.phtml";
+                break;
+            case "settings.index":
+                $view = "settings.index.phtml";
+                break;
+            case "settings.update":
+                $settingsInstance = new OMK_Settings();
+                $settingsInstance->setClient($this);
+                $settingsInstance->recordResult( $settingsInstance->update());
+                if( $settingsInstance->successResult()){
+                    $view = "settings.index.phtml";
+                    break;
+                }
+                $error = TRUE;
+                $view = "error.phtml";
                 break;
             case "error":
             default:

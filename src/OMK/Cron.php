@@ -11,7 +11,9 @@ class OMK_Cron extends OMK_Client_Friend{
     const ERR_INVALID_ACTION        = 203;
     const ERR_LOCK_QUEUE            = 204;
     const ERR_UNLOCK_QUEUE          = 205;
-    const ERR_NO_TASKS              = 206;
+    
+    const DELAY_REQUEST_DEFAULT     = 2; // in minutes
+    const MAX_TRIES                 = 13; // number of times we try an action
     
     
     /**
@@ -46,21 +48,31 @@ class OMK_Cron extends OMK_Client_Friend{
         if( !$this->successResult()){
             return $this->getResult();
         }
+        $loops              = 0;
+        $errors             = array();
         do {
-            // Runs task 
+            // Runs task, exceptions captured by method
+            $loops++;
             $this->recordResult($this->runTask());
+            
+            // Handles failure
             if( ! $this->successResult()){
-                return $this->getResult();
+                $errors[] = array(
+                    "code" => $this->result["code"],
+                    "message" => $this->result["message"]
+                );
             }
+            // Handles end of loop
             if( array_key_exists("finished", $this->result) && $this->result["finished"] ){
-                return $this->getResult();
+                break;
             }
         } while ( TRUE );
 
         // Exits
         return array(
             "code" => 0,
-            "message"   => _("Finished cron tasks.")
+            "message"   => sprintf(_("Finished cron tasks, %s loops."), $loops),
+            "errors"    => $errors
         );
         
     }
@@ -89,17 +101,29 @@ class OMK_Cron extends OMK_Client_Friend{
         
         // Exits if failed
         if( ! $this->successResult()){return $this->getResult();}
-        
-        // Exits if finished
-        if (array_key_exists("finished", $this->result) && NULL != $this->result["finished"]) {
-            return $this->getResult();
-        } 
-        
-        // Retrieves task
-        $task            = $this->result["task"];
+                
+        // Stores getCronTask result
+        $tmpResult = $this->result;
         
         // Unlocks table
         $this->recordResult($this->getClient()->getDatabaseAdapter()->unlock(array("table" => "queue")));
+
+        // Exits if failed
+        if (!$this->successResult()) {
+            return $this->getResult();
+        }
+        
+        // Exits if finished
+        if (array_key_exists("finished", $tmpResult) && NULL != $tmpResult["finished"]) {
+            return $tmpResult;
+        } 
+        
+        // Retrieves task
+        if (array_key_exists("task", $tmpResult) && NULL != $tmpResult["task"]) {
+            $task = $tmpResult["task"];
+        } else {
+            throw new OMK_Exception(_("Missing task."), self::ERR_MISSING_PARAMETER);
+        }
         
         // Crashes if unlocked failed
         if( ! $this->successResult()){
@@ -138,12 +162,12 @@ class OMK_Cron extends OMK_Client_Friend{
 
         }
         
-        // Gets the task status if defined by the response, probably result
+        // Gets the task status if defined by the response 
         if (array_key_exists("status", $this->result) && NULL != $this->result["status"]) {
             $status = $this->result["status"];
-        } else if( $task["failed_attempts"] > 10 ) {
+        } else if( $task["failed_attempts"] >= self::MAX_TRIES ) {
             // If failed too much, set status as failed
-            $status = OMK_Queue::STATUS_FAILURE;
+            $status = OMK_Queue::STATUS_ERROR;
         } else {
             // By default, consider the status is "IN PROGRESS"
             $status  = OMK_Queue::STATUS_IN_PROGRESS;
@@ -151,14 +175,26 @@ class OMK_Cron extends OMK_Client_Friend{
         
         // Task failed: attempts to reset lock and save status. Handles failed attempts
         if( ! $this->successResult()){
+            
+            // Gets the delay before next visit
+            $delay = $this->getDelayNextRequest( $task["delay_next_request"]);
+            
+            // Stores the error and message
+            $storedResult = $this->getResult();
+            
             $this->recordResult($this->unlockTask(array(
                 "id"        => $id,
                 "data"      => array(
-                    'status' => $status,
-                    'failed_attempts' => OMK_Database_Adapter::REQ_INCREMENT
+                    'status'                => $status,
+                    'failed_attempts'       => OMK_Database_Adapter::REQ_INCREMENT,
+                    'delay_next_request'    => $delay
                 )
             )));
-            return $this->getResult();
+            if( !$this->successResult()){
+                return $this->getResult();
+            }
+            // Returns the actual error, not a positive feedback from row update
+            return $storedResult;
         }
 
         // Task succeeded : attempts to reset lock and save status. 
@@ -184,22 +220,37 @@ class OMK_Cron extends OMK_Client_Friend{
 
     }
     
+/**
+ * Returns the next delay before retry based on the current delay
+ * 
+ * @param int $current_delay
+ * @return int delay
+ * 
+ */    
+    protected function getDelayNextRequest( $current_delay = self::DELAY_REQUEST_DEFAULT ){
+ 
+        // Default value
+        if( (int) $current_delay < self::DELAY_REQUEST_DEFAULT ){
+            return self::DELAY_REQUEST_DEFAULT;
+        }
+        return (int) ($current_delay * 1.618 );
+    }
     
     function unlockTask( $options = NULL ){
 
         if (NULL == $options || !count($options)) {
-            throw new Exception(_("Missing options."));
+            throw new OMK_Exception(_("Missing options."));
         }
         if (array_key_exists("id", $options) && NULL != $options["id"]) {
             $id = $options["id"];
         } else {
-            throw new Exception(_("Missing id."));
+            throw new OMK_Exception(_("Missing id."));
         }
         if (array_key_exists("data", $options) && NULL != $options["data"]) {
             $data = $options["data"];
             $data["locked"] = 0;
         } else {
-            throw new Exception(_("Missing data."));
+            throw new OMK_Exception(_("Missing data."));
         }
         $params             = array(
             "table"     => "queue",
@@ -238,10 +289,10 @@ class OMK_Cron extends OMK_Client_Friend{
      */
     public function getCronTask(){
         
-        // proxy the db adapter
+        // Proxifies the db adapter
         $db         = $this->getClient()->getDatabaseAdapter();
         
-        // - updates wrong individual locks, 
+        // Updates wrong individual locks, 
         $this->recordResult(
             $db->update(array(
                "table" => "queue",
@@ -251,7 +302,7 @@ class OMK_Cron extends OMK_Client_Friend{
                 "where" => array(
                     "locked = ?" => OMK_Queue::LOCK_LOCKED,
                     "TIMESTAMPDIFF( SECOND, dt_last_request, NOW()) > 150" => OMK_Database_Adapter::REQ_NO_BINDING,
-                    "status IN (".implode(",", array(OMK_Queue::STATUS_NULL,OMK_Queue::STATUS_IN_PROGRESS)).")" => OMK_Database_Adapter::REQ_NO_BINDING
+                    "status IN (".implode(",", array(OMK_Queue::STATUS_NULL,OMK_Queue::STATUS_IN_PROGRESS,OMK_Queue::STATUS_ERROR)).")" => OMK_Database_Adapter::REQ_NO_BINDING
                 )
         )));
         if( !$this->successResult()){
@@ -264,7 +315,8 @@ class OMK_Cron extends OMK_Client_Friend{
                 "table" => "queue",
                 "where" => array(
                     "locked = ?" => OMK_Queue::LOCK_UNLOCKED,
-                    "status IN (".implode(",",array(OMK_Queue::STATUS_NULL, OMK_Queue::STATUS_IN_PROGRESS)).")" => OMK_Database_Adapter::REQ_NO_BINDING
+                    "status IN (".implode(",",array(OMK_Queue::STATUS_NULL, OMK_Queue::STATUS_IN_PROGRESS,OMK_Queue::STATUS_ERROR)).")" => OMK_Database_Adapter::REQ_NO_BINDING,
+                    "DATE_ADD( dt_last_request, INTERVAL delay_next_request MINUTE) <= ?" => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
                 ),
                 "order" => array(
                     "priority ASC",
@@ -283,7 +335,7 @@ class OMK_Cron extends OMK_Client_Friend{
             $task_id    = $taskData["id"];
         } else {
             return array(
-                "code"      => self::ERR_NO_TASKS,
+                "code"      => 0,
                 "message"   => _("No more task to run"),
                 "finished"  => TRUE
             );
@@ -294,6 +346,7 @@ class OMK_Cron extends OMK_Client_Friend{
             $db->update(array(
                "table" => "queue",
                 "data" => array(
+                    "dt_last_request" => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP,
                     "locked" => OMK_Queue::LOCK_LOCKED
                 ),
                 "where" => array(
@@ -312,14 +365,4 @@ class OMK_Cron extends OMK_Client_Friend{
         );
     }
     
-    protected function app_request_format( $options = NULL ){
-        
-    }
-    
-    protected function transcoder_send_format( $options = NULL ){
-        
-    }
-    protected function transcoder_send_metadata( $options = NULL ){
-        
-    }
 }    

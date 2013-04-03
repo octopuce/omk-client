@@ -41,10 +41,10 @@ $translationAdapter = new OMK_Translation_Dummy();
 
 // set up the client
 $client = new OMK_Client(array(
-    "api_local_key"             => "1234567890abcdef",
-    "api_local_url"             => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}{$_SERVER["SCRIPT_NAME"]}",
-    "api_transcoder_key"        => "1234567890abcdef",
-    "api_transcoder_url"        => "http://test.openmediakit.fr/",
+    "client_key"             => "1234567890abcdef",
+    "client_url"             => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}{$_SERVER["SCRIPT_NAME"]}",
+    "transcoder_key"        => "1234567890abcdef",
+    "transcoder_url"        => "http://test.openmediakit.fr/",
     "css_url_path"              => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}".dirname($_SERVER["SCRIPT_NAME"])."/../src/OMK/views/css",
     "js_url_path"               => (strstr( $_SERVER["SERVER_PROTOCOL"], "HTTP/") ? "http":"https")."://{$_SERVER["SERVER_NAME"]}".dirname($_SERVER["SCRIPT_NAME"])."/../src/OMK/views/js",
     "view_path"                 => dirname(__FILE__)."/../src/OMK/views",

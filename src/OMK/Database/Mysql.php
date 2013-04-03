@@ -47,28 +47,85 @@
         }
     }
     
-    function query( $statement, $data ){
-        try { 
-            $sth = $this->dbConnection->prepare($statement);
-            $sth->execute($data);
-            $results = $sth->fetchAll();
-            if( false !== $results){
-                return $results;
+    private function buildData( &$data, &$vals, &$i, &$cols = array()){
+        $srcData = $data;
+        foreach ($srcData as $col => $val) {
+            unset($data[$col]);
+            $quoted_col     = $this->quoteIdentifier($col);
+            $cols[]         = $quoted_col;
+            switch( (string) $val ){
+                case OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP:
+                    $vals[] = $quoted_col.' = NOW()';
+                break;
+                case OMK_Database_Adapter::REQ_INCREMENT:
+                    $vals[] = "{$quoted_col} = {$quoted_col} + 1";
+                break;
+                default:
+                    $data[':col'.$i] = $val;
+                    $vals[] = $quoted_col.' = :col'.$i;
+                    break;
             }
-            $error_code     = $this->dbConnection->errorCode();
-            $error_info     = implode(" - ", $this->dbConnection->errorInfo() );
-            throw new OMK_Exception(sprintf(_("An error occured with mysql exec.\n Code: %s\n Info: %s"),  $error_code, $error_info));
-       }  
-        catch(PDOException $e) {  
-            $msg    = _("Mysql query failed.");
-            $this->getClient()->getLoggerAdapter()->log(array(
-                "level"     => OMK_Logger_Adapter::WARN,
-                "message"   => $msg,
-                "exception" => $e
-            ));
-            throw new OMK_Exception($msg);
-        }  
+
+            $i++;
+        }
     }
+
+    private function buildDataInsert( &$data, &$vals, &$i, &$cols = array()){
+        $srcData = $data;
+        foreach ($srcData as $col => $val) {
+            unset($data[$col]);
+            $quoted_col     = $this->quoteIdentifier($col);
+            $cols[]         = $quoted_col;
+            switch( (string) $val ){
+                case OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP:
+                    $vals[] = 'NOW()';
+                break;
+                case OMK_Database_Adapter::REQ_INCREMENT:
+                    $vals[] = "{$quoted_col} + 1";
+                break;
+                default:
+                    $data[':col'.$i] = $val;
+                    $vals[] = ':col'.$i;
+                    break;
+            }
+
+            $i++;
+        }
+    }
+
+    protected function buildWhere( &$where, &$data, &$i){
+        $srcWhere = $where;
+        foreach ($srcWhere as $clause => $val) {
+            unset($where[$clause]);
+            if( is_array($val)){
+                foreach($val as $in_key => $in_val){
+                    $val[$in_key] = $this->dbConnection->quote($in_val);
+                }
+                $where[]    = str_replace("?", "(".implode(",", $val).")", $clause);
+            } else {
+                
+                switch((string) $val){
+                    case OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP:
+                        $where[] = str_replace("?", "NOW()", $clause);
+                        break;
+                    case OMK_Database_Adapter::REQ_NO_BINDING:
+                        $where[] = $clause;
+                        break;
+                    default:
+                        $data[':col'.$i] = $val;
+                        $where[] = str_replace("?", ":col{$i}", $clause);
+                        break;
+                }
+            }
+            $i++;            
+        }
+
+    }    
+    
+    function delete($options = null) {
+        parent::delete($options);
+    }
+    
     
     function exec( $query, $bind = array() ){
         try { 
@@ -108,16 +165,8 @@
         $vals = array();
         $i = 0;
         
-//       foreach ($data as $col => $val) {
-//            $cols[] = $this->quoteIdentifier($col);
-//            unset($data[$col]);
-//            $data[':col'.$i] = $val;
-//            $vals[] = ':col'.$i;
-//            $i++;
-//        }
-//        
         // Builds values to insert
-        $this->buildData($data, $vals, $i, $cols);
+        $this->buildDataInsert($data, $vals, $i, $cols);
 
         // build the statement
         $sql = "INSERT INTO "
@@ -143,6 +192,86 @@
             "message"   => sprintf(_("Successfully inserted new row in %s"),$table),
             "id"        => $this->dbConnection->lastInsertId()
         );
+    }
+    
+    function lock($options = NULL) {
+        
+        // Checks sanity
+        if (array_key_exists("table", $options) && NULL != $options["table"]) {
+            $table = $options["table"];
+        } else {
+            throw new OMK_Exception(_("Missing table."));
+        }
+        if (array_key_exists("lock_type", $options) && NULL != $options["lock_type"]) {
+            $lock_type = $options["lock_type"];
+        } else {
+            $lock_type = "WRITE";
+        }
+        if (array_key_exists("lock", $options)) {
+            $lock = $options["lock"];
+            if($lock){
+                $lock = "LOCK";
+            }else{
+                $lock = "UNLOCK";
+            }
+        } else {
+            $lock = "LOCK";
+        }
+        // Builds query
+        switch ($lock){
+            case "LOCK":
+                $sql = "LOCK TABLE ".$this->quoteIdentifier($table)." {$lock_type}";
+                break;
+            case "UNLOCK":
+                $sql = "UNLOCK TABLES";
+                break;
+            default:
+                throw new OMK_Exception(_("Invalid lock method: LOCK or UNLOCK expected"),self::ERR_INVALID_LOCK);
+                break;
+        }
+        // Runs query
+        try{
+            $affected_rows = $this->exec($sql);
+        } catch (OMK_Exception $e){
+            $msg          = sprintf(_("Failed to (lock|unlock): %s table %s"), $lock, $table);
+            $this->getClient()->getLoggerAdapter()->log(array(
+               "level"      => OMK_Logger_Adapter::WARN,
+                "message"   => $msg,
+                "exception" => $e
+            ));
+            return array(
+                "code"      => self::ERR_UPDATE,
+                "message"   => $msg
+            );
+        }
+        return array(
+            "code"          => 0,
+            "message"       => sprintf(_("Successfull (lock|unlock): %s on table %s"), $lock, $table)
+        );
+
+    }
+    
+    function query( $statement, $data ){
+        try { 
+            $sth = $this->dbConnection->prepare($statement);
+            $sth->execute($data);
+            $results = $sth->fetchAll();
+            if( false !== $results){
+                return $results;
+            }
+            $error_code     = $this->dbConnection->errorCode();
+            $error_info     = implode(" - ", $this->dbConnection->errorInfo() );
+            throw new OMK_Exception(sprintf(_("An error occured with mysql exec.\n Code: %s\n Info: %s"),  $error_code, $error_info));
+       }  
+        catch(PDOException $e) {  
+            $msg    = _("Mysql query failed.");
+            $this->getClient()->getLoggerAdapter()->log(array(
+                "level"     => OMK_Logger_Adapter::WARN,
+                "message"   => $msg,
+                "exception" => $e
+            ));
+            throw new OMK_Exception($msg);
+        }  
     }
     
     function select($options = null) {
@@ -217,6 +346,11 @@
         
     }
     
+    function unlock( $options = NULL ){
+        $options["lock"] = FALSE;
+        return $this->lock($options);
+    }
+
     function update($options = null) {
         
         if (array_key_exists("table", $options) && NULL != $options["table"]) {
@@ -279,114 +413,7 @@
         
     }
     
-    function delete($options = null) {
-        parent::delete($options);
-    }
     
-    private function buildData( &$data, &$vals, &$i, &$cols = array()){
-        $srcData = $data;
-        foreach ($srcData as $col => $val) {
-            unset($data[$col]);
-            $quoted_col     = $this->quoteIdentifier($col);
-            $cols[]         = $quoted_col;
-            switch( (string) $val ){
-                case OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP:
-                    $vals[] = $quoted_col.' = NOW()';
-                break;
-                case OMK_Database_Adapter::REQ_INCREMENT:
-                    $vals[] = "{$quoted_col} = {$quoted_col} + 1";
-                break;
-                default:
-                    $data[':col'.$i] = $val;
-                    $vals[] = $quoted_col.' = :col'.$i;
-                    break;
-            }
-            $i++;
-        }
-    }
-
-    protected function buildWhere( &$where, &$data, &$i){
-        $srcWhere = $where;
-        foreach ($srcWhere as $clause => $val) {
-            unset($where[$clause]);
-            switch((string) $val){
-                case OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP:
-                    $where[] = str_replace("?", "NOW()", $clause);
-                    break;
-                case OMK_Database_Adapter::REQ_NO_BINDING:
-                    $where[] = $clause;
-                    break;
-                default:
-                    $data[':col'.$i] = $val;
-                    $where[] = str_replace("?", ":col{$i}", $clause);
-                    break;
-            }
-            $i++;            
-        }
-
-    }
-    function lock($options = NULL) {
-        
-        // Checks sanity
-        if (array_key_exists("table", $options) && NULL != $options["table"]) {
-            $table = $options["table"];
-        } else {
-            throw new Exception(_("Missing table."));
-        }
-        if (array_key_exists("lock_type", $options) && NULL != $options["lock_type"]) {
-            $lock_type = $options["lock_type"];
-        } else {
-            $lock_type = "WRITE";
-        }
-        if (array_key_exists("lock", $options)) {
-            $lock = $options["lock"];
-            if($lock){
-                $lock = "LOCK";
-            }else{
-                $lock = "UNLOCK";
-            }
-        } else {
-            $lock = "LOCK";
-        }
-        // Builds query
-        switch ($lock){
-            case "LOCK":
-                $sql = "LOCK TABLE ".$this->quoteIdentifier($table)." {$lock_type}";
-                break;
-            case "UNLOCK":
-                $sql = "UNLOCK TABLES";
-                break;
-            default:
-                throw new OMK_Exception(_("Invalid lock method: LOCK or UNLOCK expected"),self::ERR_INVALID_LOCK);
-                break;
-        }
-        // Runs query
-        try{
-            $affected_rows = $this->exec($sql);
-        } catch (OMK_Exception $e){
-            $msg          = sprintf(_("Failed to (lock|unlock): %s table %s"), $lock, $table);
-            $this->getClient()->getLoggerAdapter()->log(array(
-               "level"      => OMK_Logger_Adapter::WARN,
-                "message"   => $msg,
-                "exception" => $e
-            ));
-            return array(
-                "code"      => self::ERR_UPDATE,
-                "message"   => $msg
-            );
-        }
-        return array(
-            "code"          => 0,
-            "message"       => sprintf(_("Successfull (lock|unlock): %s on table %s"), $lock, $table)
-        );
-
-    }
-    
-    function unlock( $options = NULL ){
-        $options["lock"] = FALSE;
-        return $this->lock($options);
-    }
-
     function save($options = NULL) {
         
         if (NULL == $options || !count($options)) {

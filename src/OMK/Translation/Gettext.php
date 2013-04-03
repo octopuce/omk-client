@@ -14,7 +14,7 @@ class OMK_Translation_Gettext extends OMK_Translation_Adapter{
     public function __construct( $options = NULL ) {
 
         if (NULL == $options || !count($options)) {
-            throw new Exception(_("Missing options."));
+            throw new OMK_Exception(_("Missing options."));
         }
         if (array_key_exists("locale", $options) && NULL != $options["locale"]) {
             $locale = $options["locale"];

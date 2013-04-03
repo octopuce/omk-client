@@ -71,7 +71,7 @@ class OMK_Cron_Exec extends OMK_Cron_Abstract {
             );
         }
         if( ! is_readable($controller_file_path) ){
-            throw new Exception(_("Could not read the controller file"),self::ERR_CONTROLLER_FILE_READ);
+            throw new OMK_Exception(_("Could not read the controller file"),self::ERR_CONTROLLER_FILE_READ);
         }
         $controller_file_contents   = file_get_contents($controller_file_path);
         $controllerData             = json_decode($controller_file_contents);
