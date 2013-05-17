@@ -495,14 +495,14 @@ onError : App logs error
         }
         
         // Attempts to load settings to be requested
-        $this->recordResult(array($this->getClient()->getDatabaseAdapter()->select(array(
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->select(array(
             "table" => "settings",
             "where" => array(
                 "type = ?"      => $type,
                 "checked = ?"   => OMK_Settings::CHECKED,
                 "available = ?" => OMK_Settings::AVAILABLE_TRUE
             )
-        ))));
+        )));
         
         // Exits if failed
         if( !$this->successResult()){return $this->getResult();}
@@ -511,10 +511,11 @@ onError : App logs error
         if (array_key_exists("rows", $this->result) && count($this->result["rows"]) ) {
             $settings = $this->result["rows"];
         } else {
-            return array(
+            $this->recordResult(array(
                 "code"      => self::ERR_MISSING_PARAMETER,
                 "message"   => sprintf( _("No settings for the %s media type."), $fileData["type"])
-            );
+            ));
+            return $this->getResult();
         }
 
         // Builds query params
@@ -522,20 +523,19 @@ onError : App logs error
         foreach( $settings as $theSetting){
             $settingsIdList[] = $theSetting["id"];
         }
-        $params["settings_id_list"] = $settingsIdList;
+        $this->queryParams["settings_id_list"] = $settingsIdList;
 
         // Sends format to transcoder
-        $this->getRequestObject(array(
+//        $this->queryParams["params"] = $params;
+        $this->recordResult($this->send(array(
             "action"    => "app_request_format",
-            "params"    => $params
-        ));
-        $this->recordResult($this->send(array()));
+        )));
  
         // Exits if failed
         if( !$this->successResult()){return $this->getResult();}
        
         // Updates files status
-        $this->recordResult(array($this->getClient()->getDatabaseAdapter()->update(array(
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
             "table" => "files",
             "data"  => array(
                 "status"    => OMK_File_Adapter::STATUS_TRANSCODE_REQUESTED,
@@ -543,7 +543,7 @@ onError : App logs error
             "where" => array(
                 "id = ?"    => $object_id,
             )
-        ))));
+        )));
         
         $newFileData = array(
              "parent_id"     => $fileData["id"],
@@ -552,16 +552,17 @@ onError : App logs error
          );
 
         // Inserts childs records
-        foreach ($settingsIdList as $settings_id => $settingsData){
+        foreach ($settings as $theSetting){
             
-            $newFileData["settings_id"] = $settings_id;
-            $newFileData["type"] =$settingsData["type"];
+            $newFileData["settings_id"] = $theSetting["id"];
+            $newFileData["type"]        = $theSetting["type"];
             $this->recordResult($this->getClient()->getDatabaseAdapter()->insert(array(
                 "table"     => "files",
                 "data"      => $newFileData
             )));
             
         }
+        $this->result["status"] = OMK_Queue::STATUS_SUCCESS;
         
         return $this->getResult();
     }

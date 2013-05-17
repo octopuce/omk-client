@@ -219,8 +219,8 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
             "table"        => "files",
             "where"        => array(
-                "id = ?"       => $parent_id,
-                "status = ?"   => OMK_File_Adapter::STATUS_METADATA_REQUESTED
+                "id = ?"        => $parent_id,
+                "status IN ?"      => array( OMK_File_Adapter::STATUS_STORED, OMK_File_Adapter::STATUS_METADATA_REQUESTED)
             )
         )) );
 
@@ -230,10 +230,11 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         // Asserts the existence of the record in database
         $rows          = $this->result["rows"];
         if( ! count( $rows) ){
-            return array(
+            $this->recordResult(array(
                 "code"     => OMK_File_Adapter::ERR_STATUS_INVALID,
-                "message"  => _("Invalid status.")
-            );
+                "message"  => sprintf( _("This file is not awaiting metadata. File id: %s"), $parent_id)
+            ));
+            return $this->getResult();
         }
         
         // Attempts to decode the JSON string
@@ -256,20 +257,14 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         if (array_key_exists("mime_type", $metadataObject) && NULL != $metadataObject["mime_type"]) {
             $mime_type = $metadataObject["mime_type"];
         } else {
-            $this->recordResult(array(
-                "code"     => self::ERR_INVALID_PARAMETER,
-                "message"  => _("Missing mime type.")
-            ));
-            return $this->getResult();
+            throw new OMK_Exception(_("Missing mime type."), self::ERR_MISSING_PARAMETER);
         }
         
         // Checks mandatory elements
-        if (!array_key_exists("type", $metadataObject) && NULL != $metadataObject["type"]) {
-            $this->recordResult(array(
-                "code"     => self::ERR_INVALID_PARAMETER,
-                "message"  => _("Missing type.")
-            ));
-            return $this->getResult();
+        if (array_key_exists("type", $metadataObject) && NULL != $metadataObject["type"]) {
+            $type = $metadataObject["type"];
+        } else {
+            throw new OMK_Exception(_("Missing type."), self::ERR_MISSING_PARAMETER);
         }
         
         // Exits if the MIME type doesn't appear in the client's whitelist
@@ -285,6 +280,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
             "table"        => "files",
             "data"         => array(
+                "type" => $type,
                 "metadata" => $metadata,
                 "status"   => OMK_File_Adapter::STATUS_METADATA_RECEIVED
             ),
@@ -300,7 +296,8 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         $this->recordResult( $this->getClient()->getQueue()->push(array(
                  "object_id"    => $parent_id,
                  "priority"     => OMK_Queue::PRIORITY_MEDIUM,
-                 "action"       => "app_get_format",
+                 "action"       => "app_request_format",
+                 "params"       => $metadata
          )) );
         
         // Exit
@@ -326,12 +323,15 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
              return $this->getResult();
          }
          
+         $this->getClient()->getLoggerAdapter()->log(array(
+             "level"    => OMK_Logger_Adapter::INFO,
+             "message"  => "Cron request at ".date("Y/m/d H:i:s")
+         ));
+         
         // Runs the cron action
         $cron = new OMK_Cron( $options );
         $cron->setClient($this->getClient());
-        $this->recordResult(
-             $cron->run()
-        );
+        $cron->run();
          
      }
      

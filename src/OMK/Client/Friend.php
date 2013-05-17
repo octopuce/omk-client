@@ -66,6 +66,7 @@ class OMK_Client_Friend {
     * 
     * @see getResult() the method used to get the resulting object
     * @see successResult() the method used to get the resulting object
+    * @return \OMK\Client\Friend
     */
     function recordResult( array $result){
          
@@ -89,6 +90,8 @@ class OMK_Client_Friend {
             "level"    => OMK_Logger_Adapter::DEBUG , 
             "message"  => $result["message"]
         ));
+        return $this;
+        
      }
 
      /**

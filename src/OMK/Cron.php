@@ -69,11 +69,11 @@ class OMK_Cron extends OMK_Client_Friend{
         } while ( TRUE );
 
         // Exits
-        return array(
+        $this->recordResult( array(
             "code" => 0,
-            "message"   => sprintf(_("Finished cron tasks, %s loops."), $loops),
+            "message"   => sprintf(_("Finished cron tasks, %s loops."), ($loops - 1)),
             "errors"    => $errors
-        );
+        ));
         
     }
     
@@ -133,6 +133,11 @@ class OMK_Cron extends OMK_Client_Friend{
         $id             = $task["id"];
         $action         = $task["action"];
 
+        $this->getClient()->getLoggerAdapter()->log(array(
+            "level"     => OMK_Logger_Adapter::INFO,
+            "message"   => sprintf(_("Started cron action %s "),$action)
+        ));
+        
         // Runs the task. 
         try{                
             switch ($action){
