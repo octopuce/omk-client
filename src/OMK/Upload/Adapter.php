@@ -22,14 +22,14 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     
     
     protected $tmp_path;
-    protected $transport_name   = "http"; 
+    protected $protocol   = "http"; 
     protected $name   = "default"; // mandatory : sets a key name for this adapter
     
     function __construct($options = null) {
         if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options"), 1);
         }
-        if(array_key_exists("tmp_path", $options) && NULL != $options["name"]){
+        if(array_key_exists("tmp_path", $options) && NULL != $options["tmp_path"]){
             $this->tmp_path = $options["tmp_path"];
         }
         
@@ -49,11 +49,11 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     }
     
 
-    function getTransportName(){
-        if (NULL == $this->transport_name ) {
-            throw new OMK_Exception(_("Missing transport adapter name."));
+    function getProtocol(){
+        if (NULL == $this->protocol ) {
+            throw new OMK_Exception(_("Missing protocol."));
         } 
-        return $this->transport_name;
+        return $this->protocol;
     }
     
     function upload( $options = null){

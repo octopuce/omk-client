@@ -388,6 +388,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         // Update file record in db 
         $fileData["database"]["status"] =  OMK_File_Adapter::STATUS_STORED;
         $fileData["database"]["dt_updated"] = OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP;
+        $fileData["database"]["file_path"] = $this->result["file_path"];
         $this->recordResult( 
             $this->getClient()->getDatabaseAdapter()->update(array(
                 "table" => "files",

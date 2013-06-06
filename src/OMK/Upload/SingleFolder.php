@@ -1,7 +1,7 @@
 <?php 
 class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
     
-    protected $transport_name   = "http"; 
+    protected $protocol   = "http"; 
     protected $name   = "singleFolder"; // mandatory : sets a key name for this adapter
     protected $chunk_size       = 8192;
 
@@ -11,7 +11,7 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
             $this->chunk_size = $options["chunk_size"];
         } 
     }
-    function upload( $options ){
+    function upload( $options = NULL){
        
         $file               = current($_FILES);
         $chunks             = (int) $_POST["chunks"];

@@ -105,6 +105,12 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
         $arg_tmp = array();
         if(is_array($part)){
             foreach ($part as $key => $val) {
+                if(is_object($key)){
+                    $key = get_class($key);
+                }
+                if(is_object($val)){
+                    $val = get_class($val);
+                }
                 if(is_array($val)){
                     $arg_tmp[]= "{$key}:[".  str_replace("\n"," ",print_r($val,1))."]";
                 }else{

@@ -33,7 +33,7 @@ class OMK_File_Adapter extends OMK_Client_Friend {
 
     /**
      * 
-     * @param string $options.file_path
+     * @param string $options.base_url
      */
     public function create( $options){
         

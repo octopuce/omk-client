@@ -64,6 +64,7 @@ class OMK_Client{
     public $js_url_path;
     public $view_path;
     public $version         = "0.1";
+    public $no_json         = false;
 
     public function __construct( $options= array() ){
         $this->configure($options);
@@ -133,7 +134,9 @@ class OMK_Client{
         }else{
             $this->view_path = ".";
         }
-        
+        if (array_key_exists("no_json", $options) && NULL != $options["no_json"]) {
+            $this->no_json = $options["no_json"];
+        } 
         if (array_key_exists("mime_type_whitelist", $options) && NULL != $options["mime_type_whitelist"]) {
             $this->mime_type_whitelist = $options["mime_type_whitelist"];
         } 
@@ -414,6 +417,12 @@ class OMK_Client{
         // While a bit old, let's consider this a good practice and build upon it
         $object = new stdClass();
         $object->result = $options;
+        
+        // Allow to skip json encoding
+        if( $this->skipJson() ){
+            return $object;
+        }
+        
         return json_encode($object);
     }
 
@@ -448,6 +457,13 @@ class OMK_Client{
          );
     }
     
+    protected function skipJson(){
+        if( $this->no_json){
+            return true;
+        }
+    }
+
+
     protected function throwExceptions(){
         // TODO : decide how to parameter that
         return FALSE;

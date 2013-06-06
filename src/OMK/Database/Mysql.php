@@ -1,6 +1,9 @@
 <?php class OMK_Database_Mysql extends OMK_Database_Adapter {
     /** PDO */
     protected $dbConnection;
+    protected $colsName = array("files","logs","queue","settings","variables");
+    protected $prefixedColsNames = NULL;
+    protected $prefix = "";
     public function __construct($options = null) {
         
         if (array_key_exists("host", $options) && NULL != $options["host"]) {
@@ -24,10 +27,12 @@
             throw new OMK_Exception(_("Missing password."));
         }
         if (array_key_exists("prefix", $options) && NULL != $options["prefix"]) {
-            $prefix = $options["prefix"];
-        } else {
-            $prefix = "";
-        }
+            $this->prefix = $options["prefix"];
+            $this->prefixedColsNames = array();
+            foreach($this->colsName as $col_name){
+                $this->prefixedColsNames[] = $this->prefix.$col_name;
+            }
+        } 
         try {
             $options = array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
@@ -120,8 +125,9 @@
             $i++;            
         }
 
-    }    
+    }
     
+
     function delete($options = null) {
         parent::delete($options);
     }
@@ -152,7 +158,7 @@
     function insert($options = null) {
         
         if (array_key_exists("table", $options) && NULL != $options["table"]) {
-            $table = $options["table"];
+            $table = $this->prefix.$options["table"];
         } else {
             throw new OMK_Exception(_("Missing table."));
         }
@@ -198,7 +204,7 @@
         
         // Checks sanity
         if (array_key_exists("table", $options) && NULL != $options["table"]) {
-            $table = $options["table"];
+            $table = $this->prefix.$options["table"];
         } else {
             throw new OMK_Exception(_("Missing table."));
         }
@@ -277,7 +283,7 @@
     function select($options = null) {
      
         if (array_key_exists("table", $options) && NULL != $options["table"]) {
-            $table = $options["table"];
+            $table = $this->prefix.$options["table"];
         } else {
             throw new OMK_Exception(_("Missing table."));
         }
@@ -354,7 +360,7 @@
     function update($options = null) {
         
         if (array_key_exists("table", $options) && NULL != $options["table"]) {
-            $table = $options["table"];
+            $table = $this->prefix.$options["table"];
         } else {
             throw new OMK_Exception(_("Missing table."));
         }
