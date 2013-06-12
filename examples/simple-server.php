@@ -47,16 +47,19 @@ $databaseAdapter = new OMK_Database_Mysql(array(
 
 $fileAdapter = new OMK_File_SingleFolder(array(
     "storage_path"  => "/home/alban/code/omkstorage",
-    "http_path"     => "http://omk53storage.octopuce.fr"
+    "file_path"     => "http://omk53storage.octopuce.fr"
 ));
+
 $uploadAdapter = new OMK_Upload_SingleFolder(array(
     "tmp_path"      => "/home/alban/code/omkstorage",
     "name"          => "singleFolder"
 ));
+
 $loggerAdapter  = new OMK_Logger_File(array(
    "level"          => OMK_Logger_Adapter::DEBUG, 
    "log_file_path"  => "/tmp/omk.log" 
 ));
+
 $translationAdapter = new OMK_Translation_Dummy(array(
     
 ));

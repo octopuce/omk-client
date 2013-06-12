@@ -254,8 +254,8 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         }
 
         // Checks the MIME type of the document uploaded
-        if (array_key_exists("mime_type", $metadataObject) && NULL != $metadataObject["mime_type"]) {
-            $mime_type = $metadataObject["mime_type"];
+        if (array_key_exists("mime", $metadataObject) && NULL != $metadataObject["mime"]) {
+            $mime = $metadataObject["mime"];
         } else {
             throw new OMK_Exception(_("Missing mime type."), self::ERR_MISSING_PARAMETER);
         }
@@ -268,7 +268,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         }
         
         // Exits if the MIME type doesn't appear in the client's whitelist
-        if( !in_array($mime_type, $this->getClient()->getMimeTypeWhitelist())){
+        if( !in_array($mime, $this->getClient()->getMimeTypeWhitelist())){
             $this->recordResult(array(
                 "code"     => OMK_Client::ERR_INVALID_FORMAT,
                 "message"  => _("Invalid status.")

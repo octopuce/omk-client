@@ -74,8 +74,8 @@ class OMK_Client_Request extends OMK_Client_Friend{
             
             $url        .= "?".http_build_query($this->queryParams);
             $response   = $this->getRequestObject()
-                    ->setUrl($url)
-                    ->send();
+                                ->setUrl($url)
+                                ->send();
             
         } catch (HTTP_Request2_Exception $e) {
             $msg = sprintf(_("An error occured : %s"), $e->getMessage());
@@ -393,7 +393,7 @@ onError : App logs error
         $download_url =  $this->getClient()->getFileAdapter()->getDownloadUrl($fileData);
    
         // Builds query. Sends request
-        $this->queryParams["adapter"]   = $this->getClient()->getUploadAdapter()->getTransportName();
+        $this->queryParams["adapter"]   = $this->getClient()->getUploadAdapter()->getProtocol();
         $this->queryParams["action"]    = "app_new_media";
         $this->queryParams["url"]       = $download_url;
         $this->queryParams["id"]        = $object_id;
@@ -526,7 +526,7 @@ onError : App logs error
         $this->queryParams["settings_id_list"] = $settingsIdList;
 
         // Sends format to transcoder
-//        $this->queryParams["params"] = $params;
+        $this->queryParams["id"] = $object_id;
         $this->recordResult($this->send(array(
             "action"    => "app_request_format",
         )));
