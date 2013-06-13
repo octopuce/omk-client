@@ -155,6 +155,14 @@
         }  
     }
 
+    public function getLastInsertId() {
+        if( NULL == $this->last_insert_id ){
+            throw new OMK_Exception(_("Empty last insert id.", self::ERR_EMPTY_LAST_INSERT_ID));
+        }
+        return $this->last_insert_id;
+    }
+
+
     function insert($options = null) {
         
         if (array_key_exists("table", $options) && NULL != $options["table"]) {
@@ -193,10 +201,15 @@
                 "message"   => $msg
             );
         }
+            
+        // Retrieves the last insert id for later use by client
+        $this->last_insert_id = $this->dbConnection->lastInsertId();
+        
+        // Returns success
         return array(
             "code"      => 0,
             "message"   => sprintf(_("Successfully inserted new row in %s"),$table),
-            "id"        => $this->dbConnection->lastInsertId()
+            "id"        => $this->last_insert_id
         );
     }
     

@@ -19,6 +19,9 @@
 
  */
 
+// Adds to path the folder containing the client library for dependencies loading
+set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__)."/../");
+
 /*
  * APIClient
     Description:
@@ -166,7 +169,16 @@ class OMK_Client{
         }
         return $this->client_url;
     }
-    
+
+
+    public function setAppUrl( $url ){
+        if( NULL == $url ){
+            throw new OMK_Exception(_("Missing api local url."));
+        }
+        $this->client_url = $url;
+        return $this;
+    }
+        
     /**
      * 
      * @return string app key
@@ -290,6 +302,7 @@ class OMK_Client{
             if(array_key_exists( $upload_adapter, $this->uploadAdapterContainer)){
                 $uploadAdapter = $this->uploadAdapterContainer[$upload_adapter];
                 $uploadAdapter->upload( $options );
+                return $uploadAdapter;
             } else {
                 throw new OMK_Exception(_("Invalid upload adapter requested"),1);
             }
@@ -472,20 +485,21 @@ class OMK_Client{
     public function render( $view ){
         
         // Defines actions requiring admin rights
-        $adminViews = array(
-            "settings.index",
-            "settings.update"
-        );
+//        $adminViews = array(
+//            "settings.index",
+//            "settings.update"
+//        );
+//        
+//        if( in_array($view,$adminViews)){
+//            $group = OMK_Authentification_Adapter::GROUP_ADMIN;
+//        }else{
+//            $group = OMK_Authentification_Adapter::GROUP_USER;
+//        }
+//        
+//        if( ! $this->getAuthentificationAdapter()->check($group)){
+//            $view = "error";
+//        }
         
-        if( in_array($view,$adminViews)){
-            $group = OMK_Authentification_Adapter::GROUP_ADMIN;
-        }else{
-            $group = OMK_Authentification_Adapter::GROUP_USER;
-        }
-        
-        if( ! $this->getAuthentificationAdapter()->check($group)){
-            $view = "error";
-        }
         switch ($view) {
             case "upload":
                 $view = "upload.phtml";
@@ -544,4 +558,13 @@ class OMK_Client{
         
     }
     
+    
+    public function isUploadComplete( $options = array() ){
+        $uploadAdapter = $this->getUploadAdapter($options);
+        return $uploadAdapter->isUploadComplete();
+    }
+ 
+    public function getLastInsertId(){
+        return $this->getDatabaseAdapter()->getLastInsertId();
+    }
 }

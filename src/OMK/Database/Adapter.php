@@ -18,12 +18,14 @@ abstract class OMK_Database_Adapter extends OMK_Client_Friend {
     const ERR_UPDATE                    = 28;
     const ERR_CLAUSE_WHERE_ARRAY        = 29;
     const ERR_INVALID_LOCK              = 30;
+    const ERR_EMPTY_LAST_INSERT_ID      = 31;
     
     
     const REQ_CURRENT_TIMESTAMP         = "_%NOW%_";
     const REQ_INCREMENT                 ="_%INCREMENT%_";
     const REQ_NO_BINDING                ="_%NO_BINDING%_";
     
+    protected $last_insert_id;
     
     function count($options = NULL){
         
@@ -68,6 +70,13 @@ abstract class OMK_Database_Adapter extends OMK_Client_Friend {
     }
          
     function update($options = NULL ){
+        
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
+        
+    }
+      
+         
+    function getLastInsertId(){
         
         throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
         

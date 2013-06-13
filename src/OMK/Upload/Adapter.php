@@ -24,6 +24,7 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     protected $tmp_path;
     protected $protocol   = "http"; 
     protected $name   = "default"; // mandatory : sets a key name for this adapter
+    protected $upload_complete = false;
     
     function __construct($options = null) {
         if( NULL == $options || !count($options)){
@@ -73,6 +74,10 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
         
         throw new OMK_Exception(_("Cannot use default upload method, you must override it."), 1);
 
+    }
+    
+    public function isUploadComplete(){
+        return $this->upload_complete;
     }
     
     

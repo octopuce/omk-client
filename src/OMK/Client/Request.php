@@ -1,6 +1,5 @@
 <?php 
 
-require_once 'HTTP/Request2.php';
 
 class OMK_Client_Request extends OMK_Client_Friend{
 
@@ -11,6 +10,7 @@ class OMK_Client_Request extends OMK_Client_Friend{
     
     protected $requestObject;
     protected $queryParams = array();
+    protected $body;
 
 
     public function __construct(OMK_Client &$client) {
@@ -41,7 +41,7 @@ class OMK_Client_Request extends OMK_Client_Friend{
             if(array_key_exists("method", $options)){
                 $method = $options["method"];
             }else{
-                $method = Http_Request2::METHOD_GET;
+                $method = HTTP_Request2::METHOD_GET;
             }
             if(array_key_exists("config", $options)){
                 $config = $options["config"];
@@ -245,22 +245,22 @@ onError : void
                 "app_key"   => $this->getClient()->getAppKey()
                 )
             )));
+        
         if( !$this->successResult()){
             return $this->getResult();
         }
         
         // Attempts to convert response
         $this->recordResult($this->decodeResponse());
+
+        if( !$this->successResult()){
+            return $this->getResult();
+        }
         
-        // Exits if failed
-        if( ! $this->successResult()){return $this->getResult();}
-        
-        if( array_key_exists("body", $this->result) && NULL != $this->result["body"]) {
-            $body = $this->result["body"];
-        } else {
+        if( empty($this->body)) {
             throw new OMK_Exception(_("Missing body."), self::ERR_MISSING_PARAMETER);
         }
-            
+        
         // Reads subscription result
         $jsonArray      = $this->result["result"];
         if (array_key_exists("apikey", $jsonArray) && NULL != $jsonArray["apikey"]) {
@@ -273,7 +273,7 @@ onError : void
                  "table"    => "variables",
                  "data"     => array(
                      "id"  => "transcoder_data",
-                     "val"  => $body
+                     "val"  => $this->body
                  ),
                  "where"    => array(
                      "id = ?" => "transcoder_data"
@@ -338,11 +338,8 @@ onError : void
      protected function decodeResponse( ){
          
         $response       = $this->result["response"];
-        $body           = $response->getBody();
-        $result         = $this->getClient()->jsonDecode($body);
-        if( 0 === $result["code"]){
-            $this->result["body"]   = $body;
-        }
+        $this->body     = $response->getBody();
+        $result         = $this->getClient()->jsonDecode($this->body);
         return $result;
      }
 

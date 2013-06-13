@@ -17,7 +17,7 @@ class OMK_Client_Friend {
     protected $client;
     protected $result = array();
 
-    function setClient( OMK_Client &$client){
+    function setClient( OMK_Client $client){
         $this->client = $client;
     }
     
