@@ -20,7 +20,7 @@ class OMK_Queue extends OMK_Client_Friend{
     
     const STATUS_NULL           = 0;
     const STATUS_IN_PROGRESS    = 1;
-    const STATUS_ERROR        = 2;
+    const STATUS_ERROR          = 2;
     const STATUS_SUCCESS        = 3;
     
     const PRIORITY_HIGH         = 5;
