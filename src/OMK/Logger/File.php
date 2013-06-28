@@ -6,6 +6,11 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
     protected $log_file_path;
     /** int User defined logging level */
     protected $level;
+    
+    const FILE_UNKNOWN          = "?F";
+    const LINE_UNKNOWN          = "?L";
+    const CLASS_UNKNOWN         = "?C";
+    const FUNCTION_UNKNOWN      = "?F";
 
     public function __construct( $options = NULL ) {
         
@@ -41,27 +46,29 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
         if ( NULL == $options || !count($options)) {
             throw new OMK_Exception(_("Missing options."));
         }
+        $message            =  __CLASS__."::".__METHOD__." ";
+
         if (array_key_exists("level", $options) && NULL != $options["level"]) {
-            $level = (int)$options["level"];
+            $level          = (int)$options["level"];
         } else {
-            $level = self::DEBUG;
+            $level          = self::DEBUG;
         }
         if (array_key_exists("message", $options) && NULL != $options["message"]) {
-            $message = (string)$options["message"];
+            $message        .= (string)$options["message"];
         } else {
-            $message = _("Default error message");
+            $message        .= _("Default error message");
         }
         if (array_key_exists("exception", $options) && NULL != $options["exception"]) {
-            $exception = $options["exception"];
+            $exception      = $options["exception"];
         }
         if (array_key_exists("data", $options) && NULL != $options["data"]) {
-            $data = (array)$options["data"];
+            $data           = (array)$options["data"];
         } 
         if ($level < $this->level) {
             return;
         }
         $data_str           = "";
-        $exception_str      = "";
+        $excp_str           = "";
         $log_str            = "";
         $user_id            = $this->getClient()->getAuthentificationAdapter()->getUserId();
         $file_handle        = fopen($this->log_file_path, "a");
@@ -69,18 +76,22 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
             throw new OMK_Exception(_("Failed to open log file output."));
         }
         if( isset($exception) ){
-            $exception_str  = "\nException: {";
-            $exception_str  .= "\n  Message: ".$exception->getMessage();
-            $exception_str  .= "\n  File: ".$exception->getFile()."+".$exception->getLine();
-            $exception_str  .= "\n  Stack: ";
+            $excp_str       = "\nException: {";
+            $excp_str       .= "\n  Message: ".$exception->getMessage();
+            $excp_str       .= "\n  File: ".$exception->getFile()."+".$exception->getLine();
+            $excp_str       .= "\n  Stack: ";
             foreach ($exception->getTrace() as $k => $stack) {
                 $args = array();
                 foreach( $stack["args"] as $arg_key => $arg_arr ){
                     $args = $this->exploreException( $arg_arr, $args);
                 }
-                $exception_str  .= "\n    $k. {$stack["file"]}+{$stack["line"]} {$stack["class"]}::{$stack["function"]} [".implode("],[", $args)."]";
+                $file       = ! empty($stack["file"])     ? $stack["file"]  : self::FILE_UNKNOWN;
+                $line       = ! empty($stack["line"])     ? $stack["line"]  : self::LINE_UNKNOWN;
+                $class      = ! empty($stack["class"])    ? $stack["class"] : self::CLASS_UNKNOWN;
+                $function   = ! empty($stack["function"]) ? $stack["file"]  : self::FUNCTION_UNKNOWN;
+                $excp_str   .= "\n    $k. {$file}+{$line} {$stack["class"]}::{$stack["function"]} [".implode("],[", $args)."]";
             }
-            $exception_str  .= "\n}\n";
+            $excp_str       .= "\n}\n";
         }
         if( isset($data) ){
             $data_str       = "\nData: [";
@@ -92,10 +103,10 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
         
         $log_str            .= date("Y-m-d H:i:s ");
         $log_str            .= "{$_SERVER["REMOTE_ADDR"]} ";
-        $log_str            .= "{$user_id} ";
+        $log_str            .= "userId:{$user_id} ";
         $log_str            .= $this->getLogLevel($level);
         $log_str            .= ": {$message}\n";
-        $log_str            .= $exception_str.$data_str;
+        $log_str            .= $excp_str.$data_str;
         fwrite($file_handle, $log_str);
         fclose($file_handle);
     }

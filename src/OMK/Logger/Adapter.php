@@ -15,9 +15,21 @@ class OMK_Logger_Adapter extends OMK_Client_Friend {
     const DEBUG     = "1";
     const INFO      = "10";
     const WARN      = "100";
+    
+    /**
+     * Adds a log entry
+     * 
+     * @param array $options
+     *   An associative array containing:
+     *   - level: int self::DEBUG|INFO|WARN 
+     *   - message: string
+     *   - data: (optional) array.
+     *   - exception: (optional) exception.
+     */
     public function log( $options = NULL ){
-        // error_level, $error_message, array $data = null, $exception =NULL
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
     }
+    
     /**
      * Human readable error level
      * 
