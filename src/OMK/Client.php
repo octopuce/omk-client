@@ -38,10 +38,10 @@ set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__)."/../");
     Clef d'API transcoder
     URL transcoder
  */
-class OMK_Client{
+class OMK_Client {
     
     // ERR Codes 225-249
-    const ERR_EXCEPTION             = 225;
+//    const ERR_EXCEPTION             = 225;
     const ERR_UNKNOWN_ACTION        = 226;
     const ERR_JSON_NONE             = 230; // original JSON_ERROR_NONE = 0
     const ERR_JSON_DEPTH            = 231; // original JSON_ERROR_DEPTH = 1
@@ -145,6 +145,12 @@ class OMK_Client{
         } 
     }
     
+    /**
+     * Returns the list of MIME types allowed by the client
+     * 
+     * @return array
+     * @throws OMK_Exception
+     */
     function getMimeTypeWhitelist(){
 
         if( NULL == $this->mime_type_whitelist ){
@@ -154,6 +160,12 @@ class OMK_Client{
         
     }
     
+    /**
+     * Sets the list of MIME types allowed by the client
+     * 
+     * @param array $mime_type_whitelist
+     * @throws OMK_Exception
+     */
     function setMimeTypeWhitelist( $mime_type_whitelist ){
 
         if( !is_array( $mime_type_whitelist ) ){
@@ -163,6 +175,12 @@ class OMK_Client{
         
     }
     
+    /**
+     * Retrieves the Client "Server" URL for requests emitted by a Transcoder
+     * 
+     * @return string
+     * @throws OMK_Exception
+     */
     public function getAppUrl(){
         if( NULL == $this->client_url ){
             throw new OMK_Exception(_("Missing api local url."));
@@ -170,7 +188,13 @@ class OMK_Client{
         return $this->client_url;
     }
 
-
+    /**
+     * Returns the Client "Server" URL for requests emitted by a Transcoder
+     * 
+     * @param string $url
+     * @return \OMK_Client
+     * @throws OMK_Exception
+     */
     public function setAppUrl( $url ){
         if( NULL == $url ){
             throw new OMK_Exception(_("Missing api local url."));
@@ -180,6 +204,7 @@ class OMK_Client{
     }
         
     /**
+     * Returns the app private key exchanged with the transcoder
      * 
      * @return string app key
      * @throws OMK_Exception
@@ -191,6 +216,12 @@ class OMK_Client{
         return $this->client_key;
     }
     
+    /**
+     * Returns the API version 
+     * 
+     * @return string version
+     * @throws OMK_Exception
+     */
     public function getVersion(){
         
         if ( NULL === $this->version) {
@@ -199,6 +230,12 @@ class OMK_Client{
         return $this->version;
     }
     
+    /**
+     * Returns the attached transcoder key
+     * 
+     * @return string
+     * @throws OMK_Exception
+     */
     public function getTranscoderKey(){
         
         if ( NULL === $this->transcoder_key) {
@@ -207,6 +244,12 @@ class OMK_Client{
         return $this->transcoder_key;
     }
 
+    /**
+     * Returns the attached transcoder URL
+     * 
+     * @return string
+     * @throws OMK_Exception
+     */
     public function getTranscoderUrl(){
         
         if ( NULL === $this->transcoder_url) {
@@ -215,6 +258,12 @@ class OMK_Client{
         return $this->transcoder_url;
     }
 
+    /**
+     * Returns the client's name 
+     * 
+     * @return string
+     * @throws OMK_Exception
+     */
     public function getApplicationName(){
         if ( NULL === $this->application_name) {
             throw new OMK_Exception(_("Missing appplication name."));
@@ -222,14 +271,21 @@ class OMK_Client{
         return $this->application_name;
     }
 
-        public function setAuthentificationAdapter( OMK_Authentification_Adapter $adapter = null) {
-        
+    /**
+     * Sets the authentification adapter
+     * 
+     * @param OMK_Authentification_Adapter $adapter
+     * @return \OMK_Client
+     */
+    public function setAuthentificationAdapter( OMK_Authentification_Adapter $adapter = null) {
+
         $adapter->setClient($this);
         $this->authentificationAdapter = $adapter;
         return $this;
 
     }
     /**
+     * Returns the authentification adapter
      * 
      * @return OMK_Authentification_Adapter
      * @throws OMK_Exception
@@ -243,7 +299,12 @@ class OMK_Client{
         
     }
 
-
+    /**
+     * Sets the database adapter
+     * 
+     * @param OMK_Database_Adapter $adapter
+     * @return \OMK_Client
+     */
     public function setDatabaseAdapter(OMK_Database_Adapter $adapter = null) {
 
         $adapter->setClient($this);
@@ -252,6 +313,12 @@ class OMK_Client{
         
     }
     
+    /**
+     * Gets the database adapter
+     * 
+     * @return Omk_Database_Adapter
+     * @throws OMK_Exception
+     */
     public function getDatabaseAdapter(){
         
         if( NULL == $this->databaseAdapter){
@@ -261,6 +328,12 @@ class OMK_Client{
         
     }
 
+    /**
+     * Sets the file adapter
+     * 
+     * @param OMK_File_Adapter $adapter
+     * @return \OMK_Client
+     */
     public function setFileAdapter(OMK_File_Adapter $adapter = null) {
 
         $adapter->setClient($this);
@@ -269,6 +342,12 @@ class OMK_Client{
         
     }
     
+    /**
+     * Gets the file adapter
+     * 
+     * @return OMK_File_Adapter
+     * @throws OMK_Exception
+     */
     public function getFileAdapter(){
         
         if( NULL == $this->fileAdapter){
@@ -277,7 +356,13 @@ class OMK_Client{
         return $this->fileAdapter;
         
     }
-
+    
+    /**
+     * Sets an upload adapter in an container
+     * 
+     * @param OMK_Upload_Adapter $adapter
+     * @return \OMK_Client
+     */
     public function setUploadAdapter(OMK_Upload_Adapter $adapter = null) {
         $adapter->setClient($this);
         $name = $adapter->getName();
@@ -286,6 +371,7 @@ class OMK_Client{
     }
     
     /**
+     * Gets an upload adapter or the default one
      * 
      * @param type $options
      * @return OMK_Upload_Adapter
@@ -311,8 +397,14 @@ class OMK_Client{
         reset($this->uploadAdapterContainer);
         return current($this->uploadAdapterContainer);
 
-        }
+    }
     
+    /**
+     * Sets the translation adapter
+     * 
+     * @param OMK_Translation_Adapter $adapter
+     * @return \OMK_Client
+     */
     public function setTranslationAdapter(OMK_Translation_Adapter $adapter = null) {
         
         $adapter->setClient($this);
@@ -321,7 +413,13 @@ class OMK_Client{
         
     }
     
-    public function getTranslationAdapter( $options = NULL ){
+    /**
+     * Gets the translation adapter
+     * 
+     * @return OMK_Translation_Adapter
+     * @throws OMK_Exception
+     */
+    public function getTranslationAdapter(){
         
         if( NULL == $this->translationAdapter ){
             throw new OMK_Exception(_("Missing translation object."));
@@ -330,7 +428,12 @@ class OMK_Client{
         
     }
 
-    
+    /**
+     * Sets the logger adapter
+     * 
+     * @param OMK_Logger_Adapter $adapter
+     * @return \OMK_Client
+     */
     public function setLoggerAdapter(OMK_Logger_Adapter $adapter = null) {
         
         $adapter->setClient($this);
@@ -340,12 +443,13 @@ class OMK_Client{
     }
     
     /**
+     * Gets the logger adapter
      * 
      * @param type $options
      * @return OMK_Logger_Adapter
      * @throws OMK_Exception
      */
-    public function getLoggerAdapter( $options = NULL ){
+    public function getLoggerAdapter( ){
         
         if( NULL == $this->loggerAdapter ){
             throw new OMK_Exception(_("Missing logger object."));
@@ -354,6 +458,11 @@ class OMK_Client{
         
     }
 
+    /**
+     * Gets the Queue branched to other adapters
+     * 
+     * @return OMK_Queue
+     */
     public function getQueue(){
         if( NULL == $this->queue ){
             $this->queue    = new OMK_Queue();
@@ -361,7 +470,21 @@ class OMK_Client{
         }
         return $this->queue;
     }
-
+    
+    /**
+     * Core gateway for all client calls, either responses or requests
+     * 
+     * This method acts as dispatcher depending on the action called,
+     * forwards incoming requests to an OMK_Client_Response instance and 
+     * outcoming requests to an OMK_Client_Request
+     *
+     * @param array $options
+     *   An associative array containing:
+     *   - format: the format for response, json default.
+     *   - action: the client action requested.
+     * @return mixed depending on format
+     * @throws OMK_Exception
+     */
     public function call($options){
         
         if (array_key_exists("format", $options) && NULL != $options["format"]) {
@@ -397,6 +520,7 @@ class OMK_Client{
             return $response;
             
         }catch( OMK_Exception $e ){
+            // Log
             $this->getLoggerAdapter()->log(array(
                 "level"     => OMK_Logger_Adapter::WARN,
                 "message"   => "OMK exception raised.",
@@ -431,11 +555,12 @@ class OMK_Client{
         $object = new stdClass();
         $object->result = $options;
         
-        // Allow to skip json encoding
+        // Allows to skip json encoding
         if( $this->skipJson() ){
             return $object;
         }
         
+        // Converts object to JSON
         return json_encode($object);
     }
 
@@ -470,43 +595,96 @@ class OMK_Client{
          );
     }
     
+    /**
+     * Validates if client should do JSON conversion or not
+     * 
+     * @return boolean
+     */
     protected function skipJson(){
         if( $this->no_json){
-            return true;
+            return TRUE;
         }
+        return FALSE;
     }
 
-
+    /**
+     * Validates if client should throw catched exceptions or not
+     * 
+     * @return boolean
+     */
     protected function throwExceptions(){
         // TODO : decide how to parameter that
         return FALSE;
     }
 
+    /**
+     * Renders a phtml view 
+     * 
+     * @param string $view
+     * @return type
+     */
     public function render( $view ){
         
         // Defines actions requiring admin rights
-//        $adminViews = array(
-//            "settings.index",
-//            "settings.update"
-//        );
-//        
-//        if( in_array($view,$adminViews)){
-//            $group = OMK_Authentification_Adapter::GROUP_ADMIN;
-//        }else{
-//            $group = OMK_Authentification_Adapter::GROUP_USER;
-//        }
-//        
-//        if( ! $this->getAuthentificationAdapter()->check($group)){
-//            $view = "error";
-//        }
+        $adminViews = array(
+            "settings.index",
+            "settings.update",
+            "admin.list"
+        );
+        // Defines ACL group to be checked
+        if( in_array($view,$adminViews)){
+            $group = OMK_Authentification_Adapter::GROUP_ADMIN;
+        }else{
+            $group = OMK_Authentification_Adapter::GROUP_USER;
+        }
         
+        // Resets view if authentification denied
+        if( ! $this->getAuthentificationAdapter()->check($group)){
+            $view = "error";
+        }
+        
+        // Archaic controller to do stuff before rendering
         switch ($view) {
+            // upload files with PLUpload dependancies
             case "upload":
                 $view = "upload.phtml";
                 break;
+            // lists all files ! caution, no break on this case, cascades to next.
+            case "admin.list":
+                $query = array("table"=>"files");
+            // lists user files
+            case "list":
+                $view = "list.phtml";
+                // If not inherited from the previous admin case
+                if(!isset($query)){
+                    $user_id = $this->getAuthentificationAdapter()->getUserId();
+                    $query = array(
+                        "table"     => "files",
+                        "where"     => array(
+                            "owner_id = ?" => $user_id
+                        )
+                    );
+                }
+                // Runs the query
+                try{
+                    $result = $this->getDatabaseAdapter()->select($query);
+                    $filesList      = $result["rows"];
+                }catch(OMK_Exception $e){
+                    $this->getLoggerAdapter()->log(array(
+                       "level"      => OMK_Logger_Adapter::WARN,
+                        "message"   => "Failed to retrieve videos",
+                        "exception" => $e
+                    ));
+                    if($this->throwExceptions()){
+                        throw $e;
+                    }
+                }
+                break;
+            // lists settings
             case "settings.index":
                 $view = "settings.index.phtml";
                 break;
+            // updates setting
             case "settings.update":
                 $settingsInstance = new OMK_Settings();
                 $settingsInstance->setClient($this);
@@ -518,16 +696,21 @@ class OMK_Client{
                 $error = TRUE;
                 $view = "error.phtml";
                 break;
+            // error cases
             case "error":
             default:
                 $view = "error.phtml";
                 break;
         }
+        
+        // archaic view renderer
         ob_start();
         $filepath = $this->view_path."/{$view}";
         include( $filepath );
         $filecontent = ob_get_contents();
         ob_clean();
+        
+        // returns view content
         return $filecontent;
     }
 
@@ -558,12 +741,24 @@ class OMK_Client{
         
     }
     
-    
+    /**
+     * Validates if the file upload is finished or not 
+     * 
+     * @param array $options
+     *   An associative array containing:
+     *   - upload_adapter: the name of an adapter (optional).
+     * @return boolean
+     */
     public function isUploadComplete( $options = array() ){
         $uploadAdapter = $this->getUploadAdapter($options);
         return $uploadAdapter->isUploadComplete();
     }
  
+    /**
+     * Returns the new files Id 
+     * 
+     * @return int
+     */
     public function getLastInsertId(){
         return $this->getDatabaseAdapter()->getLastInsertId();
     }

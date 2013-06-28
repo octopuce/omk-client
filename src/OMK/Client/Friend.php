@@ -7,6 +7,9 @@
  */
 class OMK_Client_Friend {
     
+    // TODO : this should belong to the OMK_Result class
+    const ERR_OK                            = 0;
+    
     // ERR CODE 250 - 274
     const ERR_METHOD_OVERRIDE_REQUIRED      = 250;
     const ERR_ADAPTER_MISCONFIGURATION      = 251;
@@ -22,7 +25,9 @@ class OMK_Client_Friend {
     }
     
     /**
-     * @return OMK_Client the friend Client 
+     * Gets the friend Client instance
+     * 
+     * @return OMK_Client 
      */
     function getClient(){
         if( NULL == $this->client){
@@ -32,7 +37,7 @@ class OMK_Client_Friend {
     }
     
     /**
-     * Reads the code error 
+     * Reads the code error on result
      * 
      * @param void
      * @return true|false
@@ -95,7 +100,7 @@ class OMK_Client_Friend {
      }
 
      /**
-      * Gateway for returning operations result
+      * Outputs results from operations
       * 
       * @param array $options
       *   An associative array containing:
@@ -132,24 +137,33 @@ class OMK_Client_Friend {
          return $return;
      }
      
+     /**
+      * Helper for all translations
+      * 
+      * @param string $string
+      * @return string 
+      */
      public function _($string){
          return $this->getClient()->getTranslationAdapter()->translate($string);
      }
      
-     
-     private function checkApiAppKey(){
-         
-         // Secures the calls
-         if (array_key_exists("api_app_key", $_REQUEST) && NULL != $_REQUEST["api_app_key"]) {
-             $api_app_key = $_REQUEST["api_app_key"];
-         } else {
-             throw new OMK_Exception(_("Missing api app key."));
-         }
-         if( $this->getClient()->getAppKey() != $api_app_key ){
-             throw new OMK_Exception(_("Invalid app key."));
-         }
-         
-     }
-     
+     /**
+      * TODO : Destroy me ? @0.2.1 (alban 20130625)
+      * @throws OMK_Exception
+      */
+//     private function checkApiAppKey(){
+//         
+//         // Secures the calls
+//         if (array_key_exists("api_app_key", $_REQUEST) && NULL != $_REQUEST["api_app_key"]) {
+//             $api_app_key = $_REQUEST["api_app_key"];
+//         } else {
+//             throw new OMK_Exception(_("Missing api app key."));
+//         }
+//         if( $this->getClient()->getAppKey() != $api_app_key ){
+//             throw new OMK_Exception(_("Invalid app key."));
+//         }
+//         
+//     }
+//     
 
 }
