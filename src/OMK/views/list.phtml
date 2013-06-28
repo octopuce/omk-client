@@ -1,0 +1,64 @@
+<?php 
+/**
+ * @var OMK_File_Adapter Proxifies the client File Adapter
+ */
+$fa= $this->getFileAdapter();
+/**
+ * @var OMK_Translation_Adapter Proxifies the client Translation Adapter
+ */
+$t = $this->getTranslationAdapter();
+
+?>
+<?php if(!isset($filesList)){ $filesList = array(); }?>
+<?php if(!count($filesList)) : ?>
+    <h2 class="omk-error"> 
+            <?= $t->_("No file found."); ?> 
+    </h2>
+    <?php return; ?>
+<?php endif; ?>
+
+<table class="omk omk-settings omk-table">
+    <caption> <?= $t->_("This is a list of files linked to your account."); ?> </caption>    
+        <thead>
+            <tr>
+                <th>
+                    <?= $t->_("Id"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Name"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Download"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Status"); ?> 
+                </th>
+                <th>
+                    <?= $t->_("Modified"); ?> 
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php $num = 0; ?>
+    <?php foreach($filesList as $theFile): ?>
+         <tr class="omk-row<?= $num++%2?> ">
+             <td><?= $theFile["id"]?></td> 
+             <td><?= $theFile["file_name"] ?></td> 
+             <td><?= $fa->getDownloadUrl(array(
+                "id"        => $theFile["id"],
+                "file_path" => $theFile["file_path"]
+            )); ?></td> 
+             <td><?= $t->_($fa->getStatus($theFile["status"]))?></td> 
+             <td><?= $theFile["dt_updated"] ?></td> 
+         </tr>
+    <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="6" class="omk-submit">
+                    <input type="submit" value="<?= $t->_("Validate")?>">
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+
