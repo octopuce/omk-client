@@ -13,8 +13,8 @@ class OMK_Authentification_Adapter extends OMK_Client_Friend{
     const GROUP_ADMIN = 1;
     const GROUP_USER = 2;
     
-    // ERR CODE 0 - 24
-    const ERR_INVALID_USER = 24;
+    // ERR CODE 1 - 24
+    const ERR_INVALID_USER = 2;
     
     public function __construct( $options = NULL ) {
     }
