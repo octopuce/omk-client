@@ -645,6 +645,23 @@ class OMK_Client {
         
         // Archaic controller to do stuff before rendering
         switch ($view) {
+            // displays a video player for the given media id
+            case "player.video":
+                $media_id = $_REQUEST["media_id"];
+                $player = new OMK_Player();
+                $player->setClient($this);
+                $result = $player->getVideoData(array(
+                    "media_id" => $media_id    
+                ));
+                // Returns error if failed
+                if( !array_key_exists("code", $result) || OMK_Client_Friend::ERR_OK != $result["code"]){
+                    $view = "error.phtml";
+                    break;
+                }
+                // Sets the videoData array
+                $videoData = $result["videoData"];
+                $view = "player.phtml";
+                break;
             // upload files with PLUpload dependancies
             case "upload":
                 $view = "upload.phtml";

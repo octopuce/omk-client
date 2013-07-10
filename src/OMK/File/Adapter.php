@@ -38,6 +38,9 @@ class OMK_File_Adapter extends OMK_Client_Friend {
     const STATUS_L_TRANSCODE_READY          = "Transcode ready";
     const STATUS_L_TRANSCODE_PARTIALLY      = "Transconde in reception";
     const STATUS_L_TRANSCODE_COMPLETE       = "Transconde received";
+    const TYPE_VIDEO                        = "video";
+    const TYPE_AUDIO                        = "audio";
+    
 
     /**
      * Associative array of status_int => status_string, lazy generated

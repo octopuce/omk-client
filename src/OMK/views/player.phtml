@@ -1,0 +1,88 @@
+<?php 
+
+// file: OMKClient/src/views/player.phtml
+/**
+ * Shows a HTML5 ready player with multiple video formats
+*/
+// Loads the first video and sets width / height
+$theVideo = current($videoData);
+$metadata = json_decode( $theVideo["metadata"], true); 
+foreach( $metadata["tracks"] as $theTrack){
+    if( OMK_File_Adapter::TYPE_VIDEO != $theTrack["type"]){
+        continue;
+    }
+    $width = $theTrack["width"];
+    $height = $theTrack["height"];
+    break;
+}
+if( !isset($width) || !isset($height)){
+    die(  $this->getTranslationAdapter()->_("Couldn't retrieve video height and/or width.") );
+}
+?>
+<script src="<?php echo $this->js_url_path ?>/mediaelement/build/jquery.js"></script>
+<script src="<?php echo $this->js_url_path ?>/mediaelement/build/mediaelement-and-player.min.js"></script>
+<link rel="stylesheet" href="<?php echo $this->js_url_path ?>/mediaelement/build/mediaelementplayer.css" />
+<video width="<?= $width ?>" height="<?= $height ?>" poster="" controls="controls" preload="none">
+<?php foreach($videoData as $theVideo): ?>
+    <?php
+        // Retrieves the video metadata
+        $metadata = json_decode( $theVideo["metadata"],true); 
+        // Stores the video for flash is compatible
+        if(!isset($flashVideoData) && in_array($theVideo["mime"],array("video/mp4","video/flv"))){
+            $flashVideoData = $theVideo;
+        } 
+    ?>
+    <source type="<?= $metadata["mime"]?>" src="<?= $this->getFileAdapter()->getDownloadUrl(array("id" => $theVideo["id"],"file_path" => $theVideo["file_path"])) ?>" />
+<?php endforeach ?>
+<?php if( isset($flashVideoData) ): ?>
+    <object width="<?= $width ?>" height="<?= $height ?>" type="application/x-shockwave-flash" data="<?php echo $this->js_url_path ?>/mediaelement/build/flashmediaelement.swf">
+        <param name="movie" value="<?php echo $this->js_url_path ?>/mediaelement/build/flashmediaelement.swf" />
+        <param name="flashvars" value="controls=true&file=<?= $this->getFileAdapter()->getDownloadUrl(array("id" => $theVideo["id"],"file_path" => $theVideo["file_path"])) ?>" />
+    </object>
+<?php endif; ?>
+</video>
+<script>
+// using jQuery
+$('video,audio').mediaelementplayer({
+    // if the <video width> is not specified, this is the default
+    defaultVideoWidth: <?= $width ?>,
+    // if the <video height> is not specified, this is the default
+    defaultVideoHeight: <?= $height ?>,
+    // if set, overrides <video width>
+    videoWidth: -1,
+    // if set, overrides <video height>
+    videoHeight: -1,
+    // width of audio player
+    audioWidth: 400,
+    // height of audio player
+    audioHeight: 30,
+    // initial volume when the player starts
+    startVolume: 0.8,
+    // useful for <audio> player loops
+    loop: false,
+    // enables Flash and Silverlight to resize to content size
+    enableAutosize: true,
+    // the order of controls you want on the control bar (and other plugins below)
+    features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+    // Hide controls when playing and mouse is not over the video
+    alwaysShowControls: false,
+    // force iPad's native controls
+    iPadUseNativeControls: true,
+    // force iPhone's native controls
+    iPhoneUseNativeControls: true, 
+    // force Android's native controls
+    AndroidUseNativeControls: true,
+    // forces the hour marker (##:00:00)
+    alwaysShowHours: false,
+    // show framecount in timecode (##:00:00:00)
+    showTimecodeFrameCount: false,
+    // used when showTimecodeFrameCount is set to true
+    framesPerSecond: 25,
+    // turns keyboard support on and off for this instance
+    enableKeyboard: true,
+    // when this player starts, it will pause other players
+    pauseOtherPlayers: true,
+    // array of keyboard commands
+    keyActions: []}
+);
+</script>

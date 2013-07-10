@@ -3,4 +3,12 @@
     if( isset( $error ) && count($error)){
         print_r( $error);
     }
+    if( isset($result)){
+        // Retrieves code
+        if( array_key_exists("code",$result) && ! is_null( $result["code"] )){
+            $code = $result["code"];
+            $message = $result['message'];
+            echo sprintf($this->getTranslationAdapter()->_("<p class=\"error\">Error code:%s <br /> Error message: %s</p>"),$code,$message); 
+            } 
+    }
 ?>
