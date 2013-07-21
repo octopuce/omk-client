@@ -1,6 +1,14 @@
 <?php
 /**
- * This attempts to break the cron jobs by being as atomical as possible
+ * Cron is called by transcode
+ * 
+ * self::run()
+ *  calls self::runTask()
+ *    calls self::getCronTask()
+ *      returns a cron task
+ *    runs the task through OMK_Client::call()
+ * while tasks are available
+ * 
  */
 class OMK_Cron extends OMK_Client_Friend{
 
@@ -17,15 +25,6 @@ class OMK_Cron extends OMK_Client_Friend{
     
     
     /**
-     * Uses one of many (if available) strategies to run cron tasks 
-     * 
-     * best strategy is exec: no time limits
-     * med strategy is curl: timeout/async
-     * low strategy is self: timeout/async
-     * 
-     * @param array $options
-     *   An associative array containing:
-     *   - : .
      * 
      * @return array result[code,message]
      */
@@ -74,7 +73,7 @@ class OMK_Cron extends OMK_Client_Friend{
             "message"   => sprintf(_("Finished cron tasks, %s loops."), ($loops - 1)),
             "errors"    => $errors
         ));
-        
+        return $this->getResult();
     }
     
     
@@ -135,20 +134,21 @@ class OMK_Cron extends OMK_Client_Friend{
 
         $this->getClient()->getLoggerAdapter()->log(array(
             "level"     => OMK_Logger_Adapter::INFO,
-            "message"   => sprintf(_("Started cron action %s "),$action)
+            "message"   => sprintf(_("Started cron queue item#%s action %s, object#%s"),$id,$action,$task["object_id"])
         ));
         
         // Runs the task. 
         try{                
             switch ($action){
                 case "app_new_media":
+                case "app_get_media":
                 case "app_request_format":
                 case "transcoder_send_format":
                 case "transcoder_send_metadata":
                     $this->recordResult($this->getClient()->call($task));
                     break;
                 default :
-                    throw new OMK_Exception(_("Invalid action requested"),self::ERR_INVALID_ACTION);
+                    throw new OMK_Exception(_("Invalid action requested: ${action}"),self::ERR_INVALID_ACTION);
                     break;
             }
 
@@ -202,7 +202,8 @@ class OMK_Cron extends OMK_Client_Friend{
             return $storedResult;
         }
 
-        // Task succeeded : attempts to reset lock and save status. 
+        
+        // Task achieved: attempts to reset lock and save status. 
         try{
 
             $this->recordResult($this->unlockTask(array(

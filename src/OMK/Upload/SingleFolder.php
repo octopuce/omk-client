@@ -3,7 +3,7 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
     
     protected $protocol   = "http"; 
     protected $name   = "singleFolder"; // mandatory : sets a key name for this adapter
-    protected $chunk_size       = 8192;
+    protected $chunk_size       = 8192000;
 
     public function __construct($options = null) {
         parent::__construct($options);
@@ -91,45 +91,47 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
         return array("code" => 1, "message"=>_("Chunking part received"));
         
     }
-
-        
+    
+    /**
+     * {@DocInherit}
+     */
     public function getFileContentRange($options = NULL) {
         
+        // Attempts to retrieve file path
         if( array_key_exists("file_path",$options) && NULL != $options["file_path"]){
             $file_path = $options["file_path"];
         } else {
             throw new OMK_Exception(_("Missing file_path."), self::ERR_MISSING_PARAMETER);
         }
         
-        if( array_key_exists("size",$options) && NULL != $options["size"]){
-            $size = $options["size"];
-        } else {
-             $size = filesize($file_path);
-             if( ! $size){
-                throw new OMK_Exception(_("Missing size."), self::ERR_MISSING_PARAMETER);
-             }
-        }
-        
+        // Attempts to retrieve full size
         if( array_key_exists("full_size",$options) && NULL != $options["full_size"]){
             $full_size = $options["full_size"];
         } else {
             throw new OMK_Exception(_("Missing full_size."), self::ERR_MISSING_PARAMETER);
         }
         
-        $parts = array();
-        $parts[1] = $size;
+        clearstatcache();
         
-        $diff = $full_size - $size;
-        if( $diff > $this->chunk_size){
+        // Attempts to retrieve current size of file
+        $file_size = filesize($file_path);
+        
+        // Returned data for request range
+        $parts          = array(
+            1           => $file_size,  // Start of request range
+            2           => ""           // End of request range
+        );
+        $diff           = $full_size - $file_size;
+        if( $diff < $this->chunk_size){
             $parts[2] = "";
             $finished = TRUE;
         }else{
-            $parts[2] = $this->chunk_size;
-            $finished = NULL;
+            $parts[2] = $file_size + $this->chunk_size;
+            $finished = FALSE;
         }
         
         return array(
-            "code"          => 0,
+            "code"          => OMK_Client_Friend::ERR_OK,
             "message"       => sprintf(_("Content range calculated.")),
             "content_range" => implode("-", $parts),
             "finished"      => $finished

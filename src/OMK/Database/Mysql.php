@@ -274,7 +274,7 @@
         try { 
             $sth = $this->dbConnection->prepare($statement);
             $sth->execute($data);
-            $results = $sth->fetchAll();
+            $results = $sth->fetchAll(PDO::FETCH_ASSOC);
             if( false !== $results){
                 return $results;
             }
@@ -357,7 +357,7 @@
         // Success
         return array(
             "code"          => 0,
-            "message"       => sprintf(_("Successfully selected rows in %s"),$table),
+            "message"       => sprintf(_("Successfully selected rows in %s %s"),$table,$sql),
             "rows"          => $rows
         );
         
@@ -393,6 +393,8 @@
         $cols = array();
         $vals = array();
         $i = 0;
+        
+        // Stores keys/values array $vals to be inserted
         $this->buildData( $data, $vals, $i);
   
         // build the statement
@@ -425,7 +427,7 @@
         }
         return array(
             "code"          => 0,
-            "message"       => sprintf(_("Successfully updated row in %s"),$table),
+            "message"       => sprintf(_("Successfully updated row in %s %s"),$table,$sql),
             "id"            => $this->dbConnection->lastInsertId()
         );
         

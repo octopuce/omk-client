@@ -36,8 +36,8 @@ class OMK_File_Adapter extends OMK_Client_Friend {
     const STATUS_L_METADATA_RECEIVED        = "Metadata received";
     const STATUS_L_TRANSCODE_REQUESTED      = "Transcode requested";
     const STATUS_L_TRANSCODE_READY          = "Transcode ready";
-    const STATUS_L_TRANSCODE_PARTIALLY      = "Transconde in reception";
-    const STATUS_L_TRANSCODE_COMPLETE       = "Transconde received";
+    const STATUS_L_TRANSCODE_PARTIALLY      = "Transcode reception in progress";
+    const STATUS_L_TRANSCODE_COMPLETE       = "Transcode received";
     const TYPE_VIDEO                        = "video";
     const TYPE_AUDIO                        = "audio";
     
@@ -99,6 +99,27 @@ class OMK_File_Adapter extends OMK_Client_Friend {
         throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
 
     }
+    
+    /**
+     * 
+     * @param array $options
+     *      - id
+     *      - file_name
+     *      - cardinality
+     *      - settings_id
+     * @return array An associative array containing:
+     *   - code 
+     *   - message 
+     *   - file_name 
+     *   - file_path
+     *   - serial
+     * 
+     * @throws OMK_Exception
+     */
+    public function getTranscodedFileData( array $options ){
+        throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
+    }    
+    
     /**
      * Converts int status to human legible string
      * 

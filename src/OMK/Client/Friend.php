@@ -73,8 +73,13 @@ class OMK_Client_Friend {
     * @see successResult() the method used to get the resulting object
     * @return \OMK\Client\Friend
     */
-    function recordResult( array $result){
+    function recordResult( $result = null ){
          
+        if( !is_array($result)){
+            // TODO: Handle these 
+            return $this;
+        }
+            
         // Saves previously recorded results
         if( array_key_exists("_previousResults", $this->result) && count( $this->result["_previousResults"]) ){
             $previousResults = $this->result["_previousResults"];

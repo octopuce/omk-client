@@ -41,7 +41,7 @@ set_include_path(get_include_path().PATH_SEPARATOR.dirname(__FILE__)."/../");
 class OMK_Client {
     
     // ERR Codes 225-249
-//    const ERR_EXCEPTION             = 225;
+    const ERR_EXCEPTION             = 225;
     const ERR_UNKNOWN_ACTION        = 226;
     const ERR_JSON_NONE             = 230; // original JSON_ERROR_NONE = 0
     const ERR_JSON_DEPTH            = 231; // original JSON_ERROR_DEPTH = 1
@@ -51,6 +51,7 @@ class OMK_Client {
     const ERR_JSON_UTF8             = 235; // original JSON_ERROR_UTF8 = 5
     const ERR_JSON_INVALID          = 236; 
     const ERR_INVALID_FORMAT        = 237; 
+    const ERR_INVALID_STRING        = 238; 
     protected $authentificationAdapter;
     protected $databaseAdapter;
     protected $fileAdapter;
@@ -58,6 +59,7 @@ class OMK_Client {
     protected $translationAdapter;
     protected $queue;
     protected $uploadAdapterContainer = array();
+    protected $cron_context         = FALSE;
     public $application_name;
     public $client_key;
     public $client_url;
@@ -66,8 +68,8 @@ class OMK_Client {
     public $css_url_path;
     public $js_url_path;
     public $view_path;
-    public $version         = "0.1";
-    public $no_json         = false;
+    public $version                 = "0.1";
+    public $no_json                 = FALSE;
 
     public function __construct( $options= array() ){
         $this->configure($options);
@@ -387,7 +389,6 @@ class OMK_Client {
             $upload_adapter = $options["upload_adapter"];
             if(array_key_exists( $upload_adapter, $this->uploadAdapterContainer)){
                 $uploadAdapter = $this->uploadAdapterContainer[$upload_adapter];
-                $uploadAdapter->upload( $options );
                 return $uploadAdapter;
             } else {
                 throw new OMK_Exception(_("Invalid upload adapter requested"),1);
@@ -495,14 +496,16 @@ class OMK_Client {
         
         try{
             switch($options["action"]){
-                case "app_test_request":
-                case "app_subscribe":
-                case "tracker_autodiscovery":
+                case "app_get_media":
                 case "app_new_media":
                 case "app_request_format":
+                case "app_subscribe":
+                case "app_test_request":
+                case "tracker_autodiscovery":
                     $response = $this->request($options);
                 break;
                 case "transcoder_cron":
+                    $this->cron_context = TRUE;
                 case "transcoder_send_format":
                 case "transcoder_send_metadata":
                 case "transcoder_get_settings":
@@ -527,13 +530,15 @@ class OMK_Client {
                 "exception" => $e
             ));
             // And leave it to the developper if he requested
-            if( $this->throwExceptions()){
+            if( $this->throwExceptions() || $this->cron_context ){
                 throw $e;
             }
             $code           = $e->getCode();
             if( null == $code ){
                 $code       = self::ERR_EXCEPTION;
             }
+            
+            // TODO : When called by cron this shouldn't be a string
             return $this->jsonEncode( array(
                 "code"      => $code,
                 "message"   => $e->getMessage()
@@ -571,6 +576,10 @@ class OMK_Client {
      * @return array
      */
     public function jsonDecode(  $string ){
+        
+        if( !is_string($string)){
+            throw new OMK_Exception(__CLASS__."::".__METHOD__." : jsonDecode expects a valid string.",self::ERR_INVALID_STRING);
+        }
         
         // Attempts to convert to JSON
          $decodedArray          = json_decode($string, TRUE);
@@ -679,13 +688,22 @@ class OMK_Client {
                         "table"     => "files",
                         "where"     => array(
                             "owner_id = ?" => $user_id
-                        )
+                        ),
+                        "order"     => "id DESC"
                     );
                 }
                 // Runs the query
                 try{
-                    $result = $this->getDatabaseAdapter()->select($query);
+                    $result         = $this->getDatabaseAdapter()->select($query);
                     $filesList      = $result["rows"];
+                    
+                    // TODO: select a specific transcoder ?
+                    $result         = $this->getDatabaseAdapter()->select(array(
+                        "table" => "settings"
+                    ));
+                    $settingsList   = $result["rows"];
+                    
+                    
                 }catch(OMK_Exception $e){
                     $this->getLoggerAdapter()->log(array(
                        "level"      => OMK_Logger_Adapter::WARN,
@@ -740,7 +758,7 @@ class OMK_Client {
     public function request($options = null) {
 
         $request = new OMK_Client_Request($this);
-        $request->run($options);
+        $request->recordResult($request->run($options));
         return $request->getResult();
     }
     

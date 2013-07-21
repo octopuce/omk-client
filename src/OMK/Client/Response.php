@@ -29,7 +29,7 @@
         }
 
         // Call the method
-        $this->$action($options);
+        $this->recordResult($this->$action($options));
      }
      
      // always true response for local test and availability checks
@@ -67,6 +67,8 @@ répond à une sorte de ping : pratique pour l'installation (fonctionne) ou pour
       * @param type $options
       * transcoder_send_format
 
+
+
 Who : Transcoder -> App
 
 When : Transcoder finished transcoding a format
@@ -76,13 +78,17 @@ What : App adds the media format to its download queue
 Request Params
 
     id:int
-    preset:string
-    url:string or list of strings (for thumbs)
+    settings_id:int
+    metadata: json hashset {type,mimetype,data,md5,size}
+    cardinality:int (optional)
+    adapter:string (optional)
+
+Response : code, message
 
 onSuccess
 
-    App updates media_format status to TRANSCODED or INVALID
-    App updates media status to META_RECEIVED or META_INVALID
+    App updates media status to STATUS_TRANSCODE_READY
+    App adds to its queue the app_get_media actions for the tuples {parent_id, settings_id}
 
 onError : Transcode logs error
 
@@ -95,24 +101,57 @@ onError : Transcode logs error
         // Exits if failed
         if( !$this->successResult()){return $this->getResult();}
 
-        // Retrieves file id - format - (option) upload_adapter
+        // Retrieves id (the parent_id)
         if (array_key_exists("id", $_REQUEST) && NULL != $_REQUEST["id"]) {
-            $object_id = $_REQUEST["id"];
+            $parent_id = $_REQUEST["id"];
         } else {
             throw new OMK_Exception(_("Missing id."), self::ERR_MISSING_REQUEST_PARAMETER);
         }
+        
+        // Retrieves settings_id
+        if( array_key_exists("settings_id",$_REQUEST) && ! is_null( $_REQUEST["settings_id"] )){$settings_id = $_REQUEST["settings_id"];} 
+        // Failed at retrieving variable $settings_id
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing settings_id."), self::ERR_MISSING_PARAMETER);}
+      
+        // Retrieves metadata
+        if( array_key_exists("metadata",$_REQUEST) && ! is_null( $_REQUEST["metadata"] )){$metadata = $_REQUEST["metadata"];} 
+        // Failed at retrieving variable $metadata
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing metadata."), self::ERR_MISSING_PARAMETER);}
+        
+        // Retrieves cardinality
+        if( array_key_exists("cardinality",$_REQUEST) && ! is_null( $_REQUEST["cardinality"] )){$cardinality = $_REQUEST["cardinality"];} 
+        // Sets a false $cardinality
+        else {$cardinality=FALSE;}
+        
+        // Retrieves adapter
+        if( array_key_exists("adapter",$_REQUEST) && ! is_null( $_REQUEST["adapter"] )){$adapter = $_REQUEST["adapter"];} 
+        // Set a default $adapter
+        else {$adapter = $this->getClient()->getUploadAdapter()->getProtocol();}
+        
+        // Retrieves the file
+        $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
+            "table"        => "files",
+            "where"        => array(
+                "parent_id = ?"     => $parent_id,
+                "settings_id = ?"   => $settings_id
+            )
+        )) );
 
-        if (array_key_exists("format", $_REQUEST) && NULL != $_REQUEST["format"]) {
-            $format = $_REQUEST["format"];
-        } else {
-            throw new Exception(_("Missing format."));
+        // Exits if failed
+        if( !$this->successResult()){return $this->getResult();}
+        
+        // Asserts the existence of the record in database
+        $rows          = $this->result["rows"];
+        if( ! count( $rows) ){
+            return array(
+                "code"     => OMK_File_Adapter::ERR_STATUS_INVALID,
+                "message"  => _("Invalid file id or settings id : couldn't find the a valid file request.")
+            );
+        }else{
+            $result = current( $rows );
+            $object_id = $result["id"];
         }
         
-        if (array_key_exists("adapter", $_REQUEST) && NULL != $_REQUEST["adapter"]) {
-            $adapter = $_REQUEST["adapter"];
-        } else {
-            $adapter = $this->getClient()->getUploadAdapter()->getTransportName();
-        }
         
         // Checks the file is awaiting format
         $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
@@ -129,10 +168,8 @@ onError : Transcode logs error
         // Asserts the existence of the record in database
         $rows          = $this->result["rows"];
         if( ! count( $rows) ){
-            return array(
-                "code"     => OMK_File_Adapter::ERR_STATUS_INVALID,
-                "message"  => _("Invalid status.")
-            );
+            $msg = sprintf(_("Invalid status: Transcode not expected for file#%s with setting#%s."),$object_id, $settings_id);
+            throw new OMK_Exception($msg,OMK_File_Adapter::ERR_STATUS_INVALID);
         }else{
             $fileData["database"] = current( $rows );
         }
@@ -150,12 +187,16 @@ onError : Transcode logs error
         )) );
 
         // Exits if failed
-       if( !$this->successResult()){ return $this->getResult(); }
+       if( !$this->successResult()){ 
+           // TODO: throw exception
+            $msg = sprintf(_("Couldn't update Transcode_Ready status for file#%s with setting#%s metadata%s."),$object_id, $settings_id, $metadata);
+            throw new OMK_Exception($msg,$this->result["code"]);
+        }
          
         // Adds to queue
         $this->recordResult( $this->getClient()->getQueue()->push(array(
             "object_id"        => $object_id,
-            "action"           => "app_get_format",
+            "action"           => "app_get_media",
             "dt_created"       => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP,
             "dt_last_request"  => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
          )));
@@ -167,8 +208,8 @@ onError : Transcode logs error
                 "status"   => OMK_File_Adapter::STATUS_TRANSCODE_READY
             ),
             "where"        => array(
-                "id = ?"        => $fileData["database"]["parent_id"],
-                "status NOT ? " => OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY
+                "id = ?"        => $object_id,
+                "status != ? "  => OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY
             )
         )));
         
@@ -331,7 +372,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         // Runs the cron action
         $cron = new OMK_Cron( $options );
         $cron->setClient($this->getClient());
-        $cron->run();
+        return $cron->run();
          
      }
      

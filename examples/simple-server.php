@@ -61,7 +61,7 @@ $uploadAdapter = new OMK_Upload_SingleFolder(array(
 
 // Instanciates a file logging adapter
 $loggerAdapter  = new OMK_Logger_File(array(
-   "level"          => OMK_Logger_Adapter::DEBUG, 
+   "level"          => OMK_Logger_Adapter::INFO, 
    "log_file_path"  => "/tmp/omk.log"  // ! You might want to modify that
 ));
 

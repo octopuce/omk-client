@@ -25,16 +25,29 @@ $t = $this->getTranslationAdapter();
                     <?= $t->_("Id"); ?> 
                 </th>
                 <th>
+                    <?= $t->_("Parent"); ?> 
+                </th>
+                <th>
                     <?= $t->_("Name"); ?> 
                 </th>
                 <th>
                     <?= $t->_("Download"); ?> 
                 </th>
                 <th>
+                    <?= $t->_("Settings"); ?> 
+                </th>
+                <th>
                     <?= $t->_("Status"); ?> 
                 </th>
                 <th>
+                    <?= $t->_("Created"); ?> 
+                </th>
+                <th>
                     <?= $t->_("Modified"); ?> 
+                </th>
+                <th>
+                    <?php // TODO: ?>
+                    Actions
                 </th>
             </tr>
         </thead>
@@ -43,13 +56,29 @@ $t = $this->getTranslationAdapter();
     <?php foreach($filesList as $theFile): ?>
          <tr class="omk-row<?= $num++%2?> ">
              <td><?= $theFile["id"]?></td> 
+             <td><?= $theFile["parent_id"] ?></td> 
              <td><?= $theFile["file_name"] ?></td> 
-             <td><?= $fa->getDownloadUrl(array(
+             <td>
+             <?php try{ ?>
+                 <?= $fa->getDownloadUrl(array(
                 "id"        => $theFile["id"],
                 "file_path" => $theFile["file_path"]
-            )); ?></td> 
+            )); ?>
+                 <?php }catch(OMK_Exception $e){ ?>
+                 <?php } ?>
+             </td> 
+             <td>
+                 <?php if( $theFile["settings_id"] ): ?>
+                 <?= $settingsList[$theFile["settings_id"]]["slug"] ?>
+                 
+                 <?php else: ?>
+                 <?= _("original") ?>
+                 <?php endif ?>
+             </td> 
              <td><?= $t->_($fa->getStatus($theFile["status"]))?></td> 
+             <td><?= $theFile["dt_created"] ?></td> 
              <td><?= $theFile["dt_updated"] ?></td> 
+             <td><?php // TODO: ?></td>
          </tr>
     <?php endforeach; ?>
         </tbody>

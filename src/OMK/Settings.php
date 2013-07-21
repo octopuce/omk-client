@@ -16,13 +16,14 @@ Settings
 class OMK_Settings extends OMK_Client_Friend{
     
     // ERR CODE 175-199
-    
+    const ERR_INVALID_SETTING       = 175;
     const UNCHECKED                 = 0;
     const CHECKED                   = 1;
     const AVAILABLE_TRUE            = 1;
     const AVAILABLE_FALSE           = 2;
     
     const SETTINGS_TYPE_ORIGINAL    = 0;
+    
     
     public function receive( $options = NULL ){
         

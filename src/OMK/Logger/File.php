@@ -46,7 +46,7 @@ class OMK_Logger_File extends OMK_Logger_Adapter {
         if ( NULL == $options || !count($options)) {
             throw new OMK_Exception(_("Missing options."));
         }
-        $message            =  __CLASS__."::".__METHOD__." ";
+        $message            =  "";
 
         if (array_key_exists("level", $options) && NULL != $options["level"]) {
             $level          = (int)$options["level"];

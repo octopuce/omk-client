@@ -7,7 +7,13 @@ class OMK_Client_Request extends OMK_Client_Friend{
     const ERR_HTTP              = 200;
     const ERR_MISSING_FILE_INFO = 201;
     const ERR_MISSING_FILE_ID   = 202;
+    const ERR_PARENT_FILE       = 203;
+    const ERR_INVALID_STATUS    = 204;
     
+    /**
+     *
+     * @var Http_Request2
+     */
     protected $requestObject;
     protected $queryParams = array();
     protected $body;
@@ -89,18 +95,18 @@ class OMK_Client_Request extends OMK_Client_Friend{
                 "message"   => $msg
             );
         }    
-        if( $response->getStatus() >= 400){
-            // failed to reach url
-            $msg = sprintf(_("An error occured : %s"), $response->getReasonPhrase());
-            $this->getClient()->getLoggerAdapter()->log(array(
-               "level"          => OMK_Logger_Adapter::WARN,
-                "message"       => $msg,
-            )); 
-            return array(
-                "code"      => $response["code"],
-                "message"   => $msg
-            );
-        }
+//        if( $response->getStatus() >= 500){
+//            // failed to reach url
+//            $msg = sprintf(_("An error occured : %s"), $response->getReasonPhrase());
+//            $this->getClient()->getLoggerAdapter()->log(array(
+//               "level"          => OMK_Logger_Adapter::WARN,
+//                "message"       => $msg,
+//            )); 
+//            return array(
+//                "code"      => $response->getStatus(),
+//                "message"   => $msg
+//            );
+//        }
 
         return array(
             "code"      => 0,
@@ -423,7 +429,8 @@ onError : App logs error
                 "table"         => "files",
                 "id"            => $options["id"],
                 "data"  => array(
-                    "status"    => OMK_File_Adapter::STATUS_METADATA_REQUESTED
+                    "status"    => OMK_File_Adapter::STATUS_METADATA_REQUESTED,
+                    "dt_updated" => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
                 )
             ))
         );
@@ -535,7 +542,8 @@ onError : App logs error
         $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
             "table" => "files",
             "data"  => array(
-                "status"    => OMK_File_Adapter::STATUS_TRANSCODE_REQUESTED,
+                "status"        => OMK_File_Adapter::STATUS_TRANSCODE_REQUESTED,
+                "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
             ),
             "where" => array(
                 "id = ?"    => $object_id,
@@ -565,279 +573,312 @@ onError : App logs error
     }
     
     
-    protected function app_get_format(){
+    /**
+     * 
+     * @param type $options
+     * @return type
+     * @throws OMK_Exception
+     */
+    protected function app_get_media( $options ){
     
         // Validates mandatory parameters
         if (array_key_exists("object_id", $options) && NULL != $options["object_id"]) {
-            $parent_id = $options["object_id"];
+            $id = $options["object_id"];
         } else {
             throw new OMK_Exception(_("Missing object_id."),  self::ERR_MISSING_PARAMETER);
         }
         
-        if (array_key_exists("params", $options) && NULL != $options["params"]) {
-            $params = $options["params"];
-            $this->recordResult( $this->getClient()->jsonDecode($params));
-            // Exits if failed
-            if( ! $this->successResult() ){ return $this->getResult(); }
-            
-            if( array_key_exists("result",$this->result) && NULL != $this->result["result"]){
-                $params = $this->result["result"];
-            } else {
-                throw new OMK_Exception(_("Missing result."), 1);
-            }
-        } else {
-            throw new OMK_Exception(_("Missing paramseters."),  self::ERR_MISSING_PARAMETER);
+        
+        // Attemps to retrieve the file 
+        $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
+            "table"        => "files",
+            "where"        => array(
+                "id = ?"     => $id,
+            )
+        )) );
+        
+        // Exits if failed
+        if( !$this->successResult()){ 
+            // TODO : Trow
+            return $this->getResult();}
+        
+        // Initialize the file data container
+        $fileData = array(
+            "storage"   => array(),
+            "database"  => array()
+        );
+        
+        // Asserts the existence of the record in database
+        $rows          = $this->result["rows"];
+        if( ! count( $rows) ){
+            return array(
+                "code"     => OMK_File_Adapter::ERR_STATUS_INVALID,
+                "message"  => _("Invalid file id or settings id : couldn't find the a valid file request.")
+            );
+        }else{
+            $fileData["database"]   = current( $rows );
         }
         
+
         // Attempts to retrieve metadata object
-        if( array_key_exists("metadata",$params) && count($params["metadata"]) ){
-            $metadata = $params["metadata"];
+        if( array_key_exists("metadata",$fileData["database"]) && count($fileData["database"]["metadata"]) ){
+            $metadata_string        = $fileData["database"]["metadata"];
         } else {
             throw new OMK_Exception(_("Missing metadata."), self::ERR_MISSING_PARAMETER);
         }
         
         // Attempts to convert back metadata string
-        $this->recordResult( $this->getClient()->jsonEncode($metadata));
+        $this->recordResult( $this->getClient()->jsonDecode($metadata_string));
         
         // Exits if failed
-        if( ! $this->successResult() ){ return $this->getResult(); }
+        if( ! $this->successResult() ){ 
+            // TODO : Trow
+            return $this->getResult(); }
         
         // Attempts to retrieve metadata string
         if( array_key_exists("result",$this->result) && NULL != $this->result["result"]){
-            $metadata_string = $this->result["result"];
+            $metadataObject         = $this->result["result"];
         } else {
             throw new OMK_Exception(_("Missing result."), self::ERR_MISSING_PARAMETER);
         }
        
+        
         //  Attempts to retrieve the setting id
-        if (array_key_exists("settings_id", $params) && NULL != $params["settings_id"]) {
-            $settings_id = $params["settings_id"];
+        if (array_key_exists("settings_id", $fileData["database"]) && NULL != $fileData["database"]["settings_id"]) {
+            $settings_id = $fileData["database"]["settings_id"];
         } else {
-            throw new Exception(_("Missing settings_id."));
+            throw new OMK_Exception(_("Missing settings_id."));
         }
         
         // Attempts to retrieve the type
-        if( array_key_exists("type",$params) && NULL != $params["type"]){
-            $type = $params["type"];
+        if( array_key_exists("type",$fileData["database"]) && NULL != $fileData["database"]["type"]){
+            $type = $fileData["database"]["type"];
         } else {
             throw new OMK_Exception(_("Missing type."), self::ERR_MISSING_PARAMETER);
         }
         
+        // Attempts to retrieve the optional adapter
+        if( array_key_exists("upload_adapter",$fileData["database"]) && NULL != $fileData["database"]["upload_adapter"]){
+            $adapter = $fileData["database"]["upload_adapter"];
+        } else {
+            $adapter = $this->getClient()->getUploadAdapter()->getName();
+        }
+        $uploadAdapter = $this->getClient()->getUploadAdapter(array("upload_adapter"=>$adapter));
+        
+        // Retrieves parent_id
+        if( array_key_exists("parent_id",$fileData["database"]) && ! is_null( $fileData["database"]["parent_id"] )){$parent_id = $fileData["database"]["parent_id"];} 
+        // Failed at retrieving variable $parent_id
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing parent_id."), self::ERR_MISSING_PARAMETER);}
+
         // Attempts to retrieve the optional cardinality 
-        if (array_key_exists("cardinality", $params) && NULL != $params["cardinality"]) {
-            $cardinality = $params["cardinality"];
+        if (array_key_exists("cardinality", $metadataObject) && NULL != $metadataObject["cardinality"]) {
+            $cardinality = $metadataObject["cardinality"];
         } else {
             $cardinality = NULL;
-        }
-        
-        // Attempts to retrieve the optional adapter
-        if( array_key_exists("adapter",$params) && NULL != $params["adapter"]){
-            $adapter = $params["adapter"];
-        } else {
-            $adapter = NULL;
         }
         
         // Gets the parent file db record
         $this->recordResult($this->getClient()->getDatabaseAdapter()->select(array(
             "table"     => "files",
             "where"     => array(
-                "id = ?"        => $object_id,
-                "status NOT ?"  => OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE
+                "id = ?" => $parent_id,
+                "status != ?"  => OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE
             )
         )));
         
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){
+            throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Failed to retrieve parent id."), self::ERR_PARENT_FILE);
+        }
        
         // Checks the validity of the db result
         if (array_key_exists("rows", $this->result) && count($this->result["rows"]) ) {
             $parentFileData = current( $this->result["rows"] );
         } else {
-            return array(
-                "code"      => self::ERR_MISSING_PARAMETER,
-                "message"   => _("The media parent is not expecting new transcoding format.")
-            );
+            throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("The media parent is not expecting new transcoding format."), self::ERR_INVALID_STATUS);
         }
         
         // Gets the parent file name
         if (array_key_exists("file_name", $parentFileData) && NULL != $parentFileData["file_name"]) {
             $parent_file_name = $parentFileData["file_name"];
         } else {
-            throw new Exception(_("Missing file name."));
+            throw new Exception(__CLASS__."::".__METHOD__." = "._("Missing file name."),self::ERR_MISSING_PARAMETER);
         }
         
-        // Validates the owner id
-        if( array_key_exists("owner_id",$parentFileData) && NULL != $parentFileData["owner_id"]){
-            $owner_id = $parentFileData["owner_id"];
-        } else {
-            throw new omk(_("Missing owner id."), self::ERR_MISSING_PARAMETER);
-        }
-        
-        // Attempts to retrieve transcoded file name
+        // Attempts to retrieve transcoded file name, path, serial
         $this->recordResult($this->getClient()->getFileAdapter()->getTranscodedFileData(array(
-            "parent_id"     => $parent_id,
+            "id"            => $parent_id,
             "settings_id"   => $settings_id,
             "file_name"     => $parent_file_name,
             "cardinality"   => $cardinality
         )));
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){
+            // TODO : Trow
+            return $this->getResult();}
 
-        // Initialize the file data container
-        $fileData = array(
-            "storage"   => array(),
-            "database"  => array()
-        );
-
-        // Gets the resulting filename
-        if (array_key_exists("file_name", $this->result) && NULL != $this->result["file_name"]) {
-            $fileData["storage"]["file_name"] = $this->result["file_name"];
-        } else {
-            throw new OMK_Exception(_("Missing file name."), self::ERR_MISSING_PARAMETER);
+        // Retrieves serial
+        if( array_key_exists("serial",$this->result) && ! is_null( $this->result["serial"] )){$serial = $this->result["serial"];} 
+        // Failed at retrieving variable $serial
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing serial."), self::ERR_MISSING_PARAMETER);}
+        
+        // Checks the cardinality : might have downloaded all files
+        if( $cardinality > 1 && $serial == $cardinality ){
+            
+            // TODO: Handle file transcode finish
+            // $this->recordResult($this->onFileTranscodeFinish());
+            
+            // Returns a success : all files downloaded
+            return array(
+                "code"      => self::ERR_OK,
+                "message"   => sprintf(_("All items downloaded.")),
+                "status"    => OMK_Queue::STATUS_SUCCESS
+            );
         }
-        if (array_key_exists("file_path", $this->result) && NULL != $this->result["file_path"]) {
-            $fileData["storage"]["file_path"] = $this->result["file_path"];
-        } else {
-            throw new OMK_Exception(_("Missing file path.",self::ERR_MISSING_PARAMETER));
-        }
+        
+        
+        // Retrieves file_name
+        if( array_key_exists("file_name",$this->result) && ! is_null( $this->result["file_name"] )){$fileData["storage"]["file_name"] = $this->result["file_name"];} 
+        // Failed at retrieving variable $file_name
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing file_name."), self::ERR_MISSING_PARAMETER);}
+        
+        // Retrieves file_path
+        if( array_key_exists("file_path",$this->result) && ! is_null( $this->result["file_path"] )){$fileData["storage"]["file_path"] = $this->result["file_path"];} 
+        // Failed at retrieving variable $file_path
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing file_path."), self::ERR_MISSING_PARAMETER);}
+       
         
         // Validates the file existence on disk
         if( ! file_exists($fileData["storage"]["file_path"]) ){
-            $fileData["storage"]["size"] = 0;
+            $fileData["storage"]["file_size"] = 0;
             
             // Attempts to create the file on storage
             if( ! touch( $fileData["storage"]["file_path"] ) ){
-                return array(
-                    "code"      => OMK_File_Adapter::ERR_STORAGE_FILE_PATH,
-                    "message"   => _("File could not be initialized.")
-                );
+                throw new Exception(__CLASS__."::".__METHOD__." = "._("File could not be initialized."),OMK_File_Adapter::ERR_STORAGE_FILE_PATH);
             }
 
         }else{
-            $fileData["storage"]["size"] = filesize($fileData["storage"]["file_path"]);
+            $fileData["storage"]["file_size"] = filesize($fileData["storage"]["file_path"]);
         }
         
         // Validates the file is writable
         if( ! is_writable($fileData["storage"]["file_path"]) ){
-            return array(
-                "code"      => OMK_File_Adapter::ERR_STORAGE_FILE_PATH,
-                "message"   => _("File is not writable.")
-            );
+            throw new Exception(__CLASS__."::".__METHOD__." = "._("File is not writable."),OMK_File_Adapter::ERR_STORAGE_FILE_PATH);
         }
         
-        // Validates the file existence in database
-        $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
-            "table" => "files",
-            "where" => array(
-                "parent_id = ?" => $parent_id,
-                "settings_id = ?" => $settings_id
-            )
+        // Updates database record 
+        $fileData["database"]["file_path"]     = $fileData["storage"]["file_path"];
+        $fileData["database"]["file_name"]     = $fileData["storage"]["file_name"];
+        $fileData["database"]["status"]        = OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY;
+        $fileData["database"]["dt_created"]    = OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP;
+
+        $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
+            "table"     => "files",
+            "id"        => $fileData["database"]["id"],
+            "data"      => $fileData["database"]
         )));
-        
+
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
-       
-        // Inserts new files records in db
-        if ( ! array_key_exists("rows", $this->result) || NULL == $this->result["rows"]) {
-            $fileData["database"] = array(
-                "parent_id"     => $parent_id,
-                "owner_id"      => $owner_id,
-                "settings_id"   => $settings_id,
-                "file_path"     => $fileData["storage"]["file_path"],
-                "file_name"     => $fileData["storage"]["file_name"],
-                "type"          => $type,
-                "metadata"      => $metadata_string,
-                "status"        => OMK_File_Adapter::STATUS_TRANSCODE_READY
-            );
-            
-            $this->recordResult($this->getClient()->getDatabaseAdapter()->insert(array(
-                "table"     => "files",
-                "data"      => $fileData["database"]
-            )));
-            
-            // Exits if failed
-            if (!$this->successResult()) {
-                return $this->getResult();
-            }
-            
-            // Sets the new id on the file Data record
-            if (array_key_exists("id", $this->result) && NULL != $this->result["id"]) {
-                $fileData["database"]["id"] = $this->result["id"];
-            } else {
-                throw new Exception(_("Missing id."),  self::ERR_MISSING_PARAMETER);
-            }
-        } 
-        else {
-            $fileData["database"] = current( $this->result["rows"] );
+        if (!$this->successResult()) {
+            throw new Exception(__CLASS__."::".__METHOD__." = "._("Failed to update transcoded file data: ".$this->result["message"]),$this->result["code"]);
         }
 
-
+        // Retrieves file_size
+        if( array_key_exists("file_size",$metadataObject) && ! is_null( $metadataObject["file_size"] )){$full_size = $metadataObject["file_size"];} 
+        // Failed at retrieving variable $file_size
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing file_size."), self::ERR_MISSING_PARAMETER);}
+        
         // Validates files is not already fully available on disk (NAS case for example)
-        if( $fileData["storage"]["size"] == $params["metadata"]["size"] ){
+        if( $fileData["storage"]["file_size"] >= $full_size ){
             
-            // TODO : update files records
+            // TODO: Handle file transcode finish
+            // $this->recordResult($this->onFileTranscodeFinish());
+            
             return array(
-                "code"      => OMK_Upload_Adapter::ERR_FILE_FULL_SIZE,
-                "message"   => sprintf(_("The file is already uploaded"))
+                "code"      => self::ERR_OK,
+                "message"   => sprintf(_("The file is already uploaded")),
+                "status"    => OMK_Queue::STATUS_SUCCESS
             );
+            
         }else{
-            $fileData["storage"]["full_size"] = $params["metadata"]["size"];
+            $fileData["storage"]["full_size"] = $full_size;
         }
         
         // Validates existing file record is awaiting more data
         if( ! in_array($fileData["database"]["status"], array( OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY,OMK_File_Adapter::STATUS_TRANSCODE_READY))){
-            return array(
-                "code"      => OMK_File_Adapter::ERR_STATUS_COMPLETE,
-                "message"   => sprintf(_("This media is not expecting more data."))
-            );
+            throw new Exception(__CLASS__."::".__METHOD__." = "._("This media is not expecting more data."),OMK_File_Adapter::ERR_STATUS_COMPLETE);
         }
         
         // Attempts to determine request range
-        $this->recordResult( $this->getClient()->getUploadAdapter(array("adapter"=>$adapter))->getFileContentRange($fileData["storage"]));
+        $this->recordResult( $uploadAdapter->getFileContentRange($fileData["storage"]));
         
         // Exits if failed
         if( !$this->successResult()){return $this->getResult();}
        
         // Retrieves content range string
-        if( array_key_exists("content_range",$options) && NULL != $options["content_range"]){
-            $content_range = $options["content_range"];
+        if( array_key_exists("content_range",$this->result)){
+            $content_range = $this->result["content_range"];
         } else {
             throw new OMK_Exception(_("Missing content_range."), self::ERR_MISSING_PARAMETER);
-        }
+        } 
+        
+        // Attempts to retrieve the final flag if last chunk
         if( array_key_exists("finished",$this->result) && NULL != $this->result["finished"]){
             $finished = $this->result["finished"];
         } else {
-            $finished = NULL;
+            $finished = FALSE;
         }
         
         // Sets query params
         $this->queryParams["content_range"] = $content_range;
-        $this->queryParams["id"]            = $fileData["database"]["id"];
-       
-        // Attempts to load data
-        $this->recordResult( $this->send());
+        $this->queryParams["id"]            = $fileData["database"]["parent_id"];
+        $this->queryParams["settings_id"]   = $fileData["database"]["settings_id"];
+        $this->queryParams["adapter"]       = $uploadAdapter->getProtocol();
+        $this->queryParams["serial"]        = $serial;
         
+        // Attempts to load data
+        $this->recordResult( $this->send(array(
+            "action" => "app_get_media"
+        )));
+        
+        /**
+         * @var HTTP_Request2_Response
+         */
+        $response;
         // Attempts to retrieves response
-        if( array_key_exists("response",$this->result) && NULL != $this->result["response"]){
+        if( array_key_exists("response",$this->result) && $this->result["response"] instanceof HTTP_Request2_Response){
             $response = $this->result["response"];
         } else {
-            throw new omk(_("Missing response."), self::ERR_MISSING_PARAMETER);
+            throw new OMK_Exception(_("Missing response."), self::ERR_MISSING_PARAMETER);
+        }
+        
+        // Fails if response is not a 200 
+        if( $response->getStatus() != 200){
+            throw new OMK_Exception(_("Transcode file data chunk request failed"),self::ERR_HTTP);
         }
        
-        // Attempts to update the file on disk
+        // Attempts to append new data to the file on disk
         $this->recordResult( $this->getClient()->getFileAdapter()->append(array(
             "file_path" => $fileData["storage"]["file_path"],
             "data"      => $response->getBody()
         )));
         
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){
+            throw new OMK_Exception(_("Failed to append chunk to transcode file: {$this->result["message"]}"),$this->result["code"]);
+        }
        
-        // Asserts the status of the files records
+        
+        // Runs operations linked to end of transfer of this file
+        // TODO: Should be a method
+        // ---------------------------------------------------------------------
         if( $finished == TRUE){
-            $file_status = OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY;
-            $this->recordResult( $this->getClient()->getDatabaseAdapter()->count(array(
+            
+            
+
+            // Attempts to retrieve transcode siblings requiring transfer
+            $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
                 "table"     => "files",
                 "where"     => array(
                     "parent_id = ?" => $parent_id,
@@ -846,7 +887,9 @@ onError : App logs error
             )));
             
             // Exits if failed
-            if( ! $this->successResult() ){ return $this->getResult(); }
+            if( ! $this->successResult() ){ 
+                throw new OMK_Exception(_("Failed to count transcode siblings after end of transfet: {$this->result["message"]}"),$this->result["code"]);
+            }
             
             // Attempts to retrieve db results
             if( array_key_exists("rows",$this->result) && NULL != $this->result["rows"]){
@@ -856,38 +899,51 @@ onError : App logs error
             }
             
             // Attempts to update parent if this is the last transcode
+            // TODO: Use a count method
             if( count($rows) <= 1 ){
                 
                 $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
                     "table"     => "files",
                     "where"     => array(
-                        "id = ?" => $parent_id,
+                        "id = ?"        => $parent_id,
                     ),
                     "data"      => array(
-                        "status" => OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE
+                        "status"        => OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE,
+                        "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
                     )
 
                 )));
+                
+                // Exits if failed
+                if( !$this->successResult()){
+                    throw new OMK_Exception(_("Failed to update parent file status after end of transfer: {$this->result["message"]}"),$this->result["code"]);
+                }
             }
-            
+            // Sets a final status
+            $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE;
         }else{
-            $file_status = OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE;
+            // Sets an ongoing status
+            $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY;
         }
         
         // Updates the file record in database
         $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
             "table"     => "files",
             "where"     => array(
-                "id = ?" => $fileData["database"]["id"],
+                "id = ?"        => $fileData["database"]["id"],
             ),
             "data"      => array(
-                "status" => $file_status
+                "status"        => $file_status,
+                "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
             )
 
         )));        
         
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){
+            throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
+        }
+        // ---------------------------------------------------------------------
        
         return array(
             "code"      => 0,

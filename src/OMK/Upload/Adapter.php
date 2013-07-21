@@ -14,12 +14,12 @@ UploadAdapter
 class OMK_Upload_Adapter extends OMK_Client_Friend {
     
     // ERR CODE 125-149
-    const ERR_OUTPUT_STREAM = 125;
-    const ERR_MOVE_UPLOADED = 126;
-    const ERR_INPUT_STREAM  = 127;
-    const ERR_CHUNK_PART    = 128;
-    const ERR_MISSING_FILE  = 129;
-    
+    const ERR_OUTPUT_STREAM     = 125;
+    const ERR_MOVE_UPLOADED     = 126;
+    const ERR_INPUT_STREAM      = 127;
+    const ERR_CHUNK_PART        = 128;
+    const ERR_MISSING_FILE      = 129;
+    const ERR_FILE_FULL_SIZE    = 130;
     
     protected $tmp_path;
     protected $protocol   = "http"; 
@@ -64,11 +64,13 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     }
     
     /**
-     * Determines which file range has to be downloaded. Can skip in case like NAS storage 
+     * Determines which file range has to be requested
+     * 
+     * Returns a final flag as well if last chunk
      * 
      * @param type $options
      * @throws OMK_Exception
-     * @return array[code,message,skip,(option)range)
+     * @return array[code,message,content_range,finished)
      */
     public function getFileContentRange( $options = NULL ){
         
