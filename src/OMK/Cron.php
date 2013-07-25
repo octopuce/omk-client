@@ -45,7 +45,7 @@ class OMK_Cron extends OMK_Client_Friend{
         );
         
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         $loops              = 0;
         $errors             = array();
@@ -93,13 +93,13 @@ class OMK_Cron extends OMK_Client_Friend{
         ));
         
         // Exits if failed
-        if( ! $this->successResult()){return $this->getResult();}
+        if( ! $this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Retrieves a task and locks it
         $this->recordResult($this->getCronTask());
         
         // Exits if failed
-        if( ! $this->successResult()){return $this->getResult();}
+        if( ! $this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
                 
         // Stores getCronTask result
         $tmpResult = $this->result;
@@ -109,7 +109,7 @@ class OMK_Cron extends OMK_Client_Friend{
 
         // Exits if failed
         if (!$this->successResult()) {
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Exits if finished
@@ -196,7 +196,7 @@ class OMK_Cron extends OMK_Client_Friend{
                 )
             )));
             if( !$this->successResult()){
-                return $this->getResult();
+                throw new OMK_Exception($this->result["message"],$this->result["code"]);
             }
             // Returns the actual error, not a positive feedback from row update
             return $storedResult;
@@ -312,7 +312,7 @@ class OMK_Cron extends OMK_Client_Friend{
                 )
         )));
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Retrieves a single task
@@ -321,8 +321,9 @@ class OMK_Cron extends OMK_Client_Friend{
                 "table" => "queue",
                 "where" => array(
                     "locked = ?" => OMK_Queue::LOCK_UNLOCKED,
+                    "failed_attempts < ?" => self::MAX_TRIES,
                     "status IN (".implode(",",array(OMK_Queue::STATUS_NULL, OMK_Queue::STATUS_IN_PROGRESS,OMK_Queue::STATUS_ERROR)).")" => OMK_Database_Adapter::REQ_NO_BINDING,
-                    "DATE_ADD( dt_last_request, INTERVAL delay_next_request MINUTE) <= ?" => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
+                    "DATE_SUB( NOW(), INTERVAL delay_next_request MINUTE) <= dt_last_request" => OMK_Database_Adapter::REQ_NO_BINDING
                 ),
                 "order" => array(
                     "priority ASC",
@@ -331,7 +332,7 @@ class OMK_Cron extends OMK_Client_Friend{
                 "limit" => 1
         ))); 
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Validates task. Return in case it's not valid.
@@ -360,7 +361,7 @@ class OMK_Cron extends OMK_Client_Friend{
                 )
         )));      
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // - returns task

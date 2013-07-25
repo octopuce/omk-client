@@ -99,7 +99,7 @@ onError : Transcode logs error
         $this->recordResult( $this->validateTranscoderRequest() );
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
 
         // Retrieves id (the parent_id)
         if (array_key_exists("id", $_REQUEST) && NULL != $_REQUEST["id"]) {
@@ -138,7 +138,7 @@ onError : Transcode logs error
         )) );
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Asserts the existence of the record in database
         $rows          = $this->result["rows"];
@@ -163,7 +163,7 @@ onError : Transcode logs error
         )) );
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Asserts the existence of the record in database
         $rows          = $this->result["rows"];
@@ -242,7 +242,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         $this->recordResult( $this->validateTranscoderRequest() );
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
 
         if (array_key_exists("id", $_REQUEST) && NULL != $_REQUEST["id"]) {
             $parent_id = $_REQUEST["id"];
@@ -266,7 +266,9 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         )) );
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){
+            // TODO: Throw
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Asserts the existence of the record in database
         $rows          = $this->result["rows"];
@@ -275,14 +277,16 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
                 "code"     => OMK_File_Adapter::ERR_STATUS_INVALID,
                 "message"  => sprintf( _("This file is not awaiting metadata. File id: %s"), $parent_id)
             ));
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Attempts to decode the JSON string
         $this->recordResult($this->getClient()->jsonDecode($metadata));
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){
+            // TODO: Throw
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);}
 
         // Checks the received metadata JSON string can be decoded
         if (array_key_exists("result", $this->result) && NULL != $this->result["result"]) {
@@ -314,7 +318,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
                 "code"     => OMK_Client::ERR_INVALID_FORMAT,
                 "message"  => _("Invalid status.")
             ));
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Updates file 
@@ -331,7 +335,8 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         )));
 
         // Exits if failed
-       if( !$this->successResult()){ return $this->getResult(); }
+       if( !$this->successResult()){
+           throw new OMK_Exception($this->result["message"],$this->result["code"]); }
          
         // Adds to queue
         $this->recordResult( $this->getClient()->getQueue()->push(array(
@@ -346,14 +351,16 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
 
      }
      
-     /*
-      * transcoder_cron
-        Who : Transcoder -> App
-        When : Transcoder cron ticks
-        What : App executes cron tasks
-        Request Params : null
-        onSuccess : null
-        onError : Transcoder logs error
+     /**
+      * Response to transcoder_cron API call
+      * 
+      * Who : Transcoder -> App
+      * When : Transcoder cron ticks
+      * What : App executes cron tasks
+      * 
+      * @param type $options
+      * @return result struct
+      * @throws OMK_Exception
       */
      protected function transcoder_cron($options = null){
 
@@ -361,7 +368,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
          
          // Exits if failed
          if (!$this->successResult()) {
-             return $this->getResult();
+             throw new OMK_Exception($this->result["message"],$this->result["code"]);
          }
          
          $this->getClient()->getLoggerAdapter()->log(array(
@@ -406,7 +413,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         
         // Exits if failed
         if (!$this->successResult()) {
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Attempts to create file on storage
@@ -423,7 +430,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         
         // Exits if failed
         if (!$this->successResult()) {
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Update file record in db 
@@ -442,7 +449,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         
         // Exits if failed
         if (!$this->successResult()) {
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Adds file transcoding request to queue

@@ -455,7 +455,7 @@
         
         $this->recordResult($this->select($options));
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         $rows = $this->result["rows"];
         if( count($rows)){

@@ -60,7 +60,7 @@ class OMK_Settings extends OMK_Client_Friend{
                 
             )));
             if( ! $this->successResult()){
-                return $this->getResult();
+                throw new OMK_Exception($this->result["message"],$this->result["code"]);
             }
             
         }
@@ -82,7 +82,7 @@ class OMK_Settings extends OMK_Client_Friend{
             "where" => array()
         )));
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
             "table" => "settings",
@@ -94,11 +94,11 @@ class OMK_Settings extends OMK_Client_Friend{
             )
         )));
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         return array(
-            "code"      => 0,
-            "message"   => _("Settings updated") 
+            "code"      => OMK_Client_Friend::ERR_OK,
+            "message"   => _("Settings successfully updated") 
         );
     }
 }

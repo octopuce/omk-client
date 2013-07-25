@@ -1,6 +1,12 @@
 <?php 
 
-
+/**
+ * Takes care of all request originating from omk client
+ * 
+ * It uses internally a PEAR Http Request object for making http calls
+ * 
+ * @see Http_Request2
+ */
 class OMK_Client_Request extends OMK_Client_Friend{
 
     // ERR 200->225
@@ -9,6 +15,9 @@ class OMK_Client_Request extends OMK_Client_Friend{
     const ERR_MISSING_FILE_ID   = 202;
     const ERR_PARENT_FILE       = 203;
     const ERR_INVALID_STATUS    = 204;
+    const ERR_TRANSCODEFILEDATA = 205;
+    const ERR_METADATA          = 206;
+    
     
     /**
      *
@@ -18,7 +27,11 @@ class OMK_Client_Request extends OMK_Client_Friend{
     protected $queryParams = array();
     protected $body;
 
-
+    /**
+     * Accepts additional target related parameters
+     * 
+     * @param OMK_Client $client
+     */
     public function __construct(OMK_Client &$client) {
         $this->client = $client;
         $this->queryParams["version"] = $this->getClient()->getVersion();
@@ -26,12 +39,19 @@ class OMK_Client_Request extends OMK_Client_Friend{
         $this->queryParams["transcoder_key"] = $this->getClient()->getTranscoderKey();
     }
     
+    /**
+     * Acts as dispatcher for a bunch of params, routing to the right method
+     * 
+     * @param array $params
+     * @return result struct
+     */
     public function run( $params ){
         $action = $params["action"];
         return $this->$action($params);
     }
 
      /**
+      * Makes the glu with the Http Request library
       * 
       * @param array $options
       * @return Http_Request2
@@ -60,6 +80,13 @@ class OMK_Client_Request extends OMK_Client_Friend{
         
     }
     
+    /**
+     * Performs the actual HTTP call
+     * 
+     * @param array $options
+     * @return type
+     * @throws OMK_Exception
+     */
     public function send($options = array()){
         
         $query          = array();
@@ -173,7 +200,7 @@ onError : void
         // Attempts to retrieve trackers list
         $this->recordResult($this->send(array("action"=>"autodiscovery")));
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
          
 
@@ -182,7 +209,7 @@ onError : void
         $this->recordResult($this->decodeResponse($response));
 
         // Exits if failed
-        if( ! $this->successResult()){return $this->getResult();}
+        if( ! $this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
 
         $list = $this->result["result"];
         // Inserts / Updates data
@@ -253,14 +280,14 @@ onError : void
             )));
         
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Attempts to convert response
         $this->recordResult($this->decodeResponse());
 
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         if( empty($this->body)) {
@@ -287,7 +314,7 @@ onError : void
              )            
         ));
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
 
         $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
@@ -302,7 +329,7 @@ onError : void
              )            
         ));        
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
@@ -317,7 +344,7 @@ onError : void
              )            
         ));        
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
 
         if (array_key_exists("settings", $jsonArray) && NULL != $jsonArray["settings"]) {
@@ -333,7 +360,7 @@ onError : void
             "name"              => $transcoder_url
             )));        
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         
@@ -382,7 +409,7 @@ onError : App logs error
         
         // Exits if failed
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         if( ! array_key_exists( "rows", $this->result) || !count($this->result["rows"])){
             throw new OMK_Exception(_("Missing file info."), self::ERR_MISSING_FILE_INFO);
@@ -404,14 +431,14 @@ onError : App logs error
         
         // Exits if failed
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Attempts to convert response
         $this->recordResult($this->decodeResponse());
         
         // Exits if failed
-        if( ! $this->successResult()){return $this->getResult();}
+        if( ! $this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
 
         // Gets server response as array
         $response = $this->result["result"];
@@ -420,7 +447,7 @@ onError : App logs error
         $this->recordResult($response);
         
         // Exits if failed
-        if( ! $this->successResult()){return $this->getResult();}
+        if( ! $this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Updates file record in db 
         $this->recordResult( 
@@ -480,7 +507,7 @@ onError : App logs error
         )));
 
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
 
         if( array_key_exists("rows", $this->result) && NULL != $this->result["rows"] && count($this->result["rows"] )) {
             $fileData  = current( $this->result["rows"] );
@@ -509,7 +536,7 @@ onError : App logs error
         )));
         
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Checks the validity of the db result
         if (array_key_exists("rows", $this->result) && count($this->result["rows"]) ) {
@@ -519,7 +546,7 @@ onError : App logs error
                 "code"      => self::ERR_MISSING_PARAMETER,
                 "message"   => sprintf( _("No settings for the %s media type."), $fileData["type"])
             ));
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
 
         // Builds query params
@@ -536,7 +563,7 @@ onError : App logs error
         )));
  
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
        
         // Updates files status
         $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
@@ -599,8 +626,9 @@ onError : App logs error
         
         // Exits if failed
         if( !$this->successResult()){ 
-            // TODO : Trow
-            return $this->getResult();}
+            $msg = sprintf(_("Couldn't load the file supposed to receive chunks, invalid id#%s",$id));
+            throw new OMK_Exception($msg,self::ERR_INVALID_PARAMETER);
+        }
         
         // Initialize the file data container
         $fileData = array(
@@ -632,8 +660,9 @@ onError : App logs error
         
         // Exits if failed
         if( ! $this->successResult() ){ 
-            // TODO : Trow
-            return $this->getResult(); }
+            $msg = sprintf(_("Failed to decode metadata string of transcode file#%s",$id)); 
+            throw new OMK_Exception($msg,self::ERR_METADATA);
+        }
         
         // Attempts to retrieve metadata string
         if( array_key_exists("result",$this->result) && NULL != $this->result["result"]){
@@ -710,13 +739,14 @@ onError : App logs error
             "id"            => $parent_id,
             "settings_id"   => $settings_id,
             "file_name"     => $parent_file_name,
-            "cardinality"   => $cardinality
+            "cardinality"   => $cardinality_
         )));
 
         // Exits if failed
         if( !$this->successResult()){
-            // TODO : Trow
-            return $this->getResult();}
+            $msg = sprintf(_("Failed to retrieve Transcode file data for file#%s settings_id#%s"),$id,$settings_id);
+            throw new OMK_Exception($msg,self::ERR_TRANSCODEFILEDATA);
+        }
 
         // Retrieves serial
         if( array_key_exists("serial",$this->result) && ! is_null( $this->result["serial"] )){$serial = $this->result["serial"];} 
@@ -726,8 +756,10 @@ onError : App logs error
         // Checks the cardinality : might have downloaded all files
         if( $cardinality > 1 && $serial == $cardinality ){
             
-            // TODO: Handle file transcode finish
-            // $this->recordResult($this->onFileTranscodeFinish());
+             $this->recordResult($this->onEndTranscodeAppend(array(
+                 "fileData" => $fileData,
+                 "finished" => TRUE
+             )));
             
             // Returns a success : all files downloaded
             return array(
@@ -792,8 +824,10 @@ onError : App logs error
         // Validates files is not already fully available on disk (NAS case for example)
         if( $fileData["storage"]["file_size"] >= $full_size ){
             
-            // TODO: Handle file transcode finish
-            // $this->recordResult($this->onFileTranscodeFinish());
+             $this->recordResult($this->onEndTranscodeAppend(array(
+                 "fileData"     => $fileData,
+                 "finished"     => TRUE
+             )));
             
             return array(
                 "code"      => self::ERR_OK,
@@ -814,7 +848,7 @@ onError : App logs error
         $this->recordResult( $uploadAdapter->getFileContentRange($fileData["storage"]));
         
         // Exits if failed
-        if( !$this->successResult()){return $this->getResult();}
+        if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
        
         // Retrieves content range string
         if( array_key_exists("content_range",$this->result)){
@@ -837,6 +871,10 @@ onError : App logs error
         $this->queryParams["adapter"]       = $uploadAdapter->getProtocol();
         $this->queryParams["serial"]        = $serial;
         
+        
+        // TODO : The upload (either partial|total|null) should be done by the RIGHT upload adapter 
+        // TODO : The final storage should be handled by the file adapter
+        
         // Attempts to load data
         $this->recordResult( $this->send(array(
             "action" => "app_get_media"
@@ -846,6 +884,7 @@ onError : App logs error
          * @var HTTP_Request2_Response
          */
         $response;
+        
         // Attempts to retrieves response
         if( array_key_exists("response",$this->result) && $this->result["response"] instanceof HTTP_Request2_Response){
             $response = $this->result["response"];
@@ -871,12 +910,118 @@ onError : App logs error
        
         
         // Runs operations linked to end of transfer of this file
-        // TODO: Should be a method
+        $this->recordResult($this->onEndTranscodeAppend(array(
+            "fileData"      => $fileData,
+            "finished"      => $finished
+        )));
+        
         // ---------------------------------------------------------------------
+//        if( $finished == TRUE){
+//            
+//            
+//
+//            // Attempts to retrieve transcode siblings requiring transfer
+//            $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
+//                "table"     => "files",
+//                "where"     => array(
+//                    "parent_id = ?" => $parent_id,
+//                    "status IN ?" => array( OMK_File_Adapter::STATUS_TRANSCODE_READY, OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY, OMK_File_Adapter::STATUS_TRANSCODE_REQUESTED )
+//                )
+//            )));
+//            
+//            // Exits if failed
+//            if( ! $this->successResult() ){ 
+//                throw new OMK_Exception(_("Failed to count transcode siblings after end of transfet: {$this->result["message"]}"),$this->result["code"]);
+//            }
+//            
+//            // Attempts to retrieve db results
+//            if( array_key_exists("rows",$this->result) && NULL != $this->result["rows"]){
+//                $rows = $this->result["rows"];
+//            } else {
+//                throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
+//            }
+//            
+//            // Attempts to update parent if this is the last transcode
+//            // TODO: Use a count method
+//            if( count($rows) <= 1 ){
+//                
+//                $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
+//                    "table"     => "files",
+//                    "where"     => array(
+//                        "id = ?"        => $parent_id,
+//                    ),
+//                    "data"      => array(
+//                        "status"        => OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE,
+//                        "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
+//                    )
+//
+//                )));
+//                
+//                // Exits if failed
+//                if( !$this->successResult()){
+//                    throw new OMK_Exception(_("Failed to update parent file status after end of transfer: {$this->result["message"]}"),$this->result["code"]);
+//                }
+//            }
+//            // Sets a final status
+//            $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE;
+//        }else{
+//            // Sets an ongoing status
+//            $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY;
+//        }
+//        
+//        // Updates the file record in database
+//        $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
+//            "table"     => "files",
+//            "where"     => array(
+//                "id = ?"        => $fileData["database"]["id"],
+//            ),
+//            "data"      => array(
+//                "status"        => $file_status,
+//                "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
+//            )
+//
+//        )));        
+//        
+//        // Exits if failed
+//        if( !$this->successResult()){
+//            throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
+//        }
+        // ---------------------------------------------------------------------
+       
+        return array(
+            "code"      => 0,
+            "message"   => _("Format received.")
+        );
+    }
+    
+    /**
+     * Ses status on files being received after transcode chunk reception
+     * 
+     * @param type $options
+     * @return array code, message
+     * @throws OMK_Exception
+     */
+    function onEndTranscodeAppend($options = array()){
+        
+        // Retrieves finished
+        if( array_key_exists("finished",$options) && ! is_null( $options["finished"] )){$finished = $options["finished"];} 
+        // Failed at retrieving variable $finished
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing finished."), self::ERR_MISSING_PARAMETER);}
+        
+        // Retrieves fileData
+        if( array_key_exists("fileData",$options) && ! is_null( $options["fileData"] )){$fileData = $options["fileData"];} 
+        // Failed at retrieving variable $fileData
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing fileData."), self::ERR_MISSING_PARAMETER);}
+        
+        // Retrieves parent_id
+        if( array_key_exists("parent_id",$fileData["database"]) && ! is_null( $fileData["database"]["parent_id"] )){$parent_id = $fileData["database"]["parent_id"];} 
+        // Failed at retrieving variable $parent_id
+        else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing parent_id."), self::ERR_MISSING_PARAMETER);}
+        
+        
+        
         if( $finished == TRUE){
             
-            
-
             // Attempts to retrieve transcode siblings requiring transfer
             $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
                 "table"     => "files",
@@ -899,7 +1044,6 @@ onError : App logs error
             }
             
             // Attempts to update parent if this is the last transcode
-            // TODO: Use a count method
             if( count($rows) <= 1 ){
                 
                 $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
@@ -943,14 +1087,12 @@ onError : App logs error
         if( !$this->successResult()){
             throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
         }
-        // ---------------------------------------------------------------------
-       
+
         return array(
-            "code"      => 0,
-            "message"   => _("Format received.")
+            "code"      => self::ERR_OK,
+            "message"   => _("Successfully updated the file transcode status.")
         );
     }
-
     
      /**
       * 
@@ -1000,14 +1142,14 @@ onError : void
             )));
         
         if( !$this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         // Attempts to convert response
         $this->recordResult($this->decodeResponse($response));
         
         // Exits if failed
-        if( ! $this->successResult()){return $this->getResult();}
+        if( ! $this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Reads subscription result
         $jsonArray      = $this->result["result"];
@@ -1030,9 +1172,10 @@ onError : void
              )            
         ));
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
 
+        // Saves transcoder key
         $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
                  "table"    => "variables",
                  "data"     => array(
@@ -1045,9 +1188,10 @@ onError : void
              )            
         ));        
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
+        // Saves transcoder url
         $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
                  "table"    => "variables",
                  "data"     => array(
@@ -1060,7 +1204,7 @@ onError : void
              )            
         ));        
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
 
         if (array_key_exists("settings", $jsonArray) && NULL != $jsonArray["settings"]) {
@@ -1069,6 +1213,7 @@ onError : void
             throw new OMK_Exception(_("Missing settings."));
         }
 
+        // Records settings
         $settingsInstance   = new OMK_Settings();
         $settingsInstance->setClient($this->getClient());
         $this->recordResult($settingsInstance->receive(array(
@@ -1076,7 +1221,7 @@ onError : void
             "name"              => $transcoder_url
             )));        
         if( ! $this->successResult()){
-            return $this->getResult();
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
         

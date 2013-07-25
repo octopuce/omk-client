@@ -70,6 +70,7 @@ class OMK_Client {
     public $view_path;
     public $version                 = "0.1";
     public $no_json                 = FALSE;
+    public $result                  = array();
 
     public function __construct( $options= array() ){
         $this->configure($options);
@@ -529,7 +530,7 @@ class OMK_Client {
                 "message"   => "OMK exception raised.",
                 "exception" => $e
             ));
-            // And leave it to the developper if he requested
+            // And leave it to the caller if requested
             if( $this->throwExceptions() || $this->cron_context ){
                 throw $e;
             }
@@ -629,6 +630,7 @@ class OMK_Client {
     /**
      * Renders a phtml view 
      * 
+     * @todo Make this a separate Controller
      * @param string $view
      * @return type
      */

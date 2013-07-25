@@ -81,9 +81,9 @@ class OMK_Client_Friend {
         }
             
         // Saves previously recorded results
-        if( array_key_exists("_previousResults", $this->result) && count( $this->result["_previousResults"]) ){
-            $previousResults = $this->result["_previousResults"];
-            unset($this->result["_previousResults"]);
+        if( array_key_exists("_previousResults", $this->getClient()->result) && count( $this->getClient()->result["_previousResults"]) ){
+            $previousResults = $this->getClient()->result["_previousResults"];
+            unset($this->getClient()->result["_previousResults"]);
         }else{
             $previousResults = array();
         }
@@ -95,7 +95,7 @@ class OMK_Client_Friend {
 
         $result["class"] = get_class($this);
         $this->result = $result;
-        $this->result["_previousResults"] = $previousResults;
+        $this->getClient()->result["_previousResults"] = $previousResults;
         $this->getClient()->getLoggerAdapter()->log( array(
             "level"    => OMK_Logger_Adapter::DEBUG , 
             "message"  => $result["message"]
