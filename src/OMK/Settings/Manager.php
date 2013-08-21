@@ -13,7 +13,7 @@ Settings
     Config : -
     Views: Vue d'affichage par liste et de modification
 */
-class OMK_Settings extends OMK_Client_Friend{
+class OMK_Client_Settings_Manager extends OMK_Client_Friend{
     
     // ERR CODE 175-199
     const ERR_INVALID_SETTING       = 175;

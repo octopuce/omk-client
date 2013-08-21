@@ -267,7 +267,6 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
 
         // Exits if failed
         if( !$this->successResult()){
-            // TODO: Throw
             throw new OMK_Exception($this->result["message"],$this->result["code"]);}
         
         // Asserts the existence of the record in database
@@ -285,7 +284,6 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
 
         // Exits if failed
         if( !$this->successResult()){
-            // TODO: Throw
             throw new OMK_Exception($this->result["message"],$this->result["code"]);}
 
         // Checks the received metadata JSON string can be decoded
@@ -383,7 +381,14 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
          
      }
      
-     // Manages upload
+     /**
+      * 
+      * Handles files uploads
+      * 
+      * @param type $request
+      * @return type
+      * @throws OMK_Exception
+      */
      protected function upload($request = null){
          
         $this->recordResult( 
@@ -402,7 +407,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
             "file_path"         => $file_path,
             "upload_adapter"    => $upload_adapter,
             "status"            => OMK_File_Adapter::STATUS_UPLOADED,
-            "settings_id"          => OMK_Settings::SETTINGS_TYPE_ORIGINAL
+            "settings_id"          => OMK_Settings_Manager::SETTINGS_TYPE_ORIGINAL
         );
         
         // Attempts to insert file row into db

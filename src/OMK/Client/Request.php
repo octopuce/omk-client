@@ -353,7 +353,7 @@ onError : void
             throw new OMK_Exception(_("Missing settings."));
         }
 
-        $settingsInstance   = new OMK_Settings();
+        $settingsInstance   = new OMK_Settings_Manager();
         $settingsInstance->setClient($this->getClient());
         $this->recordResult($settingsInstance->receive(array(
             "settings"          => $settings,
@@ -530,8 +530,8 @@ onError : App logs error
             "table" => "settings",
             "where" => array(
                 "type = ?"      => $type,
-                "checked = ?"   => OMK_Settings::CHECKED,
-                "available = ?" => OMK_Settings::AVAILABLE_TRUE
+                "checked = ?"   => OMK_Settings_Manager::CHECKED,
+                "available = ?" => OMK_Settings_Manager::AVAILABLE_TRUE
             )
         )));
         
@@ -1214,7 +1214,7 @@ onError : void
         }
 
         // Records settings
-        $settingsInstance   = new OMK_Settings();
+        $settingsInstance   = new OMK_Settings_Manager();
         $settingsInstance->setClient($this->getClient());
         $this->recordResult($settingsInstance->receive(array(
             "settings"          => $settings,

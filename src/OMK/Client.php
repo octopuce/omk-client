@@ -52,6 +52,7 @@ class OMK_Client {
     const ERR_JSON_INVALID          = 236; 
     const ERR_INVALID_FORMAT        = 237; 
     const ERR_INVALID_STRING        = 238; 
+    const ERR_MISSING_DEPENDANCY    = 239;
     protected $authentificationAdapter;
     protected $databaseAdapter;
     protected $fileAdapter;
@@ -59,7 +60,8 @@ class OMK_Client {
     protected $translationAdapter;
     protected $queue;
     protected $uploadAdapterContainer = array();
-    protected $cron_context         = FALSE;
+    protected $cron_context         = FALSE; // TRUE when client called by cron
+    protected $settingsStrategy;
     public $application_name;
     public $client_key;
     public $client_url;
@@ -106,7 +108,13 @@ class OMK_Client {
         if (array_key_exists("translationAdapter", $options) && NULL != $options["translationAdapter"]) {
             $this->setTranslationAdapter( $options['translationAdapter'] );
         }
-        
+
+        if (array_key_exists("settingsStrategy", $options) && !is_null($options["settingsStrategy"])) {
+            $this->settingsStrategy = $options["settingsStrategy"];
+        } else {
+            throw new OMK_Exception("Missing parameter settingsStrategy", self::ERR_MISSING_DEPENDANCY);
+        }
+                
         if (array_key_exists("client_key", $options) && NULL != $options["client_key"]) {
             $this->client_key = $options['client_key'];
         } 
@@ -146,6 +154,7 @@ class OMK_Client {
         if (array_key_exists("mime_type_whitelist", $options) && NULL != $options["mime_type_whitelist"]) {
             $this->mime_type_whitelist = $options["mime_type_whitelist"];
         } 
+
     }
     
     /**
@@ -723,7 +732,7 @@ class OMK_Client {
                 break;
             // updates setting
             case "settings.update":
-                $settingsInstance = new OMK_Settings();
+                $settingsInstance = new OMK_Settings_Manager();
                 $settingsInstance->setClient($this);
                 $settingsInstance->recordResult( $settingsInstance->update());
                 if( $settingsInstance->successResult()){
