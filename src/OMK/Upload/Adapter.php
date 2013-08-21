@@ -25,7 +25,8 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     protected $protocol   = "http"; 
     protected $name   = "default"; // mandatory : sets a key name for this adapter
     protected $upload_complete = false;
-    
+    protected $transfer_required = true;
+            
     function __construct($options = null) {
         if( NULL == $options || !count($options)){
             throw new OMK_Exception(_("Missing options"), 1);
@@ -82,5 +83,13 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
         return $this->upload_complete;
     }
     
+    
+    public function isTransferRequired( $id ){
+        return array(
+            "code"              => self::ERR_OK,
+            "message"           => "upload required : {$this->transfer_required}",
+            "transfer_required"   => $this->transfer_required
+        );
+    }
     
 }
