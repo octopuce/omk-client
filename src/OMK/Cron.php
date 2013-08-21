@@ -323,7 +323,7 @@ class OMK_Cron extends OMK_Client_Friend{
                     "locked = ?" => OMK_Queue::LOCK_UNLOCKED,
                     "failed_attempts < ?" => self::MAX_TRIES,
                     "status IN (".implode(",",array(OMK_Queue::STATUS_NULL, OMK_Queue::STATUS_IN_PROGRESS,OMK_Queue::STATUS_ERROR)).")" => OMK_Database_Adapter::REQ_NO_BINDING,
-                    "DATE_SUB( NOW(), INTERVAL delay_next_request MINUTE) <= dt_last_request" => OMK_Database_Adapter::REQ_NO_BINDING
+                    "DATE_SUB( NOW(), INTERVAL delay_next_request MINUTE) >= dt_last_request" => OMK_Database_Adapter::REQ_NO_BINDING
                 ),
                 "order" => array(
                     "priority ASC",
