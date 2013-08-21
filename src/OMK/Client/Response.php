@@ -173,13 +173,36 @@ onError : Transcode logs error
         }else{
             $fileData["database"] = current( $rows );
         }
+
         
-        // Updates file
+        // Checks the upload adapter doesn't already own the file (NAS adapter)
+        $this->recordResult(
+            $this->getClient()->getUploadAdapter($adapter)->isTransferRequired( array(
+            "object_id" => $object_id )
+            )
+        );
+        
+        // Exits if failed
+        if( !$this->successResult()){ 
+            throw new OMK_Exception($this->result["message"],$this->result["code"]);
+        }
+        
+        // Checks return validity
+        if (array_key_exists("transfer_required", $this->result) && !is_null($this->result["transfer_required"])) {
+            $transfer_required = $this->result["transfer_required"];
+        } else {
+            throw new OMK_Exception("Missing parameter transfer_required", self::ERR_MISSING_PARAMETER);
+        }
+        
+        // Defines status
+        $status = $transfer_required ? OMK_File_Adapter::STATUS_TRANSCODE_READY:OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE;
+                 
+        // Updates file status to TRANSCODE READY or COMPLETE
         $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
             "table"        => "files",
             "data"         => array(
                 "metadata" => $metadata,
-                "status"   => OMK_File_Adapter::STATUS_TRANSCODE_READY
+                "status"   => $status
             ),
             "where"        => array(
                 "id = ?"   => $object_id
@@ -188,12 +211,24 @@ onError : Transcode logs error
 
         // Exits if failed
        if( !$this->successResult()){ 
-           // TODO: throw exception
-            $msg = sprintf(_("Couldn't update Transcode_Ready status for file#%s with setting#%s metadata%s."),$object_id, $settings_id, $metadata);
+            $msg = sprintf(_("Couldn't update Transcode_Ready status for file#%s with setting#%s metadata %s."),$object_id, $settings_id, $metadata);
             throw new OMK_Exception($msg,$this->result["code"]);
         }
-         
-        // Adds to queue
+
+        // Returns if no transfer requested
+        if( ! $transfer_required ){
+            $this->recordResult( $this->getClient()->getFileAdapter()->onEndTranscodeAppend(
+                array(
+                "finished"  => true,
+                "fileData"  => $fileData,
+                "parent_id" => $parent_id
+                )
+            ));
+            return $this->getResult();
+        }
+        
+        
+        // Add transfer to queue
         $this->recordResult( $this->getClient()->getQueue()->push(array(
             "object_id"        => $object_id,
             "action"           => "app_get_media",
@@ -319,7 +354,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
             throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
         
-        // Updates file 
+        // Updates file status to METADATA_RECEIVED
         $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
             "table"        => "files",
             "data"         => array(
@@ -472,6 +507,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         return $this->getResult();
 
     }
+    
     /**
      * 
      * Validates the conformity of transcoder request
