@@ -415,7 +415,7 @@ class OMK_Client {
     /**
      * Gets an upload adapter or the default one
      * 
-     * @param type $options
+     * @param array $options upload_adapter
      * @return OMK_Upload_Adapter
      * @throws OMK_Exception
      */
