@@ -13,7 +13,7 @@ Settings
     Config : -
     Views: Vue d'affichage par liste et de modification
 */
-class OMK_Client_Settings_Manager extends OMK_Client_Friend{
+class OMK_Settings_Manager extends OMK_Client_Friend{
     
     // ERR CODE 175-199
     const ERR_INVALID_SETTING       = 175;
@@ -101,4 +101,21 @@ class OMK_Client_Settings_Manager extends OMK_Client_Friend{
             "message"   => _("Settings successfully updated") 
         );
     }
+    
+
+    /**
+     * Utility converting full settings lists into Id lists
+     * 
+     * @param array $settings
+     * @return array
+     */
+    static function buildIdList( array $settings ){
+        $settingsIdList = array();
+        foreach( $settings as $theSetting){
+            $settingsIdList[] = $theSetting["id"];
+        }        
+        return $settingsIdList;
+    }
+    
+    
 }

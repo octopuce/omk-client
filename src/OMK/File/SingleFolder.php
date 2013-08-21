@@ -164,7 +164,7 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
         
         // Exits if failed
         if( !$this->successResult()){ return array(
-           "code"       => OMK_Settings::ERR_INVALID_SETTING,
+           "code"       => OMK_Settings_Manager::ERR_INVALID_SETTING,
             "message"   => _("This setting doesn't exist: {$settings_id}.")
         );}
         
@@ -172,7 +172,7 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
         if( array_key_exists("rows",$this->result) && ! is_null( $this->result["rows"] && count($this->result["rows"]))){
             $setting = current($this->result["rows"]);} 
         else { return array(
-            "code"      => OMK_Settings::ERR_INVALID_SETTING,
+            "code"      => OMK_Settings_Manager::ERR_INVALID_SETTING,
             "message"   => _("This setting doesn't exist: {$settings_id}.")
         );}
         

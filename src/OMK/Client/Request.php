@@ -525,35 +525,31 @@ onError : App logs error
             throw new OMK_Exception(_("Missing type."),self::ERR_MISSING_PARAMETER);
         }
         
-        // Attempts to load settings to be requested
-        $this->recordResult($this->getClient()->getDatabaseAdapter()->select(array(
-            "table" => "settings",
-            "where" => array(
-                "type = ?"      => $type,
-                "checked = ?"   => OMK_Settings_Manager::CHECKED,
-                "available = ?" => OMK_Settings_Manager::AVAILABLE_TRUE
-            )
+        // Attempts to read media metadata
+        if (array_key_exists("metadata", $fileData) && !is_null($fileData["metadata"])) {
+            $metadata = $fileData["metadata"];
+        } else {
+            throw new OMK_Exception("Missing parameter metadata", self::ERR_MISSING_PARAMETER);
+        }
+        
+        // Attempts to retrieve settings list from strategy
+        $this->recordResult($this->getClient()->getSettingsStrategy()->getSettingsIdList(array(
+            "metadata"  => $metadata,
+            "type"      => $type
         )));
         
         // Exits if failed
         if( !$this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
-        
-        // Checks the validity of the db result
-        if (array_key_exists("rows", $this->result) && count($this->result["rows"]) ) {
-            $settings = $this->result["rows"];
+       
+        // Attempts to retrieve the Settings List
+        if (array_key_exists("settingsList", $this->result) && is_array($this->result["settingsList"])) {
+            $settingsList = $this->result["settingsList"];
         } else {
-            $this->recordResult(array(
-                "code"      => self::ERR_MISSING_PARAMETER,
-                "message"   => sprintf( _("No settings for the %s media type."), $fileData["type"])
-            ));
-            throw new OMK_Exception($this->result["message"],$this->result["code"]);
+            throw new OMK_Exception("Missing parameter settingsList", self::ERR_MISSING_PARAMETER);
         }
-
-        // Builds query params
-        $settingsIdList = array();
-        foreach( $settings as $theSetting){
-            $settingsIdList[] = $theSetting["id"];
-        }
+        
+        $settingsIdList = OMK_Settings_Manager::buildIdList($settingsList);
+        
         $this->queryParams["settings_id_list"] = $settingsIdList;
 
         // Sends format to transcoder
@@ -584,7 +580,7 @@ onError : App logs error
          );
 
         // Inserts childs records
-        foreach ($settings as $theSetting){
+        foreach ($settingsList as $theSetting){
             
             $newFileData["settings_id"] = $theSetting["id"];
             $newFileData["type"]        = $theSetting["type"];
@@ -1208,7 +1204,7 @@ onError : void
         }
 
         if (array_key_exists("settings", $jsonArray) && NULL != $jsonArray["settings"]) {
-            $settings = $jsonArray["settings"];
+            $settingsList   = $jsonArray["settings"];
         } else {
             throw new OMK_Exception(_("Missing settings."));
         }
@@ -1217,7 +1213,7 @@ onError : void
         $settingsInstance   = new OMK_Settings_Manager();
         $settingsInstance->setClient($this->getClient());
         $this->recordResult($settingsInstance->receive(array(
-            "settings"          => $settings,
+            "settings"          => $settingsList,
             "name"              => $transcoder_url
             )));        
         if( ! $this->successResult()){

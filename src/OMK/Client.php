@@ -110,9 +110,9 @@ class OMK_Client {
         }
 
         if (array_key_exists("settingsStrategy", $options) && !is_null($options["settingsStrategy"])) {
-            $this->settingsStrategy = $options["settingsStrategy"];
+            $this->setSettingsStrategy( $options["settingsStrategy"]);
         } else {
-            throw new OMK_Exception("Missing parameter settingsStrategy", self::ERR_MISSING_DEPENDANCY);
+            $this->setSettingsStrategy( new OMK_Settings_Strategy());
         }
                 
         if (array_key_exists("client_key", $options) && NULL != $options["client_key"]) {
@@ -339,7 +339,6 @@ class OMK_Client {
         return $this->databaseAdapter;
         
     }
-
     /**
      * Sets the file adapter
      * 
@@ -368,6 +367,37 @@ class OMK_Client {
         return $this->fileAdapter;
         
     }
+    
+    /**
+     * Sets the settings strategy manager
+     * 
+     * @param OMK_Settings_Strategy $strategy
+     * @return \OMK_Client
+     */
+    public function setSettingsStrategy(OMK_Settings_Strategy $strategy = null) {
+
+        $strategy->setClient($this);
+        $this->settingsStrategy = $strategy;
+        return $this;
+        
+    }
+    
+    /**
+     * Gets the settings strategy manager
+     * 
+     * @return OMK_Settings_Strategy
+     * @throws OMK_Exception
+     */
+    public function getSettingsStrategy(){
+        
+        if( NULL == $this->settingsStrategy){
+            throw new OMK_Exception(_("No settings strategy manager defined."));
+        }
+        return $this->settingsStrategy;
+        
+    }
+    
+    
     
     /**
      * Sets an upload adapter in an container
