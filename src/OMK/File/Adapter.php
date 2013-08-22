@@ -250,4 +250,39 @@ class OMK_File_Adapter extends OMK_Client_Friend {
             "message"   => _("Successfully updated the file transcode status.")
         );
     }
+    
+    /**
+     * Extracts an archive
+     * 
+     * @param array $options filepath,...
+     * @return array code,message,...
+     * @throws OMK_Exception
+     */
+    public function extractArchive( array $options ){
+        
+        if (array_key_exists("file_path", $options) && !is_null($options["file_path"])) {
+            $file_path      = $options["file_path"];
+        } else {  
+            throw new OMK_Exception("Missing parameter file_path", self::ERR_MISSING_PARAMETER); }
+        
+        if( !is_file($file_path)){
+            throw new OMK_Exception("Invalid file name for archive extraction {$file_path}",self::ERR_STORAGE_FILE_PATH);}
+            
+        $dirname            = pathinfo($file_path, PATHINFO_DIRNAME);
+        if( !is_dir($dirname)){
+            throw new OMK_Exception("Invalid directory for archive extraction {$dirname}",self::ERR_STORAGE_PATH);}
+          
+        // Attempts to extract the archive
+        $zipArchive         = new ZipArchive;
+        if ($zipArchive->open($file_path) === TRUE) {
+            $zip->extractTo($dirname);
+            $zip->close();
+        } else {
+            throw new OMK_Exception("Failed to extract {$file_path}",self::ERR_EXTRACT);}
+        
+        return array(
+            "code" => self::ERR_OK,
+            "message" => "Successfully opend "
+        );
+    }
 }

@@ -749,23 +749,6 @@ onError : App logs error
         // Failed at retrieving variable $serial
         else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing serial."), self::ERR_MISSING_PARAMETER);}
         
-        // Checks the cardinality : might have downloaded all files
-        if( $cardinality > 1 && $serial == $cardinality ){
-            
-             $this->recordResult($this->getClient()->getFileAdapter()->onEndTranscodeAppend(array(
-                 "fileData" => $fileData,
-                 "finished" => TRUE
-             )));
-            
-            // Returns a success : all files downloaded
-            return array(
-                "code"      => self::ERR_OK,
-                "message"   => sprintf(_("All items downloaded.")),
-                "status"    => OMK_Queue::STATUS_SUCCESS
-            );
-        }
-        
-        
         // Retrieves file_name
         if( array_key_exists("file_name",$this->result) && ! is_null( $this->result["file_name"] )){$fileData["storage"]["file_name"] = $this->result["file_name"];} 
         // Failed at retrieving variable $file_name
@@ -906,84 +889,19 @@ onError : App logs error
        
         
         // Runs operations linked to end of transfer of this file
-        $this->recordResult($this->onEndTranscodeAppend(array(
+        $this->recordResult($this->getClient()->getFileAdapter()->onEndTranscodeAppend(array(
             "fileData"      => $fileData,
             "finished"      => $finished
         )));
         
-        // ---------------------------------------------------------------------
-//        if( $finished == TRUE){
-//            
-//            
-//
-//            // Attempts to retrieve transcode siblings requiring transfer
-//            $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
-//                "table"     => "files",
-//                "where"     => array(
-//                    "parent_id = ?" => $parent_id,
-//                    "status IN ?" => array( OMK_File_Adapter::STATUS_TRANSCODE_READY, OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY, OMK_File_Adapter::STATUS_TRANSCODE_REQUESTED )
-//                )
-//            )));
-//            
-//            // Exits if failed
-//            if( ! $this->successResult() ){ 
-//                throw new OMK_Exception(_("Failed to count transcode siblings after end of transfet: {$this->result["message"]}"),$this->result["code"]);
-//            }
-//            
-//            // Attempts to retrieve db results
-//            if( array_key_exists("rows",$this->result) && NULL != $this->result["rows"]){
-//                $rows = $this->result["rows"];
-//            } else {
-//                throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
-//            }
-//            
-//            // Attempts to update parent if this is the last transcode
-//            // TODO: Use a count method
-//            if( count($rows) <= 1 ){
-//                
-//                $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
-//                    "table"     => "files",
-//                    "where"     => array(
-//                        "id = ?"        => $parent_id,
-//                    ),
-//                    "data"      => array(
-//                        "status"        => OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE,
-//                        "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
-//                    )
-//
-//                )));
-//                
-//                // Exits if failed
-//                if( !$this->successResult()){
-//                    throw new OMK_Exception(_("Failed to update parent file status after end of transfer: {$this->result["message"]}"),$this->result["code"]);
-//                }
-//            }
-//            // Sets a final status
-//            $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE;
-//        }else{
-//            // Sets an ongoing status
-//            $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY;
-//        }
-//        
-//        // Updates the file record in database
-//        $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
-//            "table"     => "files",
-//            "where"     => array(
-//                "id = ?"        => $fileData["database"]["id"],
-//            ),
-//            "data"      => array(
-//                "status"        => $file_status,
-//                "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
-//            )
-//
-//        )));        
-//        
-//        // Exits if failed
-//        if( !$this->successResult()){
-//            throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
-//        }
-        // ---------------------------------------------------------------------
-       
+        // Attempts to unfold archive if required
+        if( $finished && $cardinality > 1){
+            
+            $this->getClient()->getFileAdapter()->extractArchive(array(
+                "file_path"   => $fileData["storage"]["file_path"]
+            ));
+        }
+        
         return array(
             "code"      => 0,
             "message"   => _("Format received.")
