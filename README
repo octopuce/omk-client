@@ -1,5 +1,7 @@
 Roadmap:
 
+# app_get_media is for http only, use transfer adapter and file adapter
+
 # Methods to recover from blocked states
     -> UX
     -> MEthod
@@ -9,8 +11,10 @@ Roadmap:
 # OMK_Result Handle results through a class. The current implementation is obscure and error prone 
     -> Code refactoring
 # Uploader Adapter : protocol and adapter name are a bit mixed up, this should be clearer
+    *     Use the term "transferAdapter" in place? 
     -> Code refactoring
 # Media object / File object
+  *	Status are handled by the FileAdapter, use a separate object ?
 
 # View rendering
     - Move to a real controller
