@@ -128,6 +128,7 @@ class OMK_Cron extends OMK_Client_Friend{
         if( ! $this->successResult()){
             throw new OMK_Exception(_("Failed to lock queue table"), self::ERR_UNLOCK_QUEUE);
         }
+        
 
         $id             = $task["id"];
         $action         = $task["action"];

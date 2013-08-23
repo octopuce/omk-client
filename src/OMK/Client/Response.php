@@ -177,7 +177,7 @@ onError : Transcode logs error
         
         // Checks the upload adapter doesn't already own the file (NAS adapter)
         $this->recordResult(
-            $this->getClient()->getUploadAdapter($adapter)->isTransferRequired( array(
+            $this->getClient()->getUploadAdapter(array("uploadAdapter"=>$adapter))->isTransferRequired( array(
             "object_id" => $object_id )
             )
         );

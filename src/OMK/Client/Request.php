@@ -904,7 +904,8 @@ onError : App logs error
         
         return array(
             "code"      => 0,
-            "message"   => _("Format received.")
+            "message"   => _("Format received."),
+            "status"    => OMK_Queue::STATUS_SUCCESS
         );
     }
     

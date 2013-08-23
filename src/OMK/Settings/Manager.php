@@ -72,7 +72,7 @@ class OMK_Settings_Manager extends OMK_Client_Friend{
         if (array_key_exists("settings", $_REQUEST) && NULL != $_REQUEST["settings"]) {
             $settingsValues = array_keys( $_REQUEST["settings"] );
         } else {
-            throw new OMK_Exception(_("Missing settings."));
+            throw new OMK_Exception(_("Missing settings."),  self::ERR_MISSING_PARAMETER);
         }
         $this->recordResult($this->getClient()->getDatabaseAdapter()->update(array(
             "table" => "settings",

@@ -185,30 +185,11 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
         
         // Handles serial / cardinality
         if( $cardinality > 1){
-            // Attempts to retrieve the serial
-            for( $i=0; $i<$cardinality; $i++){
-                $serial             = $i;
-                $file_name          = "{$base}_{$serial}.{$returnInfo["extension"]}";
-                $path               = "{$this->storage_path}/{$id}/{$file_name}";
-                if( !is_file($filename)){
-                    break;
-                }
-            }
-            $returnInfo["serial"]       = $serial;
-            $returnInfo["file_name"]    = $file_name;
-            
-            // Exit if last serial reached
-            if($serial == $cardinality){
-                return $returnInfo;
-            }
-            
-        }else{
-            $returnInfo["serial"]       = 1;
-            $returnInfo["file_name"]    = "{$base}.{$returnInfo["extension"]}";
+            $returnInfo["extension"] = "zip";
         }
-        
-        $returnInfo["file_path"]        = "{$this->storage_path}/{$id}/{$returnInfo["file_name"]}";
-        
+        $returnInfo["serial"]       = 1;
+        $returnInfo["file_name"]    = "{$base}.{$returnInfo["extension"]}";
+        $returnInfo["file_path"]    = "{$this->storage_path}/{$id}/{$returnInfo["file_name"]}";
         return $returnInfo;
         
     }

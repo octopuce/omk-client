@@ -424,6 +424,8 @@ class OMK_Client {
         if( !count($this->uploadAdapterContainer)){
             throw new OMK_Exception(_("No uploader defined."));
         }
+        
+        
         // Attempts to load a specific adapter
         if(array_key_exists("upload_adapter", $options) && NULL != $options["upload_adapter"]){
             $upload_adapter = $options["upload_adapter"];
@@ -718,11 +720,14 @@ class OMK_Client {
                 break;
             // lists all files ! caution, no break on this case, cascades to next.
             case "admin.list":
-                $query = array("table"=>"files");
+                $query = array(
+                    "table"=>"files",
+                    "order"     => "id DESC");
             // lists user files
             case "list":
                 $view = "list.phtml";
                 // If not inherited from the previous admin case
+                
                 if(!isset($query)){
                     $user_id = $this->getAuthentificationAdapter()->getUserId();
                     $query = array(
@@ -742,8 +747,11 @@ class OMK_Client {
                     $result         = $this->getDatabaseAdapter()->select(array(
                         "table" => "settings"
                     ));
-                    $settingsList   = $result["rows"];
-                    
+                    $rawList        = $result["rows"];
+                    $settingsList   = array();
+                    foreach($rawList as $theSetting){
+                        $settingsList[$theSetting["id"]] = $theSetting;
+                    }
                     
                 }catch(OMK_Exception $e){
                     $this->getLoggerAdapter()->log(array(

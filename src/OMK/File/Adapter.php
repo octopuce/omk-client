@@ -275,14 +275,14 @@ class OMK_File_Adapter extends OMK_Client_Friend {
         // Attempts to extract the archive
         $zipArchive         = new ZipArchive;
         if ($zipArchive->open($file_path) === TRUE) {
-            $zip->extractTo($dirname);
-            $zip->close();
+            $zipArchive->extractTo($dirname);
+            $zipArchive->close();
         } else {
             throw new OMK_Exception("Failed to extract {$file_path}",self::ERR_EXTRACT);}
         
         return array(
             "code" => self::ERR_OK,
-            "message" => "Successfully opend "
+            "message" => "Successfully extracted archive file ${file_path} "
         );
     }
 }
