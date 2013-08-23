@@ -17,6 +17,7 @@ class OMK_Client_Request extends OMK_Client_Friend{
     const ERR_INVALID_STATUS    = 204;
     const ERR_TRANSCODEFILEDATA = 205;
     const ERR_METADATA          = 206;
+    const ERR_MISSING_API_KEY   = 207;
     
     
     /**
@@ -299,8 +300,9 @@ onError : void
         if (array_key_exists("apikey", $jsonArray) && NULL != $jsonArray["apikey"]) {
             $transcoder_key = $jsonArray["apikey"];
         } else {
-            throw new OMK_Exception(_("Missing api key."));
+            throw new OMK_Exception(_("Missing api key in {$this->body}"),self::ERR_MISSING_API_KEY);
         }
+        
         // Records new transcoder
         $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
                  "table"    => "variables",
@@ -313,6 +315,8 @@ onError : void
                  )
              )            
         ));
+        
+        // Exits if failed
         if( ! $this->successResult()){
             throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
@@ -969,59 +973,6 @@ onError : void
         
         // Reads subscription result
         $jsonArray      = $this->result["result"];
-        if (array_key_exists("apikey", $jsonArray) && NULL != $jsonArray["apikey"]) {
-            $transcoder_key = $jsonArray["apikey"];
-        } else {
-            throw new OMK_Exception(_("Missing api key."));
-        }
-        
-        // Records new transcoder
-        $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
-                 "table"    => "variables",
-                 "data"     => array(
-                     "id"  => "transcoder_data",
-                     "val"  => $body
-                 ),
-                 "where"    => array(
-                     "id = ?" => "transcoder_data"
-                 )
-             )            
-        ));
-        if( ! $this->successResult()){
-            throw new OMK_Exception($this->result["message"],$this->result["code"]);
-        }
-
-        // Saves transcoder key
-        $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
-                 "table"    => "variables",
-                 "data"     => array(
-                     "id"  => "transcoder_key",
-                     "val"  => $transcoder_key
-                 ),
-                 "where"    => array(
-                     "id = ?" => "transcoder_key"
-                 )
-             )            
-        ));        
-        if( ! $this->successResult()){
-            throw new OMK_Exception($this->result["message"],$this->result["code"]);
-        }
-        
-        // Saves transcoder url
-        $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
-                 "table"    => "variables",
-                 "data"     => array(
-                     "id"  => "transcoder_url",
-                     "val"  => $transcoder_url
-                 ),
-                 "where"    => array(
-                     "id = ?" => "transcoder_url"
-                 )
-             )            
-        ));        
-        if( ! $this->successResult()){
-            throw new OMK_Exception($this->result["message"],$this->result["code"]);
-        }
 
         if (array_key_exists("settings", $jsonArray) && NULL != $jsonArray["settings"]) {
             $settingsList   = $jsonArray["settings"];
