@@ -319,7 +319,10 @@ class OMK_File_Adapter extends OMK_Client_Friend {
      */
     public function getFileSize( $options = null ){
                 
-        if (array_key_exists("file_path", $options) && !is_null($options["file_path"])) {
+        if( is_string( $options )){
+            $options = array("file_path"=>$options);
+        }
+        elseif (array_key_exists("file_path", $options) && !is_null($options["file_path"])) {
             $file_path = $options["file_path"];
         } else {
             throw new OMK_Exception("Missing parameter file_path", self::ERR_OK);
