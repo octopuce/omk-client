@@ -773,7 +773,7 @@ onError : App logs error
             }
 
         }else{
-            $fileData["storage"]["file_size"] = filesize($fileData["storage"]["file_path"]);
+            $fileData["storage"]["file_size"] = $this->getClient()->getFileAdapter()->getFileSize($fileData["storage"]["file_path"]);
         }
         
         // Validates the file is writable

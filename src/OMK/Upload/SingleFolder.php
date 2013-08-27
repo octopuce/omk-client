@@ -78,7 +78,7 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
             // Strip the temp .part suffix off 
             // TODO Check MIME of object
             rename("{$file_path}.part", $file_path);
-            $file_size              = filesize($file_path);
+            $file_size              = $this->getClient()->getFileAdapter()->getFileSize($file_path);
             $this->upload_complete = true;
             return array(
                 "code"              => 0,
@@ -116,7 +116,7 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
         clearstatcache();
         
         // Attempts to retrieve current size of file
-        $file_size = filesize($file_path);
+        $file_size = $this->getClient()->getFileAdapter()->getFileSize($file_path);
         
         // Returned data for request range
         $parts          = array(

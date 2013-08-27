@@ -125,7 +125,8 @@ $client = new OMK_Client(array(
     "loggerAdapter"             => $loggerAdapter,
     "translationAdapter"        => $translationAdapter,
     "uploadAdapter"             => $uploadAdapter,
-    "settingsStrategy"           => new OMK_Settings_Strategy()
+    "settingsStrategy"          => new OMK_Settings_Strategy(),
+    "debugOptions"              => array("cron" => OMK_DEBUG)
 ));
 
 // This client does some archaic routing 

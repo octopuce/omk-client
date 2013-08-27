@@ -309,4 +309,32 @@ class OMK_File_Adapter extends OMK_Client_Friend {
             "message" => "Successfully extracted archive file ${file_path} "
         );
     }
+    
+    /**
+     * Encapsulates filesize
+     * 
+     * @param array $options file_path
+     * @return int
+     * @throws OMK_Exception
+     */
+    public function getFileSize( $options = null ){
+                
+        if (array_key_exists("file_path", $options) && !is_null($options["file_path"])) {
+            $file_path = $options["file_path"];
+        } else {
+            throw new OMK_Exception("Missing parameter file_path", self::ERR_OK);
+        }
+        
+        if( !is_file($file_path)){
+            return 0;
+        }
+        
+        if( !is_readable($file_path)){
+            throw new OMK_Exception (_("Invalid file, cannot read size : $file_path"),self::ERR_STORAGE_AUTH);
+        }
+        
+        clearstatcache();
+        return filesize($file_path);
+        
+    }
 }

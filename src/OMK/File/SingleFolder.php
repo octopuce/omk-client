@@ -44,8 +44,7 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
                 "message" => sprintf(_("Failed to append %s  octets appended to file %s "), strlen($data),$file_path)
             );
         }
-        
-        $file_size = filesize($file_path);
+        $file_size = $this->getFileSize(array("file_path"=>$file_path));
         return array(
             "code"      => 0,
             "message" => sprintf(_("Successfully appended %s octets to file %s "), strlen($data),$file_path),

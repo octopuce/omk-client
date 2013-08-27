@@ -29,7 +29,14 @@ class OMK_Cron extends OMK_Client_Friend{
      * @return array result[code,message]
      */
     public function run( $options = NULL ){
-    
+
+        // Basic debug skip handle
+        if( $this->getClient()->getDebugOption("cron")){
+            if( !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', 'fe80::1', '::1'))){
+                return array("code"=>self::ERR_OK,"message"=>"Skipped");
+            }
+        }
+        
         // Records last cron
         $this->recordResult( 
             $this->getClient()->getDatabaseAdapter()->save(array(
@@ -49,6 +56,7 @@ class OMK_Cron extends OMK_Client_Friend{
         }
         $loops              = 0;
         $errors             = array();
+        
         do {
             // Runs task, exceptions captured by method
             $loops++;

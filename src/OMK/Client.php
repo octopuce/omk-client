@@ -73,6 +73,7 @@ class OMK_Client {
     public $version                 = "0.1";
     public $no_json                 = FALSE;
     public $result                  = array();
+    public $debugOptions            = array();
 
     public function __construct( $options= array() ){
         $this->configure($options);
@@ -154,7 +155,17 @@ class OMK_Client {
         if (array_key_exists("mime_type_whitelist", $options) && NULL != $options["mime_type_whitelist"]) {
             $this->mime_type_whitelist = $options["mime_type_whitelist"];
         } 
-
+        if (array_key_exists("debug_options", $options) && !is_null($options["debug_options"])) {
+            $this->debug_options = $options["debug_options"];
+        } 
+    }
+    
+    
+    public function getDebugOption( $key = NULL ){
+        if (array_key_exists($key, $this->debugOptions) && !is_null($this->debugOptions[$key])) {
+            return $this->debugOptions[$key];
+        }
+        return FALSE;
     }
     
     /**
