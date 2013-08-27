@@ -93,7 +93,13 @@ class OMK_File_Adapter extends OMK_Client_Friend {
         throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
 
     }
-    
+    /**
+     * Appends data to file_path
+     * 
+     * @param array $options file_path, data
+     * @return array code, message, file_size
+     * @throws OMK_Exception
+     */
     public function append( $options = NULL ){
         
         throw new OMK_Exception(_("You must override this method."), OMK_Client_Friend::ERR_METHOD_OVERRIDE_REQUIRED);
@@ -170,6 +176,20 @@ class OMK_File_Adapter extends OMK_Client_Friend {
         // Failed at retrieving variable $fileData
         else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing fileData."), self::ERR_MISSING_PARAMETER);}
         
+        // Retrieves storage
+        if (array_key_exists("storage", $fileData) && !is_null($fileData["storage"])) {
+            $storage = $fileData["storage"];
+        } else {
+            throw new OMK_Exception(_("Missing parameter storage"), self::ERR_MISSING_PARAMETER);
+        }
+        
+        // Retrieves file_size
+        if (array_key_exists("file_size", $storage) && !is_null($storage["file_size"])) {
+            $file_size = $storage["file_size"];
+        } else {
+            throw new OMK_Exception("Missing parameter file_size", self::ERR_MISSING_PARAMETER);
+        }
+        
         // Retrieves parent_id
         if( array_key_exists("parent_id",$fileData["database"]) && ! is_null( $fileData["database"]["parent_id"] )){$parent_id = $fileData["database"]["parent_id"];} 
         // Failed at retrieving variable $parent_id
@@ -190,7 +210,7 @@ class OMK_File_Adapter extends OMK_Client_Friend {
             
             // Exits if failed
             if( ! $this->successResult() ){ 
-                throw new OMK_Exception(_("Failed to count transcode siblings after end of transfet: {$this->result["message"]}"),$this->result["code"]);
+                throw new OMK_Exception(_("Failed to count transcode siblings after end of transfer: {$this->result["message"]}"),$this->result["code"]);
             }
             
             // Attempts to retrieve db results
@@ -222,9 +242,12 @@ class OMK_File_Adapter extends OMK_Client_Friend {
             }
             // Sets a final status
             $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_COMPLETE;
+            
         }else{
+            
             // Sets an ongoing status
             $file_status            = OMK_File_Adapter::STATUS_TRANSCODE_PARTIALLY;
+            
         }
         
         // Updates the file record in database
@@ -234,6 +257,7 @@ class OMK_File_Adapter extends OMK_Client_Friend {
                 "id = ?"        => $fileData["database"]["id"],
             ),
             "data"      => array(
+                "file_size"     => $file_size,
                 "status"        => $file_status,
                 "dt_updated"    => OMK_Database_Adapter::REQ_CURRENT_TIMESTAMP
             )

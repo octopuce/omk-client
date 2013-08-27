@@ -303,6 +303,8 @@ onError : void
             throw new OMK_Exception(_("Missing api key in {$this->body}"),self::ERR_MISSING_API_KEY);
         }
         
+        // Checks transcoder response
+        
         // Records new transcoder
         $this->recordResult($this->getClient()->getDatabaseAdapter()->save(array(
                  "table"    => "variables",
@@ -446,9 +448,6 @@ onError : App logs error
 
         // Gets server response as array
         $response = $this->result["result"];
-        
-        // Checks transcoder response
-        $this->recordResult($response);
         
         // Exits if failed
         if( ! $this->successResult()){throw new OMK_Exception($this->result["message"],$this->result["code"]);}
@@ -891,6 +890,12 @@ onError : App logs error
             throw new OMK_Exception(_("Failed to append chunk to transcode file: {$this->result["message"]}"),$this->result["code"]);
         }
        
+        // Attempts to retrieve the new file size
+        if (array_key_exists("file_size", $this->result) && !is_null($this->result["file_size"])) {
+            $fileData["storage"]["file_size"] = $this->result["file_size"];
+        } else {
+            throw new OMK_Exception(_("Missing parameter file_size"), self::ERR_MISSING_PARAMETER);
+        }
         
         // Runs operations linked to end of transfer of this file
         $this->recordResult($this->getClient()->getFileAdapter()->onEndTranscodeAppend(array(

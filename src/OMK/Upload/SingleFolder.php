@@ -78,12 +78,14 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
             // Strip the temp .part suffix off 
             // TODO Check MIME of object
             rename("{$file_path}.part", $file_path);
+            $file_size              = filesize($file_path);
             $this->upload_complete = true;
             return array(
                 "code"              => 0,
                 "message"           => _("File {$file_name} correctly uploaded"),
                 "file_path"         => $file_path,
                 "file_name"         => $file_name,
+                "file_size"         => $file_size,
                 "upload_adapter"    => $this->name
             );
         }

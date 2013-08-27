@@ -426,20 +426,49 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
       */
      protected function upload($request = null){
          
+        // Adds the received chunk
         $this->recordResult( 
             $this->getClient()->getUploadAdapter($request)->upload($request) 
         );
+        
+        // Failed to upload or upload in progress
         if( ! $this->successResult() ){
-            return; // Failed to upload or upload in progress
+            return $this->getResult(); 
         }
-        $file_path      = $this->result["file_path"];
-        $file_name      = $this->result["file_name"];
-        $upload_adapter = $this->result["upload_adapter"];
+        
+        // File upload complete, prepare data
+        $result         = $this->result;
+        if (array_key_exists("file_path", $result) && !is_null($result["file_path"])) {
+            $file_path = $result["file_path"];
+        } else {
+            throw new OMK_Exception("Missing parameter file_path", self::ERR_MISSING_PARAMETER);
+        }
+        if (array_key_exists("file_path", $result) && !is_null($result["file_path"])) {
+            $file_path = $result["file_path"];
+        } else {
+            throw new OMK_Exception("Missing parameter file_path", self::ERR_MISSING_PARAMETER);
+        }
+        if (array_key_exists("upload_adapter", $result) && !is_null($result["upload_adapter"])) {
+            $upload_adapter = $result["upload_adapter"];
+        } else {
+            throw new OMK_Exception("Missing parameter upload_adapter", self::ERR_MISSING_PARAMETER);
+        }
+        if (array_key_exists("file_size", $result) && !is_null($result["file_size"])) {
+            $file_size = $result["file_size"];
+        } else {
+            throw new OMK_Exception("Missing parameter file_size", self::ERR_MISSING_PARAMETER);
+        }
+        if (array_key_exists("file_name", $result) && !is_null($result["file_name"])) {
+            $file_name = $result["file_name"];
+        } else {
+            throw new OMK_Exception("Missing parameter file_name", self::ERR_MISSING_PARAMETER);
+        }
         $fileData               = array();
         $fileData["database"]   = array(
             "owner_id"          => $this->getClient()->getAuthentificationAdapter()->getUserId(),
             "file_name"         => $file_name,
             "file_path"         => $file_path,
+            "file_size"         => $file_size,
             "upload_adapter"    => $upload_adapter,
             "status"            => OMK_File_Adapter::STATUS_UPLOADED,
             "settings_id"          => OMK_Settings_Manager::SETTINGS_TYPE_ORIGINAL

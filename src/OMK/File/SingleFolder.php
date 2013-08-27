@@ -18,12 +18,19 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
         }
     }
     
+    /**
+     * Appends data to file_path
+     * 
+     * @param array $options file_path, data
+     * @return array code, message, file_size
+     * @throws OMK_Exception
+     */
     public function append($options = NULL) {
         
         if( array_key_exists("file_path",$options) && NULL != $options["file_path"]){
             $file_path = $options["file_path"];
         } else {
-            throw new omk_(_("Missing file_path."), self::ERR_MISSING_PARAMETER);
+            throw new OMK_Exception(_("Missing file_path."), self::ERR_MISSING_PARAMETER);
         }
         if (array_key_exists("data", $options) && NULL != $options["data"]) {
             $data = $options["data"];
@@ -38,9 +45,11 @@ class OMK_File_SingleFolder extends OMK_File_Adapter {
             );
         }
         
+        $file_size = filesize($file_path);
         return array(
             "code"      => 0,
-            "message" => sprintf(_("Successfully appended %s octets to file %s "), strlen($data),$file_path)
+            "message" => sprintf(_("Successfully appended %s octets to file %s "), strlen($data),$file_path),
+            "file_size" => $file_size
         );
     }
 
