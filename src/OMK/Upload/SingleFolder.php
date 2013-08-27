@@ -90,7 +90,7 @@ class OMK_Upload_SingleFolder extends OMK_Upload_Adapter {
             );
         }
 
-        return array("code" => 1, "message"=>_("Chunking part received"));
+        return array("code" => self::ERR_EXPECTING_CHUNKS, "message"=>_("Chunking part received"));
         
     }
     

@@ -17,10 +17,10 @@ class OMK_Upload_Adapter extends OMK_Client_Friend {
     const ERR_OUTPUT_STREAM     = 125;
     const ERR_MOVE_UPLOADED     = 126;
     const ERR_INPUT_STREAM      = 127;
-    const ERR_CHUNK_PART        = 128;
+    const ERR_EXPECTING_CHUNKS  = 128;
     const ERR_MISSING_FILE      = 129;
     const ERR_FILE_FULL_SIZE    = 130;
-    
+
     protected $tmp_path;
     protected $protocol   = "http"; 
     protected $name   = "default"; // mandatory : sets a key name for this adapter
