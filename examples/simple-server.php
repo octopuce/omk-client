@@ -33,6 +33,14 @@ if( ! session_start() ){
 }
 $_SESSION["is_admin"] = TRUE;
 
+// Includes optional debugging parameters file
+if(file_exists("./debug.php")&&  is_readable("./debug.php")){
+    include "./debug.php";
+}
+if( !isset($debugOptions)){
+    $debugOptions = array();
+}
+
 // Instanciates a dummy authentification adapter
 $authentificationAdapter = new OMK_Authentification_Session(array(
     
@@ -126,7 +134,7 @@ $client = new OMK_Client(array(
     "translationAdapter"        => $translationAdapter,
     "uploadAdapter"             => $uploadAdapter,
     "settingsStrategy"          => new OMK_Settings_Strategy(),
-    "debugOptions"              => array("cron" => OMK_DEBUG)
+    "debugOptions"              => $debugOptions
 ));
 
 // This client does some archaic routing 

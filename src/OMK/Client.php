@@ -156,7 +156,7 @@ class OMK_Client {
             $this->mime_type_whitelist = $options["mime_type_whitelist"];
         } 
         if (array_key_exists("debug_options", $options) && !is_null($options["debug_options"])) {
-            $this->debug_options = $options["debug_options"];
+            $this->debugOptions = $options["debug_options"];
         } 
     }
     
