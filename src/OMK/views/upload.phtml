@@ -118,7 +118,7 @@ $(function() {
                         }
                         if ( "code" in response.result ){
                             code = response.result.code;
-                            if( code > 1){
+                            if( code != 0 && code != 128 ){
                                 // Error occured
                                 this.failure(up, "error code: "+code);
                                 return;
