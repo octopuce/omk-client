@@ -160,7 +160,12 @@ class OMK_Client {
         } 
     }
     
-    
+    /**
+     * Attempts to retrieve a debug optin in this.debugOptions
+     * 
+     * @param string $key
+     * @return boolean
+     */
     public function getDebugOption( $key = NULL ){
         if (array_key_exists($key, $this->debugOptions) && !is_null($this->debugOptions[$key])) {
             return $this->debugOptions[$key];
