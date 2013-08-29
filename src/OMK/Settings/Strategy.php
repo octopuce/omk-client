@@ -32,6 +32,8 @@ class OMK_Settings_Strategy extends OMK_Client_Friend{
             throw new OMK_Exception("Missing parameter metadata", self::ERR_MISSING_PARAMETER);
         }
         
+        //@todo Check "other" case, as FFMPEG 1 returns this is some case
+        
         // Checks a method exists for the requested type
         if( !method_exists($this, $type)){
             throw new OMK_Exception("Invalid type requested : {$type}", self::ERR_INVALID_PARAMETER);

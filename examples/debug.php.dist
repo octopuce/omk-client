@@ -1,0 +1,7 @@
+<?php
+/**
+ * Rename this file to debug.php and enable keys according to your needs
+ */
+$debugOptions = array(
+    "cron" => false 	// if true, cron will be executed only from localhost
+);
