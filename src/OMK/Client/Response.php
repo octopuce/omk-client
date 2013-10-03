@@ -217,6 +217,9 @@ onError : Transcode logs error
 
         // Returns if no transfer requested
         if( ! $transfer_required ){
+            
+            $file_size                          = $metadata["file_size"];
+            $fileData["storage"]["file_size"]   = $file_size;
             $this->recordResult( $this->getClient()->getFileAdapter()->onEndTranscodeAppend(
                 array(
                 "finished"  => true,
