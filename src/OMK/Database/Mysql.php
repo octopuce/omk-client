@@ -355,6 +355,9 @@
             );
         }
         // Success
+        if( $rows == NULL ){
+            $rows           = array();
+        }
         return array(
             "code"          => 0,
             "message"       => sprintf(_("Successfully selected rows in %s %s"),$table,$sql),
