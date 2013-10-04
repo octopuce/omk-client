@@ -472,6 +472,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
             "file_name"         => $file_name,
             "file_path"         => $file_path,
             "file_size"         => $file_size,
+            "dt_created"        => date("Y-m-d H:i:s"),
             "upload_adapter"    => $upload_adapter,
             "status"            => OMK_File_Adapter::STATUS_UPLOADED,
             "settings_id"          => OMK_Settings_Manager::SETTINGS_TYPE_ORIGINAL
