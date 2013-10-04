@@ -615,8 +615,13 @@ class OMK_Client {
         // Encapsulate json response in an object
         // @see http://incompleteness.me/blog/2007/03/05/json-is-not-as-safe-as-people-think-it-is/
         // While a bit old, let's consider this a good practice and build upon it
-        $object = new stdClass();
-        $object->result = $options;
+        // Attempts to retrieve return
+        if (array_key_exists("return", $options) && !is_null($options["return"])) {
+            $object             = array();
+            $object["result"]   = $options;
+        } else{
+            $object             = $options;
+        }
         
         // Allows to skip json encoding
         if( $this->skipJson() ){
