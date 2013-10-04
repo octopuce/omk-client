@@ -195,7 +195,11 @@ class OMK_File_Adapter extends OMK_Client_Friend {
         // Failed at retrieving variable $parent_id
         else {throw new OMK_Exception(__CLASS__."::".__METHOD__." = "._("Missing parent_id."), self::ERR_MISSING_PARAMETER);}
         
-        
+        $this->getClient()->getLoggerAdapter()->log(array(
+                "level" => OMK_Logger_Adapter::DEBUG,
+                "message"   => "onEndTranscodeAppend call",
+            ));
+
         
         if( $finished == TRUE){
             
@@ -213,13 +217,19 @@ class OMK_File_Adapter extends OMK_Client_Friend {
                 throw new OMK_Exception(_("Failed to count transcode siblings after end of transfer: {$this->result["message"]}"),$this->result["code"]);
             }
             
+            $this->getClient()->getLoggerAdapter()->log(array(
+                "level" => OMK_Logger_Adapter::DEBUG,
+                "message"   => "siblings rows : ".json_encode($this->result["rows"]),
+                "data" => $this->result["rows"]
+            ));
+            
             // Attempts to retrieve db results
-            if( array_key_exists("rows",$this->result) && NULL != $this->result["rows"]){
+            if( array_key_exists("rows",$this->result)){
                 $rows = $this->result["rows"];
             } else {
                 throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
             }
-            
+
             // Attempts to update parent if this is the last transcode
             if( count($rows) <= 1 ){
                 
