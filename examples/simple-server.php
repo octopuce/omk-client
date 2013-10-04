@@ -137,6 +137,31 @@ $client = new OMK_Client(array(
     "debugOptions"              => $debugOptions
 ));
 
+// Adds event Listener
+class MyEndAllTranscode implements OMK_Event_Interface{
+    
+    function getEventName() {
+        return OMK_Client::EV_END_ALL_TRANSCODE;
+    }
+    function run( $options){
+        return $options;
+    }
+}
+
+// Adds event Listener
+class MyEndTranscodeAppend implements OMK_Event_Interface{
+    
+    function getEventName() {
+        return OMK_Client::EV_END_TRANSCODE_APPEND;
+    }
+    function run( $options){
+        return $options;
+    }
+}
+
+$client->addEvent(new MyEndAllTranscode());
+$client->addEvent(new MyEndTranscodeAppend());
+
 // This client does some archaic routing 
 
 // Checks if an action was requested

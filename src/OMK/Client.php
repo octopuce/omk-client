@@ -53,6 +53,12 @@ class OMK_Client {
     const ERR_INVALID_FORMAT        = 237; 
     const ERR_INVALID_STRING        = 238; 
     const ERR_MISSING_DEPENDANCY    = 239;
+    const ERR_INVALID_LISTENER      = 240;
+    
+    const EV_END_TRANSCODE_APPEND   = "onEndTranscodeAppend";
+    const EV_END_ALL_TRANSCODE      = "onEndAllTranscode";
+
+        
     protected $authentificationAdapter;
     protected $databaseAdapter;
     protected $fileAdapter;
@@ -74,6 +80,7 @@ class OMK_Client {
     public $no_json                 = FALSE;
     public $result                  = array();
     public $debugOptions            = array();
+    protected $listenerList         = array();
 
     public function __construct( $options= array() ){
         $this->configure($options);
@@ -157,6 +164,10 @@ class OMK_Client {
         } 
         if (array_key_exists("debugOptions", $options) && !is_null($options["debugOptions"])) {
             $this->debugOptions = $options["debugOptions"];
+        } 
+        // Attempts to retrieve listener
+        if (array_key_exists("listener", $options) && !is_null($options["listener"])) {
+            $this->addListener($listener);
         } 
     }
     
@@ -529,7 +540,46 @@ class OMK_Client {
         }
         return $this->queue;
     }
-    
+    /**
+     * 
+     * @param OMK_Event_Interface $listener
+     * @return \OMK_Client
+     * @throws OMK_Exception
+     */
+    public function addEvent( $listener ){
+        
+        if( !( $listener instanceof OMK_Event_Interface)){
+            throw new OMK_Exception("Invalid listener provided.",self::ERR_INVALID_LISTENER);
+        }
+        $event     = $listener->getEventName();
+        $this->listenerList[$event][] = $listener;
+        return $this;
+    }
+    /**
+     * 
+     * @param string $event
+     * @param mixed $options
+     * @return mixed
+     */
+    public function callEvent( $event, $options){
+        
+        // Attempts to retrieve listeners
+        if (array_key_exists($event, $this->listenerList) && is_array($this->listenerList[$event])) {
+            $listenerList = $this->listenerList[$event];
+        } else {
+            return;
+        }
+        foreach ($listenerList as $listener) {
+            $result = $listener->run( $options );
+            // Allow but do not enforce params modification
+            if( !is_null($result) && is_array($options)){
+                $options = $result;
+            }
+        }
+        return $options;
+    }
+
+
     /**
      * Core gateway for all client calls, either responses or requests
      * 
@@ -617,10 +667,10 @@ class OMK_Client {
         // While a bit old, let's consider this a good practice and build upon it
         // Attempts to retrieve return
         if (array_key_exists("return", $options) && !is_null($options["return"])) {
+            $object             = $options;
+        } else{
             $object             = array();
             $object["result"]   = $options;
-        } else{
-            $object             = $options;
         }
         
         // Allows to skip json encoding

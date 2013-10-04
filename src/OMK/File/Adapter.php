@@ -199,9 +199,12 @@ class OMK_File_Adapter extends OMK_Client_Friend {
                 "level" => OMK_Logger_Adapter::DEBUG,
                 "message"   => "onEndTranscodeAppend call",
             ));
-
         
         if( $finished == TRUE){
+            
+            // Calls event : transcode append finished
+            $this->getClient()->callEvent(OMK_Client::EV_END_ALL_TRANSCODE, $fileData);
+
             
             // Attempts to retrieve transcode siblings requiring transfer
             $this->recordResult( $this->getClient()->getDatabaseAdapter()->select(array(
@@ -233,6 +236,9 @@ class OMK_File_Adapter extends OMK_Client_Friend {
             // Attempts to update parent if this is the last transcode
             if( count($rows) <= 1 ){
                 
+                // Calls event : last transcode received for file
+                $this->getClient()->callEvent(OMK_Client::EV_END_ALL_TRANSCODE, $fileData);
+                // Attempts to save the parent status in database
                 $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
                     "table"     => "files",
                     "where"     => array(

@@ -103,11 +103,11 @@ $(function() {
                         // TODO : this blocks multiple uploads and should log
                         this.failure = function(up, message){
                             alert(message);
-                            up.stop();
+//                            up.stop();
                             file.status = plupload.FAILED;
                             up.trigger('QueueChanged');    
                             up.trigger('UploadProgress', file);
-                            up.start();                            
+//                            up.start();                            
                         }
                         var error,response;
                         try{
@@ -116,7 +116,7 @@ $(function() {
                             this.failure(up, "error : "+exception);
                             return;
                         }
-                        if ( "code" in response.result ){
+                        if ( response && "result" in response && "code" in response.result ){
                             code = response.result.code;
                             if( code != 0 && code != 128 ){
                                 // Error occured
