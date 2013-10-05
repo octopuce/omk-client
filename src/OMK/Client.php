@@ -57,6 +57,7 @@ class OMK_Client {
     
     const EV_END_TRANSCODE_APPEND   = "onEndTranscodeAppend";
     const EV_END_ALL_TRANSCODE      = "onEndAllTranscode";
+    const EV_TRANSCODER_SEND_META   = "onTranscoderSendMetadata";
 
         
     protected $authentificationAdapter;

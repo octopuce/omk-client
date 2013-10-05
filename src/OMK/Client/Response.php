@@ -381,6 +381,16 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
                  "action"       => "app_request_format",
                  "params"       => $metadata
          )) );
+        $fileData                   = array(
+            "database"              => array(
+                "id"        => $parent_id,
+                "type"      => $type,
+                "metadata"  => $metadataObject,
+                
+            )
+        );
+        
+        $this->getClient()->callEvent(OMK_Client::EV_TRANSCODER_SEND_META, $fileData);
         
         // Exit
         return $this->getResult();
