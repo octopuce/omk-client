@@ -381,9 +381,10 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
                  "action"       => "app_request_format",
                  "params"       => $metadata
          )) );
+        
         $fileData                   = array(
             "database"              => array(
-                "id"        => $parent_id,
+                "parent_id" => $parent_id,
                 "type"      => $type,
                 "metadata"  => $metadataObject,
                 
