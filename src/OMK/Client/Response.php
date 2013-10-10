@@ -174,6 +174,8 @@ onError : Transcode logs error
             $fileData["database"] = current( $rows );
         }
 
+        // Calls event 
+        $this->getClient()->callEvent(OMK_Client::EV_TRANSCODER_SEND_FORMAT, $fileData);
         
         // Checks the upload adapter doesn't already own the file (NAS adapter)
         $this->recordResult(
