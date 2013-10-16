@@ -220,7 +220,7 @@ onError : Transcode logs error
         // Returns if no transfer requested
         if( ! $transfer_required ){
             
-            $metadataObject                     = json_decode($metadata);
+            $metadataObject                     = json_decode($metadata,true);
             if(json_last_error()){
                 throw new OMK_Exception(sprintf(_("Couldn't decode metadata %s before starting onEndTranscodeAppend"),$metadata));
             }
