@@ -220,7 +220,16 @@ onError : Transcode logs error
         // Returns if no transfer requested
         if( ! $transfer_required ){
             
-            $file_size                          = $metadata["file_size"];
+            $metadataObject                     = json_decode($metadata);
+            if(json_last_error()){
+                throw new OMK_Exception(sprintf(_("Couldn't decode metadata %s before starting onEndTranscodeAppend"),$metadata));
+            }
+            // Attempts to retrieve file_size
+            if (array_key_exists("file_size", $metadataObject) && !is_null($metadataObject["file_size"])) {
+                $file_size                      = $metadataObject["file_size"];
+            } else {
+                $file_size                      = 0;
+            }
             $fileData["storage"]["file_size"]   = $file_size;
             $this->recordResult( $this->getClient()->getFileAdapter()->onEndTranscodeAppend(
                 array(
