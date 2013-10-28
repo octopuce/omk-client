@@ -363,7 +363,7 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         if( !in_array($mime, $this->getClient()->getMimeTypeWhitelist())){
             $this->recordResult(array(
                 "code"     => OMK_Client::ERR_INVALID_FORMAT,
-                "message"  => _("Invalid status.")
+                "message"  => _("Invalid  mime type status : $mime.")
             ));
             throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
