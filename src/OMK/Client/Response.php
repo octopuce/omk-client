@@ -360,14 +360,29 @@ onSuccess : App updates media status to META_RECEIVED or META_INVALID
         }
         
         // Exits if the MIME type doesn't appear in the client's whitelist
-        if( !in_array($mime, $this->getClient()->getMimeTypeWhitelist())){
+        $mimeTypeWhiteList              =  $this->getClient()->getMimeTypeWhitelist();
+        
+        // Checks mime type white list validity
+        if( ! is_array($mimeTypeWhiteList) || is_null($mimeTypeWhiteList)){
+            throw new OMK_Exception(_("Missing MIME White List."), self::ERR_MISSING_PARAMETER);
+        }
+        
+        // Attempts to check if the mime type is valid based on regexp
+        $is_valid_mime                  = FALSE;
+        foreach( $mimeTypeWhiteList as $mimeType){
+            if(preg_match("=".$mimeType."=", $mime)){
+                $is_valid_mime          = TRUE;
+                break;
+            }
+        }
+        
+        if( ! $is_valid_mime ){
             $this->recordResult(array(
                 "code"     => OMK_Client::ERR_INVALID_FORMAT,
                 "message"  => _("Invalid  mime type status : $mime.")
             ));
             throw new OMK_Exception($this->result["message"],$this->result["code"]);
         }
-        
         // Updates file status to METADATA_RECEIVED
         $this->recordResult( $this->getClient()->getDatabaseAdapter()->update(array(
             "table"        => "files",
