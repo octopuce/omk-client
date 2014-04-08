@@ -668,7 +668,7 @@ class OMK_Client {
         // @see http://incompleteness.me/blog/2007/03/05/json-is-not-as-safe-as-people-think-it-is/
         // While a bit old, let's consider this a good practice and build upon it
         // Attempts to retrieve return
-        if (array_key_exists("return", $options) && !is_null($options["return"])) {
+        if (array_key_exists("result", $options) && !is_null($options["result"])) {
             $object             = $options;
         } else{
             $object             = array();
