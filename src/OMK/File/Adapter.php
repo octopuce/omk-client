@@ -13,33 +13,33 @@ class OMK_File_Adapter extends OMK_Client_Friend {
     
     // ERR CODE 50-74
 
-    const ERR_STORAGE_AUTH                  = 50;
-    const ERR_STORAGE_CREATE                = 51;
-    const ERR_STORAGE_MOVE                  = 52;
-    const ERR_STORAGE_PATH                  = 53;
-    const ERR_STORAGE_FILE_PATH             = 54;
-    const ERR_STORAGE_FILE_ID               = 55;
-    const ERR_STORAGE_FILE_NAME             = 56;
-    const ERR_STATUS_INVALID                = 57;
-    const ERR_STATUS_COMPLETE               = 58;
-    const STATUS_UPLOADED                   = 4;
-    const STATUS_STORED                     = 8;
+    const ERR_STORAGE_AUTH          = 50;
+    const ERR_STORAGE_CREATE        = 51;
+    const ERR_STORAGE_MOVE          = 52;
+    const ERR_STORAGE_PATH          = 53;
+    const ERR_STORAGE_FILE_PATH     = 54;
+    const ERR_STORAGE_FILE_ID       = 55;
+    const ERR_STORAGE_FILE_NAME     = 56;
+    const ERR_STATUS_INVALID        = 57;
+    const ERR_STATUS_COMPLETE       = 58;
+    const STATUS_UPLOADED           = 4;
+    const STATUS_STORED             = 8;
     const STATUS_METADATA_REQUESTED         = 12;
     const STATUS_METADATA_RECEIVED          = 16;
     const STATUS_TRANSCODE_REQUESTED        = 20;
-    const STATUS_TRANSCODE_READY            = 24;
+    const STATUS_TRANSCODE_READY    = 24;
     const STATUS_TRANSCODE_PARTIALLY        = 28;
     const STATUS_TRANSCODE_COMPLETE         = 32;
-    const STATUS_L_UPLOADED                 = "Uploaded";
-    const STATUS_L_STORED                   = "Stored";
+    const STATUS_L_UPLOADED         = "Uploaded";
+    const STATUS_L_STORED           = "Stored";
     const STATUS_L_METADATA_REQUESTED       = "Metadata requested";
     const STATUS_L_METADATA_RECEIVED        = "Metadata received";
     const STATUS_L_TRANSCODE_REQUESTED      = "Transcode requested";
     const STATUS_L_TRANSCODE_READY          = "Transcode ready";
     const STATUS_L_TRANSCODE_PARTIALLY      = "Transcode reception in progress";
     const STATUS_L_TRANSCODE_COMPLETE       = "Transcode received";
-    const TYPE_VIDEO                        = "video";
-    const TYPE_AUDIO                        = "audio";
+    const TYPE_VIDEO                = "video";
+    const TYPE_AUDIO                = "audio";
     
 
     /**
@@ -47,7 +47,7 @@ class OMK_File_Adapter extends OMK_Client_Friend {
      * 
      * @var array
      */
-    protected $statusList = NULL;
+    protected $statusList           = NULL;
     /**
      * 
      * @param string $options.base_url
@@ -136,7 +136,7 @@ class OMK_File_Adapter extends OMK_Client_Friend {
         $status_str;
         // Builds the status List
         if(NULL === $this->statusList){
-            $this->statusList = array(
+            $this->statusList       = array(
                 self::STATUS_UPLOADED               => self::STATUS_L_UPLOADED,
                 self::STATUS_STORED                 => self::STATUS_L_STORED,
                 self::STATUS_METADATA_REQUESTED     => self::STATUS_L_METADATA_REQUESTED,
@@ -178,14 +178,14 @@ class OMK_File_Adapter extends OMK_Client_Friend {
         
         // Retrieves storage
         if (array_key_exists("storage", $fileData) && !is_null($fileData["storage"])) {
-            $storage = $fileData["storage"];
+            $storage                = $fileData["storage"];
         } else {
             throw new OMK_Exception(_("Missing parameter storage"), self::ERR_MISSING_PARAMETER);
         }
         
         // Retrieves file_size
         if (array_key_exists("file_size", $storage) && !is_null($storage["file_size"])) {
-            $file_size = $storage["file_size"];
+            $file_size              = $storage["file_size"];
         } else {
             throw new OMK_Exception("Missing parameter file_size", self::ERR_MISSING_PARAMETER);
         }
@@ -227,13 +227,19 @@ class OMK_File_Adapter extends OMK_Client_Friend {
             
             // Attempts to retrieve db results
             if( array_key_exists("rows",$this->result)){
-                $rows = $this->result["rows"];
+                $rows               = $this->result["rows"];
             } else {
                 throw new OMK_Exception(_("Missing rows."), self::ERR_MISSING_PARAMETER);
             }
 
             // Attempts to update parent if this is the last transcode
             if( count($rows) <= 1 ){
+                
+                $this->getClient()->getLoggerAdapter()->log(array(
+                    "level"         => OMK_Logger_Adapter::INFO,
+                    "message"       => "All transcode finished for file",
+                    "data"          => array($fileData,$rows)
+                ));
                 
                 // Calls event : last transcode received for file
                 $this->getClient()->callEvent(OMK_Client::EV_END_ALL_TRANSCODE, $fileData);
@@ -301,19 +307,19 @@ class OMK_File_Adapter extends OMK_Client_Friend {
     public function extractArchive( array $options ){
         
         if (array_key_exists("file_path", $options) && !is_null($options["file_path"])) {
-            $file_path      = $options["file_path"];
+            $file_path              = $options["file_path"];
         } else {  
             throw new OMK_Exception("Missing parameter file_path", self::ERR_MISSING_PARAMETER); }
         
         if( !is_file($file_path)){
             throw new OMK_Exception("Invalid file name for archive extraction {$file_path}",self::ERR_STORAGE_FILE_PATH);}
             
-        $dirname            = pathinfo($file_path, PATHINFO_DIRNAME);
+        $dirname                    = pathinfo($file_path, PATHINFO_DIRNAME);
         if( !is_dir($dirname)){
             throw new OMK_Exception("Invalid directory for archive extraction {$dirname}",self::ERR_STORAGE_PATH);}
           
         // Attempts to extract the archive
-        $zipArchive         = new ZipArchive;
+        $zipArchive                 = new ZipArchive;
         if ($zipArchive->open($file_path) === TRUE) {
             $zipArchive->extractTo($dirname);
             $zipArchive->close();
@@ -336,11 +342,11 @@ class OMK_File_Adapter extends OMK_Client_Friend {
     public function getFileSize( $options = null ){
                 
         if( is_string( $options )){
-            $options = array("file_path"=>$options);
+            $options                = array("file_path"=>$options);
         }
         
         if (array_key_exists("file_path", $options) && !is_null($options["file_path"])) {
-            $file_path = $options["file_path"];
+            $file_path              = $options["file_path"];
         } else {
             throw new OMK_Exception("Missing parameter file_path", self::ERR_OK);
         }
